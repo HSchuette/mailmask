@@ -42,10 +42,18 @@ var defaultConfig = {
   emailKeyPrefix: "",
   allowPlusSign: true,
   forwardMapping: {
-    "@mailmask.me": [
+    "test@mailmask.me": [
       "hendrik.schuette@t-online.de"
-    ]
-    
+    ],
+    "8z7ihufghiu67z@mailmask.me": [
+        "hendrik.schuette@tutanota.com"
+      ],
+    "i7z9g89g3dwhu@mailmask.me": [
+        "hendrik.schuette@icloud.com"
+      ],
+    "6t7fugzhz78g76u@mailmask.me": [
+        "alexschuette@t-online.de"
+      ]
   }
 };
 
