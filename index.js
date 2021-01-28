@@ -53,7 +53,10 @@ var defaultConfig = {
       ],
     "6t7fugzhz78g76u@mailmask.me": [
         "alexschuette@t-online.de"
-      ]
+      ],
+    "98uijcs98ww4hr@mailmask.me": [
+        "fabian.emil@t-online.de"
+    ]
   }
 };
 
@@ -284,6 +287,41 @@ exports.processMessage = function(data) {
 };
 
 /**
+ * Deletes the message data from S3.
+ *
+ * @param {object} data - Data bundle with context, email, etc.
+ *
+ */
+exports.deleteMail = function(data) {
+    // Deleting the mail after it was send
+  data.log({
+    level: "info",
+    message: "Fetching email for deletion at s3://" + data.config.emailBucket + '/' +
+      data.config.emailKeyPrefix + data.email.messageId
+  });
+
+  // Delete the raw email from S3
+  data.s3.deleteObject({
+    Bucket: data.config.emailBucket,
+    Key: data.config.emailKeyPrefix + data.email.messageId
+  }, function(err, data) {
+    if (err) {
+      data.log({
+        level: "error",
+        message: "deleteObject() returned error:",
+        error: err,
+        stack: err.stack
+      });
+    } else {
+        data.log({
+        level: "info",
+        message: "Deletion was successful, deleted file"
+      });
+    }
+  });
+}
+
+/**
  * Send email using the SES sendRawEmail command.
  *
  * @param {object} data - Data bundle with context, email, etc.
@@ -342,7 +380,8 @@ exports.handler = function(event, context, callback, overrides) {
       exports.transformRecipients,
       exports.fetchMessage,
       exports.processMessage,
-      exports.sendMessage
+      exports.sendMessage,
+      exports.deleteMail
     ];
   var data = {
     event: event,
