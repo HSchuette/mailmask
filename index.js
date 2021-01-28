@@ -301,25 +301,29 @@ exports.deleteMail = function(data) {
   });
 
   // Delete the raw email from S3
-  data.s3.deleteObject({
-    Bucket: data.config.emailBucket,
-    Key: data.config.emailKeyPrefix + data.email.messageId
-  }, function(err, data) {
-    if (err) {
-      data.log({
-        level: "error",
-        message: "deleteObject() returned error:",
-        error: err,
-        stack: err.stack
-      });
-    } else {
+  return new Promise(function(resolve, reject) {
+    data.s3.deleteObject({
+        Bucket: data.config.emailBucket,
+        Key: data.config.emailKeyPrefix + data.email.messageId
+    }, function(err, data) {
+        if (err) {
         data.log({
-        level: "info",
-        message: "Deletion was successful, deleted file"
-      });
-    }
+            level: "error",
+            message: "deleteObject() returned error:",
+            error: err,
+            stack: err.stack
+        });
+        return reject(new Error('Error: Email sending failed.'));
+        } else {
+            data.log({
+            level: "info",
+            message: "Deletion was successful, deleted file"
+        });
+        return resolve(data);
+        }
+    });
   });
-}
+} 
 
 /**
  * Send email using the SES sendRawEmail command.
