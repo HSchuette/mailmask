@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang=”en”>
+    <head>
+        <meta charset=”UTF-8″>
+            <title>This is a simple page title</title>
+    </head>
+    <body>
+        <h1>MailMask</h1>
+
+        <div class="alert alert-success" id="success" style="display:none"> Success Message</div>
+
+        <form>
+            <label for="mail">Mail</label>
+            <br>
+            <textarea id="mail"></textarea>
+            <button id="submitButton">Submit</button>
+        </form>
+        
+        <script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-1.9.0.js"></script>
+        
+        <script type="text/javascript">
+            var API_URL = "https://423ghva5nf.execute-api.eu-west-1.amazonaws.com/prod/mails";
+            
+            $("#submitButton").on("click", function() {
+                $.ajax({
+                    type: "POST",
+                    url: API_URL,
+                    data: JSON.stringify({"forwardingAddress": $("#mail").val()}),
+                    contentType: "application/JSON",
+
+                    success: function(data) {
+                        $("#success").show(),
+                        setTimeout(function() { $("#success").hide(); }, 5000)
+                    }
+                }); 
+
+                return false;
+            });
+        </script>
+    </body>
+</html>
