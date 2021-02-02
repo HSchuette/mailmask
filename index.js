@@ -1,6 +1,7 @@
 "use strict";
 
-var AWS = require('aws-sdk');
+const AWS = require('aws-sdk');
+const docClient = new AWS.DynamoDB.DocumentClient({region: "eu-west-1"});
 
 console.log("AWS Lambda SES Forwarder // @arithmetric // Version 5.0.0");
 
@@ -45,7 +46,7 @@ var defaultConfig = {
     "test@mailmask.me": [
       "***REMOVED***"
     ],
-    "8z7ihufghiu67z@mailmask.me": [
+    "2c461869-f9b8-44e1-8b1a-39266e71b075@mailmask.me": [
         "hendrik.schuette@tutanota.com"
       ],
     "i7z9g89g3dwhu@mailmask.me": [
@@ -141,7 +142,7 @@ exports.transformRecipients = function(data) {
       level: "info"
     });
     return data.callback();
-  }
+  };
 
   data.recipients = newRecipients;
   return Promise.resolve(data);
@@ -307,23 +308,22 @@ exports.deleteMail = function(data) {
         Key: data.config.emailKeyPrefix + data.email.messageId
     }, function(err, data) {
         if (err) {
-        data.log({
+          data.log({
             level: "error",
             message: "deleteObject() returned error:",
             error: err,
             stack: err.stack
-        });
-        return reject(new Error('Error: Email sending failed.'));
-        } else {
-            data.log({
-            level: "info",
-            message: "Deletion was successful, deleted file"
-        });
-        return resolve(data);
+          });
+          return reject(new Error('Error: Email deletion failed.'));
         }
+        console.log({
+          level: "info",
+          message: "Deletion was successful, deleted file"
+        });
+        return resolve(data);        
     });
   });
-} 
+};
 
 /**
  * Send email using the SES sendRawEmail command.
@@ -340,6 +340,28 @@ exports.sendMessage = function(data) {
       Data: data.emailData
     }
   };
+
+  var recipientiD = data.originalRecipients.toString().slice(0,36)
+  console.log(recipientiD)
+
+  var mailParams = {
+
+    TableName: "mailMaskList",
+    Key: {
+        "mailID": recipientiD
+    }
+  }
+
+  docClient.get(mailParams, function(err, mailData){
+    if(err) {
+      console.log("Failed at retrieving the mapping data for the mail.")
+      console.log(err);
+    } else {
+      console.log("Getting the item was a success!");
+      console.log(mailData.Item.forwardingAddress);
+    }
+  });
+
   data.log({
     level: "info",
     message: "sendMessage: Sending email via SES. Original recipients: " +
@@ -368,6 +390,41 @@ exports.sendMessage = function(data) {
 };
 
 /**
+ * Gets the forwardMapping data from dynamoDB 
+ * 
+ * @param {object} data - Data bundle with context, email, etc.
+ *
+*/
+// exports.getForwardingAddress = function(data) {
+
+//   dacoxta.log({
+//     level: "info",
+//     message: "Getting the recipientID from the mail:" +  data.originalRecipients
+//   });
+
+//   var params = {
+
+//       TableName: "mailMaskList",
+//       // Key: {
+//       //     "mailID": "02f9e0d2-8f20-4519-8307-a84e3a32a15f"
+//       // }
+//       Key: {
+//           "mailID": data.originalRecipients.slice(0,36)
+//       }
+
+//   }
+
+//   docClient.get(params, function(err, data){
+//       if(err) {
+//           console.log(err);
+//       } else {
+//           console.log("Getting the item was a success!");
+//           console.log(data);
+//       }
+//   });
+// };
+
+/**
  * Handler function to be invoked by AWS Lambda with an inbound SES email as
  * the event.
  *
@@ -385,7 +442,8 @@ exports.handler = function(event, context, callback, overrides) {
       exports.fetchMessage,
       exports.processMessage,
       exports.sendMessage,
-      exports.deleteMail
+      exports.deleteMail,
+      // exports.getForwardingAddress
     ];
   var data = {
     event: event,
@@ -399,14 +457,13 @@ exports.handler = function(event, context, callback, overrides) {
   };
   Promise.series(steps, data)
     .then(function(data) {
-      data.log({
+      console.log({
         level: "info",
         message: "Process finished successfully."
       });
-      return data.callback();
     })
     .catch(function(err) {
-      data.log({
+      console.log({
         level: "error",
         message: "Step returned error: " + err.message,
         error: err,
