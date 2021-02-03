@@ -1,0 +1,69 @@
+* { 
+    /* Color scheme */
+    
+    --textcolor: #444;
+    --bgcolor: rgb(237, 242, 247);
+    --highlight: #2749c9;
+  
+}
+
+/* @media (prefers-color-scheme: dark) {
+    * {
+        --textcolor: #dadada;
+        --bgcolor: #141414;
+        --highlight: #2465dd;
+    }
+} */
+  
+
+
+body {
+    margin: 40px
+    auto;
+    max-width: 650px;
+    line-height: 1.6;
+    font-size: 18px;
+    color: var(--textcolor);
+    background: var(--bgcolor);
+    position: relative;
+    padding: 0
+    10px;
+    font-family: system-ui, sans-serif;
+}
+
+h1, h2, h3 {
+    line-height: 1.2
+}
+
+form {
+    margin:1.5em;
+    padding:1em;
+    text-align:center;
+}
+
+input[type="email"]
+{
+    background-color:#ffffff;
+    padding-left: 10px;
+    height: 30px;
+    width: 200px;  
+    font-size: 18px;
+    border-radius: 5px;
+    border-width: 0;
+    box-shadow: 0 2px 2px rgba(0, 0, 0, 0.2);
+
+}
+
+.button-cta {
+    background-color:#4e56ca;
+    color: var(--bgcolor);
+    margin-left: 20px;
+    text-align: center;
+    height: 30px;
+    width: 80px;  
+    font-size: 14px;
+    border-radius: 5px;
+    border-width: 0;
+    box-shadow: 0 2px 2px rgba(0, 0, 0, 0.2);
+
+}
