@@ -4,35 +4,18 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>MailMask</title>
-        <style type="text/css">
-        body {
-            margin: 40px
-            auto;
-            max-width: 650px;
-            line-height: 1.6;
-            font-size: 18px;
-            color: #444;
-            padding: 0
-            10px;
-            font-family: Arial
-        }
-    
-        h1, h2, h3 {
-            line-height: 1.2
-        }
-        </style>
+        <link rel="stylesheet" href="style.css">        
+        
     </head>
     <body>
-        <h1>Your mail deserves some privacy.</h1>
+        <h1>Your mail deserves <u>privacy</u>.</h1>
 
         <p>Your email address is your most valuable identifier online. Yet we share the address very loosely and do not think about how often newsletter providers or other companies get hacked.</p>
         <p>If you don't fully trust the developer and are not familiar with a product online, use <b>MailMask</b> to mask your email.</p>
 
-        <form>
-            <label for="mail">Mail</label>
-            <br>
-            <textarea id="mail"></textarea>
-            <button id="submitButton">Submit</button>
+        <form>            
+            <input id="mail" placeholder="E-mail" type="email" pattern="[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{1,63}$" required></input>
+            <button id="submitButton" class="button-cta"><b>Submit</b></button>
         </form>
 
         <h2>How does it work?</h2>
