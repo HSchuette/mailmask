@@ -18,8 +18,8 @@
 
 
 body {
-    margin: 40px
-    auto;
+    margin-top: 5em;
+    margin-left: 2em;
     max-width: 650px;
     line-height: 1.6;
     font-size: 18px;
@@ -31,7 +31,11 @@ body {
     font-family: system-ui, sans-serif;
 }
 
-h1, h2, h3 {
+h1 {
+    font-size: 2.5em;
+}
+
+h2, h3 {
     line-height: 1.2
 }
 
@@ -55,7 +59,7 @@ input[type="email"]
 }
 
 .button-cta {
-    background-color:#4e56ca;
+    background-color: var(--highlight);
     color: var(--bgcolor);
     margin-left: 20px;
     text-align: center;
@@ -65,5 +69,29 @@ input[type="email"]
     border-radius: 5px;
     border-width: 0;
     box-shadow: 0 2px 2px rgba(0, 0, 0, 0.2);
+}
 
+.button-cta:hover {
+    cursor: pointer;
+    transition: 0.2s;
+    background-color: white;
+}
+
+@media only screen and (min-width: 1080px) {
+    .container {
+        width: 1080px;
+    }
+
+    .section {
+        padding: 10em 4em;
+    }
+
+    .hero .container {
+        display: flex;
+        justify-items: space-between;
+    }
+
+    .form {
+        margin-top: 5em;
+    }
 }
