@@ -1,4 +1,4 @@
-* { 
+* {
     /* Color scheme */
     
     --textcolor: #444;
@@ -7,13 +7,13 @@
   
 }
 
-/* @media (prefers-color-scheme: dark) {
+@media (prefers-color-scheme: dark) {
     * {
         --textcolor: #dadada;
         --bgcolor: #141414;
         --highlight: #2465dd;
     }
-} */
+}
   
 
 
@@ -39,10 +39,20 @@ h2, h3 {
     line-height: 1.2
 }
 
+header {    
+    display:flex;
+    padding-top: -2em;
+    justify-content: flex-end;
+    width: 100%;    
+}
+
 form {
     margin:1.5em;
     padding:1em;
     text-align:center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 input[type="email"]
@@ -55,6 +65,7 @@ input[type="email"]
     border-radius: 5px;
     border-width: 0;
     box-shadow: 0 2px 2px rgba(0, 0, 0, 0.2);
+    transition: 1.5ms;
 
 }
 
@@ -77,9 +88,15 @@ input[type="email"]
     background-color: white;
 }
 
-@media only screen and (min-width: 1080px) {
+@media only screen and (min-width: 1080px) {    
+    .body {        
+        width: 800px;  
+        display: block;             
+    }
+
     .container {
-        width: 1080px;
+        width: 100%; 
+        justify-content: center;       
     }
 
     .section {
@@ -88,10 +105,11 @@ input[type="email"]
 
     .hero .container {
         display: flex;
-        justify-items: space-between;
+        align-items: stretch;
+        padding-top: 5em;
     }
 
-    .form {
-        margin-top: 5em;
+    .form {        
+        display: flex;          
     }
 }
