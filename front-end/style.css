@@ -2,8 +2,8 @@
     /* Color scheme */
     
     --textcolor: #444;
-    --bgcolor: rgb(237, 242, 247);
-    --highlight: #2749c9;
+    --bgcolor: white;
+    --highlight: #157EFA;
   
 }
 
@@ -11,7 +11,7 @@
     * {
         --textcolor: #f8f8f8;
         --bgcolor: #141414;
-        --highlight: #2465dd;
+        --highlight: #157EFA;
     }
 }
 
@@ -25,7 +25,7 @@ body {
     position: relative;
     padding: 0
     10px;
-    font-family: Avenir-Next, sans-serif;
+    font-family: Tahoma, serif;
 }
 
 /* ------- Sections ------- */
@@ -46,23 +46,36 @@ display: block;
 }
 
 h1 {
-    font-size: 2.5em;
+    font-size: 2.5em;    
+    text-align: center;
+    color: black;
 }
 
 h2, h3 {
     line-height: 1.2
 }
 
+a {
+    color: var(--textcolor);
+    text-decoration: none;
+    letter-spacing: -1px;
+    margin-left: 1em;
+}
+
+
 .img-logo{
-    width: 150px;   
-    margin: auto;
+    width: 150px; 
+    margin-top: 3em;  
+    margin-left: auto;
+    margin-right: auto;
     display: block;
-    padding: 1em;
+    
 }
 
 .img-text-logo {    
-    margin: auto;
-    width: 300px;
+    margin-right: auto;
+    margin-bottom: auto;
+    width: 180px;
     display: block;
 }
 
@@ -74,7 +87,7 @@ header {
 }
 
 form {
-    margin:1.5em;
+    margin:1em;
     padding:1em;
     text-align:center;
     display: flex;
@@ -84,16 +97,27 @@ form {
 
 input[type="email"]
 {
-    background-color:#ffffff;
-    padding-left: 10px;
-    height: 30px;
-    width: 200px;  
+    background-color:#1580fa4f !important;
+    height: 50px;
+    width: 350px;  
     font-size: 18px;
-    border-radius: 5px;
+    border-radius: 10px;
     border-width: 0;
     box-shadow: 0 2px 2px rgba(0, 0, 0, 0.2);
     transition: 1.5ms;
+    background: url(img/lockIcon.png) no-repeat scroll 14px 16px;
+    background-size: 15px;
+    padding-left: 40px;
+    padding-right: 60px
+}
 
+::placeholder {
+    color: var(--textcolor);
+}
+
+.catchphrase {
+    margin-top: 2em;
+    margin-bottom: 2em;
 }
 
 .content {
@@ -106,7 +130,7 @@ input[type="email"]
     font-size: inherit;
     background: none;    
     padding: 0;
-    margin-top: 10em;
+    margin-top: 5em;
     color: var(--textcolor)
 }
 
@@ -119,14 +143,13 @@ input[type="email"]
 .button-cta {
     background-color: var(--highlight);
     color: white;
-    margin-left: 20px;
+    margin-left: -70px;
     text-align: center;
-    height: 30px;
-    width: 80px;  
-    font-size: 14px;
-    border-radius: 5px;
+    height: 50px;
+    width: 70px;  
+    font-size: 18px;
+    border-radius: 10px;
     border-width: 0;
-    box-shadow: 0 2px 2px rgba(0, 0, 0, 0.2);
 }
 
 .button-cta:hover {
@@ -137,7 +160,7 @@ input[type="email"]
 
 @media only screen and (min-width: 1080px) {    
     .body {        
-        width: 800px;  
+        width: 900px;  
         display: block;             
     }
 
@@ -149,7 +172,6 @@ input[type="email"]
     .hero .container {   
         width: 600px;      
         margin: auto;
-        padding-top: 5em;
     }
 
     .form {        
