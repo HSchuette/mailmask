@@ -8,30 +8,31 @@
     </head>
     <body>
         <header>
+            <img class="img-text-logo" src="img/logoText_simpleBlack.png" alt="mailmask logo">
             <nav>
-            <a href="#faq">FAQ</a>
-            <a href="#imprint">Imprint</a>
+                <a href="#faq">FAQ</a>
+                <a href="#imprint">IMPRINT</a>
             </nav>
         </header>
         
         <main>
             <section id="home">
                 <div class="content">
-                    <div class="hero">
-                        <img class="img-logo" src="img/logo_onWhite.png" alt="mailmask logo">
-                        <picture><source srcset="img/logoText_onBlack.png" media="(prefers-color-scheme: dark)">
-                            <img class="img-text-logo" src="img/logoText_onWhite.png" alt="mailmask text logo">
-                        </picture>
+                    <div class="hero">                        
                         <div class="container">                    
                             
-                            <h1>Your mail deserves <u>privacy</u>.</h1>
-
-                            <p>Create a unique and random address so your email can stay private.</p>
-
+                            <h1>Your email deserves <u>privacy</u>.</h1>
+                            <img class="img-logo" src="img/illustration.png" alt="mailmask logo">
+                        <!-- <picture><source srcset="img/logoText_onBlack.png" media="(prefers-color-scheme: dark)">
+                            <img class="img-text-logo" src="img/logoText_onWhite.png" alt="mailmask text logo">
+                        </picture> -->                    
+                            <div class="catchphrase">
+                                <p>Mask your email by creating a unique and random address so your email can stay private.</p>
+                            </div>    
                             <form>            
-                                <input id="mail" placeholder="E-mail" type="email" pattern="[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{1,63}$" required></input>
-                                <button id="submitButton" class="button-cta"><b>Submit</b></button>
-                            </form>
+                                <input id="mail" placeholder="Enter your email here" type="email" pattern="[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{1,63}$" required></input>
+                                <button id="submitButton" class="button-cta"><b>Go</b></button>
+                            </form>                        
                         </div>
                     </div>
 
