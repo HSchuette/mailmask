@@ -1,4 +1,4 @@
-* {
+* {box-sizing: border-box; 
     /* Color scheme */
     
     --textcolor: #444;
@@ -9,18 +9,15 @@
 
 @media (prefers-color-scheme: dark) {
     * {
-        --textcolor: #dadada;
+        --textcolor: #f8f8f8;
         --bgcolor: #141414;
         --highlight: #2465dd;
     }
 }
-  
-
 
 body {
-    margin-top: 5em;
-    margin-left: 2em;
-    max-width: 650px;
+    margin-top: 2em;
+    margin-left: 2em; 
     line-height: 1.6;
     font-size: 18px;
     color: var(--textcolor);
@@ -28,7 +25,24 @@ body {
     position: relative;
     padding: 0
     10px;
-    font-family: system-ui, sans-serif;
+    font-family: Avenir-Next, sans-serif;
+}
+
+/* ------- Sections ------- */
+
+section {
+    width: 100%;
+    background: var(--bgcolor);
+    display: none;    
+    min-height: 100vh;
+}
+    
+section:target { /* Show section */
+display: block;
+}
+
+section#home { /* Show #home by default */
+display: block;
 }
 
 h1 {
@@ -39,9 +53,22 @@ h2, h3 {
     line-height: 1.2
 }
 
+.img-logo{
+    width: 150px;   
+    margin: auto;
+    display: block;
+    padding: 1em;
+}
+
+.img-text-logo {    
+    margin: auto;
+    width: 300px;
+    display: block;
+}
+
 header {    
     display:flex;
-    padding-top: -2em;
+    padding-right: 1em;  
     justify-content: flex-end;
     width: 100%;    
 }
@@ -69,9 +96,29 @@ input[type="email"]
 
 }
 
+.content {
+    max-width: 1080px;
+    margin: auto;
+}
+
+.question-button {
+    border: none;
+    font-size: inherit;
+    background: none;    
+    padding: 0;
+    margin-top: 10em;
+    color: var(--textcolor)
+}
+
+.question-button:hover {
+    cursor: pointer;
+    transition: 0.2s;
+    color: var(--highlight);
+}
+
 .button-cta {
     background-color: var(--highlight);
-    color: var(--bgcolor);
+    color: white;
     margin-left: 20px;
     text-align: center;
     height: 30px;
@@ -99,13 +146,9 @@ input[type="email"]
         justify-content: center;       
     }
 
-    .section {
-        padding: 10em 4em;
-    }
-
-    .hero .container {
-        display: flex;
-        align-items: stretch;
+    .hero .container {   
+        width: 600px;      
+        margin: auto;
         padding-top: 5em;
     }
 
