@@ -25,7 +25,7 @@ body {
     position: relative;
     padding: 0
     10px;
-    font-family: Tahoma, serif;
+    font-family: 'Trebuchet MS', sans-serif;
 }
 
 /* ------- Sections ------- */
@@ -46,9 +46,9 @@ display: block;
 }
 
 h1 {
-    font-size: 2.5em;    
+    font-size: 2.5em; 
     text-align: center;
-    color: black;
+    color: var(--textcolor);
 }
 
 h2, h3 {
@@ -68,15 +68,14 @@ a {
     margin-top: 3em;  
     margin-left: auto;
     margin-right: auto;
-    display: block;
-    
+    display: block; 
 }
 
 .img-text-logo {    
     margin-right: auto;
     margin-bottom: auto;
     width: 180px;
-    display: block;
+    display: block;    
 }
 
 header {    
@@ -98,12 +97,12 @@ form {
 input[type="email"]
 {
     background-color:#1580fa4f !important;
+    color: var(--textcolor);
     height: 50px;
     width: 350px;  
     font-size: 18px;
     border-radius: 10px;
     border-width: 0;
-    box-shadow: 0 2px 2px rgba(0, 0, 0, 0.2);
     transition: 1.5ms;
     background: url(img/lockIcon.png) no-repeat scroll 14px 16px;
     background-size: 15px;
@@ -156,6 +155,7 @@ input[type="email"]
     cursor: pointer;
     transition: 0.2s;
     background-color: white;
+    color: var(--highlight);
 }
 
 @media only screen and (min-width: 1080px) {    
@@ -176,5 +176,11 @@ input[type="email"]
 
     .form {        
         display: flex;          
+    }
+}
+
+@media (prefers-color-scheme: dark) {
+    .img-text-logo {    
+        filter: invert(100%)
     }
 }
