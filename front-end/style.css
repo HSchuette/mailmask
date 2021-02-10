@@ -42,7 +42,7 @@ display: block;
 }
 
 section#home { /* Show #home by default */
-display: block;
+    display: block;
 }
 
 h1 {
@@ -58,12 +58,18 @@ h2, h3 {
 a {
     color: var(--textcolor);
     text-decoration: none;
+}
+
+.headerLink {
+    color: var(--textcolor);
+    text-decoration: none;
     letter-spacing: -1px;
-    margin-left: 1em;
+    margin-left: auto;
+    float: right;
 }
 
 
-.img-logo{
+.illustration{
     width: 150px; 
     margin-top: 3em;  
     margin-left: auto;
@@ -72,16 +78,20 @@ a {
 }
 
 .img-text-logo {    
-    margin-right: auto;
-    margin-bottom: auto;
     width: 180px;
-    display: block;    
+    display: block; 
+    float: left;   
+    margin-right: auto;
+}
+
+.nav {
+    float: right;
 }
 
 header {    
     display:flex;
     padding-right: 1em;  
-    justify-content: flex-end;
+    display:  inline-block;
     width: 100%;    
 }
 
