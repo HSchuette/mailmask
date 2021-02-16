@@ -1,31 +1,35 @@
 * {box-sizing: border-box; 
     /* Color scheme */
     
-    --textcolor: #444;
-    --bgcolor: white;
-    --highlight: #157EFA;
+    --textcolor: rgb(0, 0, 0);
+    --bgcolor: #F6F6F6;
+    --highlight: #0095FF;
   
 }
-
+/* 
 @media (prefers-color-scheme: dark) {
     * {
         --textcolor: #f8f8f8;
         --bgcolor: #141414;
         --highlight: #157EFA;
     }
+    .img-text-logo {    
+        filter: invert(100%)
+    }
+} */
+
+html, main {
+    margin-right: -10px
 }
 
 body {
     margin-top: 2em;
-    margin-left: 2em; 
     line-height: 1.6;
     font-size: 18px;
     color: var(--textcolor);
     background: var(--bgcolor);
     position: relative;
-    padding: 0
-    10px;
-    font-family: 'Trebuchet MS', sans-serif;
+    font-family: 'Avenir Next', sans-serif;
 }
 
 /* ------- Sections ------- */
@@ -33,22 +37,19 @@ body {
 section {
     width: 100%;
     background: var(--bgcolor);
-    display: none;    
-    min-height: 100vh;
 }
     
-section:target { /* Show section */
-display: block;
-}
-
 section#home { /* Show #home by default */
     display: block;
+    height: 600px; 
+    padding: 10px;
 }
 
 h1 {
-    font-size: 2.5em; 
-    text-align: center;
     color: var(--textcolor);
+    font-size: 1.8em; 
+    font-weight: bold;
+    letter-spacing: 2.8px;
 }
 
 h2, h3 {
@@ -60,61 +61,59 @@ a {
     text-decoration: none;
 }
 
-.headerLink {
-    color: var(--textcolor);
-    text-decoration: none;
-    letter-spacing: -1px;
-    margin-left: auto;
-    float: right;
-}
-
-
-.illustration{
-    width: 150px; 
-    margin-top: 3em;  
-    margin-left: auto;
+.img-logo {
+    width: 70px;
+    display: block;
+    float: left;
     margin-right: auto;
-    display: block; 
+    position: absolute;
 }
 
 .img-text-logo {    
     width: 180px;
     display: block; 
-    float: left;   
+    float: center;
     margin-right: auto;
+    margin-left: auto;
+    padding-top: 15px;
 }
 
-.nav {
-    float: right;
+.content {
+    max-width: 1080px;
+    max-height: 450px;
+    margin: 3em;
+    margin-top: 5em;
+    background-color: white;
+    border-radius: 20px;
+    box-shadow: 2px 1px 45px 0px rgba(0,0,0,0.29);
 }
 
-header {    
-    display:flex;
-    padding-right: 1em;  
-    display:  inline-block;
-    width: 100%;    
+.innerBox {
+    padding-left: 35px;
+    padding-right: 35px;
+    padding-top: 1px;
+    padding-bottom: 35px;
+}
+
+.innerBox-text {
+    text-align: left;
 }
 
 form {
-    margin:1em;
-    padding:1em;
-    text-align:center;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    padding-top: 1em;
 }
 
 input[type="email"]
 {
-    background-color:#1580fa4f !important;
     color: var(--textcolor);
-    height: 50px;
-    width: 350px;  
+    height: 40px;
+    width: 100%;
     font-size: 18px;
     border-radius: 10px;
-    border-width: 0;
+    border-color: var(--highlight);
+    border-width: 2;
     transition: 1.5ms;
-    background: url(img/lockIcon.png) no-repeat scroll 14px 16px;
+    background: url(img/lockIcon.png) no-repeat scroll 12px 8px;
     background-size: 15px;
     padding-left: 40px;
     padding-right: 60px
@@ -122,41 +121,22 @@ input[type="email"]
 
 ::placeholder {
     color: var(--textcolor);
-}
-
-.catchphrase {
-    margin-top: 2em;
-    margin-bottom: 2em;
-}
-
-.content {
-    max-width: 1080px;
-    margin: auto;
-}
-
-.question-button {
-    border: none;
-    font-size: inherit;
-    background: none;    
-    padding: 0;
-    margin-top: 5em;
-    color: var(--textcolor)
-}
-
-.question-button:hover {
-    cursor: pointer;
-    transition: 0.2s;
-    color: var(--highlight);
+    opacity: 0.4;
+    letter-spacing: 0.4px;
+    font-size: 12pt;
 }
 
 .button-cta {
+    clear: both;
+    margin-top: 2em;
     background-color: var(--highlight);
     color: white;
-    margin-left: -70px;
-    text-align: center;
+    width: 100%;
     height: 50px;
-    width: 70px;  
-    font-size: 18px;
+    text-align: center;
+    font-size: 14pt;
+    font-weight: 300;
+    letter-spacing: 1px;
     border-radius: 10px;
     border-width: 0;
 }
@@ -166,7 +146,63 @@ input[type="email"]
     transition: 0.2s;
     background-color: white;
     color: var(--highlight);
+    border-color: var(--highlight);
+    border-width: 2px;
 }
+
+.success {
+    text-align: center;
+}
+
+.howTo-button{
+    border: none;
+    background-color: inherit;
+    font-size: 15pt;
+    font-weight: 900;
+    opacity: 0.5;
+    letter-spacing: 1.5px;
+    width: 100%;
+    margin-top: 50%;
+}
+
+section#howto {
+    background-color: var(--highlight);
+    height: 1080px;
+    margin-top: 65%;
+    margin-left: -10px;
+    padding-top: 80px
+}
+
+.howto-header{
+    padding-left: 3em;
+    filter: invert();
+    float: left;
+}
+
+.illustration {
+    width: 120px;
+    float: right;
+    margin-right: 60px;
+    margin-bottom: -30px;
+}
+
+.howto-container {
+    clear: both;
+    max-width: 1080px;
+    max-height: 650px;
+    margin-left: 3em;
+    margin-right: 3em;
+    background-color: white;
+    border-radius: 20px;
+    box-shadow: 2px 1px 45px 0px rgba(0,0,0,0.29);
+}
+
+.how-to-text {
+    padding: 35px;
+    margin: auto;
+}
+
+
 
 @media only screen and (min-width: 1080px) {    
     .body {        
@@ -179,18 +215,7 @@ input[type="email"]
         justify-content: center;       
     }
 
-    .hero .container {   
-        width: 600px;      
-        margin: auto;
-    }
-
     .form {        
         display: flex;          
-    }
-}
-
-@media (prefers-color-scheme: dark) {
-    .img-text-logo {    
-        filter: invert(100%)
     }
 }
