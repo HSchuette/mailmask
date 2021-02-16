@@ -32,7 +32,8 @@
                             <form>            
                                 <input id="mail" placeholder="Enter your email here" type="email" pattern="[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{1,63}$" required></input>
                                 <button id="submitButton" class="button-cta"><b>Go</b></button>
-                            </form>                        
+                            </form>  
+                            <div class="alert alert-success" id="success" style="display:none"> Success Message</div>                      
                         </div>
                     </div>
 
@@ -42,9 +43,7 @@
                         <p>Your MailMask address consists out of a unique id and the domain ending "@mailmask.me".</p>
                         <p>Any messages sent to this address by the app or website developer are automatically forwarded to your personal email address.</p>
                         <p>MailMask <b>never</b> processes the content of your incoming mails. The data is stored only for forwarding and is deleted after the mail has been sent to your private email address.</p>
-                    </div>
-
-                    <div class="alert alert-success" id="success" style="display:none"> Success Message</div>                
+                    </div>                                    
                                     
                 </div>
             </section>
@@ -69,6 +68,7 @@
                             success: function(data) {
                                 $("#success").show(),
                                 setTimeout(function() { $("#success").hide(); }, 5000)
+                                $("#mail").val("")
                             }
                         }); 
 
