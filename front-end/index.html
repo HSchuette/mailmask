@@ -8,48 +8,47 @@
     </head>
     <body>
         <header>
+            <a href="#home"><img class="img-logo" src="img/logo_onWhite.png" alt="illustration logo"></a>
             <a href="#home"><img class="img-text-logo" src="img/logoText_simpleBlack.png" alt="mailmask logo"></a>
-            <nav>
-                <!-- <a href="#faq">FAQ</a> -->
-                <div class="headerLink">
-                    <a href="#imprint">IMPRINT</a>
-                </div>
-            </nav>
         </header>
         
         <main>
             <section id="home"> <!-- HOME -->
                 <div class="content">
-                    <div class="hero">                        
-                        <div class="container">                    
+                    <div class="innerBox">                        
+                        <div class="innerBox-text">                    
                             
                             <h1>Your email deserves <u>privacy</u>.</h1>
-                            <img class="illustration" src="img/illustration.png" alt="mailmask logo">
+                           
                                                                       
                             <div class="catchphrase">
                                 <p>Mask your email by creating a unique and random address so your email can stay private.</p>
                             </div>    
-                            <form>            
-                                <input id="mail" placeholder="Enter your email here" type="email" pattern="[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{1,63}$" required></input>
-                                <button id="submitButton" class="button-cta"><b>Go</b></button>
-                            </form>  
-                            <div class="alert alert-success" id="success" style="display:none"> Success Message</div>                      
+                                                
                         </div>
-                    </div>
+                        <form>            
+                            <input id="mail" placeholder="Enter your email here..." type="email" pattern="[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{1,63}$" required></input>
+                            <button id="submitButton" class="button-cta">Generate Mail</button>
+                        </form>  
+                        <div class="alert alert-success" id="success" style="display:none"> Success Message</div>  
+                    </div>                                            
+                </div>
+                
+                <button class="howTo-button" onclick="howtoScroll()" <p>How It Works <br> &#8964;</p></button>
 
-                    <button class="question-button" onclick="showhowto()"><h4>How does it work?</h2></button>
-                    <div class="how-to-text" id="how-to-text", style="display: none">
+            </section>
+
+            <section id="howto"> <!-- HOW TO -->
+                <div class="howto-header"><h1> How It Works</h1></div>
+                <img class="illustration" src="img/illustration.png" alt="mail mask racoon">
+                <div class="howto-container", id="howto-container">
+                    <div class="how-to-text" id="how-to-text">
                         <p>MailMask creates a unique and random email address for you. This way your real address is kept secret for the website or the app developer. This email address is uniquely fit to reroute incoming mails from the webpage to your address.</p>
                         <p>Your MailMask address consists out of a unique id and the domain ending "@mailmask.me".</p>
                         <p>Any messages sent to this address by the app or website developer are automatically forwarded to your personal email address.</p>
                         <p>MailMask <b>never</b> processes the content of your incoming mails. The data is stored only for forwarding and is deleted after the mail has been sent to your private email address.</p>
-                    </div>                                    
-                                    
+                    </div>  
                 </div>
-            </section>
-            
-            <section id="imprint"> <!-- IMPRINT -->
-                <p>This is the about page.
             </section>
         </main>
 
@@ -75,14 +74,9 @@
                         return false;
                     });
 
-                    function showhowto() {
-                        var x = document.getElementById("how-to-text");
-                        if (x.style.display === "none") {
-                        x.style.display = "block";
-                        } else {
-                            x.style.display = "none";
-                        }
-                    }
+                    function howtoScroll() {
+                        document.getElementById( 'howto' ).scrollIntoView();   
+                    };
                     
                 </script>
     </body>
