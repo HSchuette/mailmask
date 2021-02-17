@@ -37,6 +37,7 @@ body {
 section {
     width: 100%;
     background: var(--bgcolor);
+    scroll-behavior: smooth;
 }
     
 section#home { /* Show #home by default */
@@ -67,6 +68,7 @@ a {
     float: left;
     margin-right: auto;
     position: absolute;
+    margin-left: 20px;
 }
 
 .img-text-logo {    
@@ -80,7 +82,7 @@ a {
 
 .content {
     max-width: 1080px;
-    max-height: 450px;
+    max-height: 480px;
     margin: 3em;
     margin-top: 5em;
     background-color: white;
@@ -162,7 +164,7 @@ input[type="email"]
     opacity: 0.5;
     letter-spacing: 1.5px;
     width: 100%;
-    margin-top: 50%;
+    margin-top: 45%;
 }
 
 section#howto {
