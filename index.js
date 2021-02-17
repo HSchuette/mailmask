@@ -103,36 +103,82 @@ exports.transformRecipients = function(data) {
     if (data.config.allowPlusSign) {
       origEmailKey = origEmailKey.replace(/\+.*?@/, '@');
     }
-    if (data.config.forwardMapping.hasOwnProperty(origEmailKey)) {
-      newRecipients = newRecipients.concat(
-        data.config.forwardMapping[origEmailKey]);
-      data.originalRecipient = origEmail;
-    } else {
-      var origEmailDomain;
-      var origEmailUser;
-      var pos = origEmailKey.lastIndexOf("@");
-      if (pos === -1) {
-        origEmailUser = origEmailKey;
-      } else {
-        origEmailDomain = origEmailKey.slice(pos);
-        origEmailUser = origEmailKey.slice(0, pos);
+
+    var recipientiD = origEmailKey.toString().slice(0,36)
+    console.log(recipientiD)
+  
+    // try {
+    //   let mailData = docClient.get(mailParams).promise();
+    //   let fwdaddress = mailData.Item.forwardingAddress;
+    //   console.log("SUCCESSFULL GET", fwdaddress);
+    // } catch(err) {
+    //   console.log(err);
+    // }
+    // docClient.get(mailParams, function(err, mailData){
+    //   if(err) {
+    //     console.log("Failed at retrieving the mapping data for the mail.")
+    //     console.log(err);
+    //   } else {
+    //     console.log("Getting the item was a success!");
+    //     console.log(mailData.Item.forwardingAddress);
+    //     fwdaddress = mailData.Item.forwardingAddresss
+    //   }
+    // });
+
+    async function getfwdAddress() {
+      var mailParams = {
+        TableName: "mailMaskList",
+        Key: {
+            "mailID": recipientiD
+        }
       }
-      if (origEmailDomain &&
-          data.config.forwardMapping.hasOwnProperty(origEmailDomain)) {
-        newRecipients = newRecipients.concat(
-          data.config.forwardMapping[origEmailDomain]);
-        data.originalRecipient = origEmail;
-      } else if (origEmailUser &&
-        data.config.forwardMapping.hasOwnProperty(origEmailUser)) {
-        newRecipients = newRecipients.concat(
-          data.config.forwardMapping[origEmailUser]);
-        data.originalRecipient = origEmail;
-      } else if (data.config.forwardMapping.hasOwnProperty("@")) {
-        newRecipients = newRecipients.concat(
-          data.config.forwardMapping["@"]);
-        data.originalRecipient = origEmail;
+
+      try {
+        let res = await docClient.get(mailParams).promise()
+        console.log(res)
+      } catch (error) {
+        console.error(error)
       }
+    
     }
+    
+    var fwdItem = getfwdAddress()
+    console.log(fwdItem)
+
+    var fwdaddress = fwdItem.forwardingAddress
+    console.log(fwdaddress)
+
+    newRecipients = newRecipients.concat(fwdaddress)
+    // if (data.config.forwardMapping.hasOwnProperty(origEmailKey)) {
+    //   newRecipients = newRecipients.concat(
+    //     data.config.forwardMapping[origEmailKey]);
+    //   data.originalRecipient = origEmail;
+    // } else {
+    //   var origEmailDomain;
+    //   var origEmailUser;
+    //   var pos = origEmailKey.lastIndexOf("@");
+    //   if (pos === -1) {
+    //     origEmailUser = origEmailKey;
+    //   } else {
+    //     origEmailDomain = origEmailKey.slice(pos);
+    //     origEmailUser = origEmailKey.slice(0, pos);
+    //   }
+    //   if (origEmailDomain &&
+    //       data.config.forwardMapping.hasOwnProperty(origEmailDomain)) {
+    //     newRecipients = newRecipients.concat(
+    //       data.config.forwardMapping[origEmailDomain]);
+    //     data.originalRecipient = origEmail;
+    //   } else if (origEmailUser &&
+    //     data.config.forwardMapping.hasOwnProperty(origEmailUser)) {
+    //     newRecipients = newRecipients.concat(
+    //       data.config.forwardMapping[origEmailUser]);
+    //     data.originalRecipient = origEmail;
+    //   } else if (data.config.forwardMapping.hasOwnProperty("@")) {
+    //     newRecipients = newRecipients.concat(
+    //       data.config.forwardMapping["@"]);
+    //     data.originalRecipient = origEmail;
+    //   }
+    // }
   });
 
   if (!newRecipients.length) {
@@ -397,7 +443,7 @@ exports.sendMessage = function(data) {
 */
 // exports.getForwardingAddress = function(data) {
 
-//   dacoxta.log({
+//   data.log({
 //     level: "info",
 //     message: "Getting the recipientID from the mail:" +  data.originalRecipients
 //   });
@@ -438,12 +484,12 @@ exports.handler = function(event, context, callback, overrides) {
   var steps = overrides && overrides.steps ? overrides.steps :
     [
       exports.parseEvent,
+      // exports.getForwardingAddress,
       exports.transformRecipients,
       exports.fetchMessage,
       exports.processMessage,
       exports.sendMessage,
-      exports.deleteMail,
-      // exports.getForwardingAddress
+      exports.deleteMail
     ];
   var data = {
     event: event,
