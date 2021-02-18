@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang=”en”>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>MailMask</title>
+        <link rel="stylesheet" href="style.css">                
+    </head>
+    <body>
+        <header>
+            <a href="#home"><img class="img-logo" src="img/logo_onWhite.png" alt="illustration logo"></a>
+            <a href="#home"><img class="img-text-logo" src="img/logoText_simpleBlack.png" alt="mailmask logo"></a>
+        </header>
+        
+        <main>
+            <section id="home"> <!-- HOME -->
+                <div class="content">
+                    <div class="innerBox">                        
+                        <div class="innerBox-text">                    
+                            
+                            <h1>Your email deserves <u>privacy</u>.</h1>
+                           
+                                                                      
+                            <div class="catchphrase">
+                                <p>Mask your email by creating a unique and random address so your email can stay private.</p>
+                            </div>    
+                                                
+                        </div>
+                        <form>            
+                            <input id="mail" placeholder="Enter your email here..." type="email" pattern="[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{1,63}$" required></input>
+                            <button id="submitButton" class="button-cta">Generate Mail</button>
+                        </form>  
+                        <div class="alert alert-success" id="success" style="display:none"> Success Message</div>  
+                    </div>                                            
+                </div>
+                
+                <button class="howTo-button" onclick="howtoScroll()" <p>How It Works <br> &#8964;</p></button>
+
+            </section>
+
+            <section id="howto"> <!-- HOW TO -->
+                <div class="howto-header">
+                    <div class="howto-title"><h1> How It Works</h1></div>
+                    <img class="illustration" src="img/illustration.png" alt="mail mask racoon">
+                </div>
+                <div class="howto-container", id="howto-container">
+                    <div class="how-to-text" id="how-to-text">
+                        <p>MailMask creates a unique and random email address for you. This way your real address is kept secret for the website or the app developer. This email address is uniquely fit to reroute incoming mails from the webpage to your address.</p>
+                        <p>Your MailMask address consists out of a unique id and the domain ending "@mailmask.me".</p>
+                        <p>Any messages sent to this address by the app or website developer are automatically forwarded to your personal email address.</p>
+                        <p>MailMask <b>never</b> processes the content of your incoming mails. The data is stored only for forwarding and is deleted after the mail has been sent to your private email address.</p>
+                    </div>  
+                </div>
+
+                <div class="imprint">
+                    <h1>Imprint</h1>
+                </div>
+            </section>
+        </main>
+
+        <script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-1.9.0.js"></script>
+                
+                <script type="text/javascript">
+                    var API_URL = "https://423ghva5nf.execute-api.eu-west-1.amazonaws.com/prod/mails";
+                    
+                    $("#submitButton").on("click", function() {
+                        $.ajax({
+                            type: "POST",
+                            url: API_URL,
+                            data: JSON.stringify({"forwardingAddress": $("#mail").val()}),
+                            contentType: "application/JSON",
+
+                            success: function(data) {
+                                $("#success").show(),
+                                setTimeout(function() { $("#success").hide(); }, 5000)
+                                $("#mail").val("")
+                            }
+                        }); 
+
+                        return false;
+                    });
+
+                    function howtoScroll() {
+                        document.getElementById( 'howto' ).scrollIntoView();   
+                    };
+                    
+                </script>
+    </body>
+</html>
