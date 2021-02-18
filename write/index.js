@@ -4,6 +4,7 @@ console.log("starting the lambda function");
 
 const AWS = require('aws-sdk');
 const docClient = new AWS.DynamoDB.DocumentClient({region: "eu-west-1"});
+const nanoid = require('nano-id');
 
 //   routingAddress is the randomly generated address from mailmask
 //   clientAddress is the address that should recieve the mail
@@ -19,10 +20,14 @@ exports.handler = function(event, context, callback) {
         }
     });
 
+    var id = nanoid(8)
+
+    console.log(id)
+
     var params = {
         Item: {
-            mailID: context.awsRequestId,
-            routingAddress: context.awsRequestId + "@mailmask.me",
+            mailID: id,
+            routingAddress: id + "@mailmask.me",
             forwardingAddress: event.forwardingAddress,
             isBoundToNewsletter: false,
             boundedMail: null

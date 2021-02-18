@@ -42,7 +42,7 @@ section {
     
 section#home { /* Show #home by default */
     display: block;
-    height: 600px; 
+    height: 100vh; 
     padding: 10px;
 }
 
@@ -65,26 +65,27 @@ a {
 .img-logo {
     width: 70px;
     display: block;
-    float: left;
     margin-right: auto;
-    position: absolute;
     margin-left: 20px;
+    position: absolute;
 }
 
 .img-text-logo {    
     width: 180px;
     display: block; 
-    float: center;
-    margin-right: auto;
     margin-left: auto;
+    margin-right: auto;
+    float: center;
     padding-top: 15px;
 }
 
 .content {
-    max-width: 1080px;
-    max-height: 480px;
+    max-width: 600px;
+    max-height: 60vh;
     margin: 3em;
     margin-top: 5em;
+    margin-left: auto;
+    margin-right: auto;
     background-color: white;
     border-radius: 20px;
     box-shadow: 2px 1px 45px 0px rgba(0,0,0,0.29);
@@ -164,18 +165,26 @@ input[type="email"]
     opacity: 0.5;
     letter-spacing: 1.5px;
     width: 100%;
-    margin-top: 45%;
+    margin-top: 30vh;
 }
 
 section#howto {
     background-color: var(--highlight);
-    height: 1080px;
-    margin-top: 65%;
+    height: 100vh;
     margin-left: -10px;
-    padding-top: 80px
+    padding-top: 80px;
+    padding-left: 50px;
+    padding-right: 50px;
 }
 
 .howto-header{
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 800px;
+    float: center;
+}
+
+.howto-title{
     padding-left: 3em;
     filter: invert();
     float: left;
@@ -190,10 +199,10 @@ section#howto {
 
 .howto-container {
     clear: both;
-    max-width: 1080px;
-    max-height: 650px;
-    margin-left: 3em;
-    margin-right: 3em;
+    max-width: 800px;
+    max-height: 60vh;
+    margin-left: auto;
+    margin-right: auto;
     background-color: white;
     border-radius: 20px;
     box-shadow: 2px 1px 45px 0px rgba(0,0,0,0.29);
@@ -202,6 +211,11 @@ section#howto {
 .how-to-text {
     padding: 35px;
     margin: auto;
+}
+
+.imprint {
+    margin-top: 20vh;
+    filter: invert();
 }
 
 
