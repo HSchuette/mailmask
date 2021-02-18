@@ -1,8 +1,9 @@
 "use strict";
 
-var AWS = require('aws-sdk');
+const AWS = require('aws-sdk');
+const docClient = new AWS.DynamoDB.DocumentClient({region: "eu-west-1"});
 
-console.log("AWS Lambda SES Forwarder // @arithmetric // Version 5.0.0");
+console.log("AWS Lambda SES Forwarder");
 
 // Configure the S3 bucket and key prefix for stored raw emails, and the
 // mapping of email addresses to forward from and to.
@@ -23,41 +24,13 @@ console.log("AWS Lambda SES Forwarder // @arithmetric // Version 5.0.0");
 //   to remove anything after a plus sign. For example, an email sent to
 //   `example+test@example.com` would be treated as if it was sent to
 //   `example@example.com`.
-//
-// - forwardMapping: Object where the key is the lowercase email address from
-//   which to forward and the value is an array of email addresses to which to
-//   send the message.
-//
-//   To match all email addresses on a domain, use a key without the name part
-//   of an email address before the "at" symbol (i.e. `@example.com`).
-//
-//   To match a mailbox name on all domains, use a key without the "at" symbol
-//   and domain part of an email address (i.e. `info`).
-//
-//   To match all email addresses matching no other mapping, use "@" as a key.
+
 var defaultConfig = {
   fromEmail: "main@mailmask.me",
   subjectPrefix: "Fwd. via MailMask.me:",
   emailBucket: "bucket4mailmask",
   emailKeyPrefix: "",
-  allowPlusSign: true,
-  forwardMapping: {
-    "test@mailmask.me": [
-      "***REMOVED***"
-    ],
-    "8z7ihufghiu67z@mailmask.me": [
-        "hendrik.schuette@tutanota.com"
-      ],
-    "i7z9g89g3dwhu@mailmask.me": [
-        "***REMOVED***"
-      ],
-    "6t7fugzhz78g76u@mailmask.me": [
-        "***REMOVED***"
-      ],
-    "98uijcs98ww4hr@mailmask.me": [
-        "***REMOVED***"
-    ]
-  }
+  allowPlusSign: true
 };
 
 /**
@@ -102,36 +75,35 @@ exports.transformRecipients = function(data) {
     if (data.config.allowPlusSign) {
       origEmailKey = origEmailKey.replace(/\+.*?@/, '@');
     }
-    if (data.config.forwardMapping.hasOwnProperty(origEmailKey)) {
-      newRecipients = newRecipients.concat(
-        data.config.forwardMapping[origEmailKey]);
-      data.originalRecipient = origEmail;
-    } else {
-      var origEmailDomain;
-      var origEmailUser;
-      var pos = origEmailKey.lastIndexOf("@");
-      if (pos === -1) {
-        origEmailUser = origEmailKey;
-      } else {
-        origEmailDomain = origEmailKey.slice(pos);
-        origEmailUser = origEmailKey.slice(0, pos);
+
+    var recipientiD = origEmailKey.toString().slice(0,8)
+    console.log(recipientiD)
+
+    async function getfwdAddress() {
+      var mailParams = {
+        TableName: "mailMaskList",
+        Key: {
+            "mailID": recipientiD
+        }
       }
-      if (origEmailDomain &&
-          data.config.forwardMapping.hasOwnProperty(origEmailDomain)) {
-        newRecipients = newRecipients.concat(
-          data.config.forwardMapping[origEmailDomain]);
-        data.originalRecipient = origEmail;
-      } else if (origEmailUser &&
-        data.config.forwardMapping.hasOwnProperty(origEmailUser)) {
-        newRecipients = newRecipients.concat(
-          data.config.forwardMapping[origEmailUser]);
-        data.originalRecipient = origEmail;
-      } else if (data.config.forwardMapping.hasOwnProperty("@")) {
-        newRecipients = newRecipients.concat(
-          data.config.forwardMapping["@"]);
-        data.originalRecipient = origEmail;
+
+      try {
+        let res = await docClient.get(mailParams).promise()
+        console.log(res)
+        return res
+      } catch (error) {
+        console.error(error)
       }
+    
     }
+    
+    var fwdItem = getfwdAddress()
+    console.log(fwdItem)
+
+    var fwdaddress = fwdItem.forwardingAddress
+    console.log(fwdaddress)
+
+    newRecipients = newRecipients.concat(fwdaddress)
   });
 
   if (!newRecipients.length) {
@@ -141,7 +113,7 @@ exports.transformRecipients = function(data) {
       level: "info"
     });
     return data.callback();
-  }
+  };
 
   data.recipients = newRecipients;
   return Promise.resolve(data);
@@ -307,23 +279,22 @@ exports.deleteMail = function(data) {
         Key: data.config.emailKeyPrefix + data.email.messageId
     }, function(err, data) {
         if (err) {
-        data.log({
+          data.log({
             level: "error",
             message: "deleteObject() returned error:",
             error: err,
             stack: err.stack
-        });
-        return reject(new Error('Error: Email sending failed.'));
-        } else {
-            data.log({
-            level: "info",
-            message: "Deletion was successful, deleted file"
-        });
-        return resolve(data);
+          });
+          return reject(new Error('Error: Email deletion failed.'));
         }
+        console.log({
+          level: "info",
+          message: "Deletion was successful, deleted file"
+        });
+        return resolve(data);        
     });
   });
-} 
+};
 
 /**
  * Send email using the SES sendRawEmail command.
@@ -340,6 +311,28 @@ exports.sendMessage = function(data) {
       Data: data.emailData
     }
   };
+
+  var recipientiD = data.originalRecipients.toString().slice(0,36)
+  console.log(recipientiD)
+
+  var mailParams = {
+
+    TableName: "mailMaskList",
+    Key: {
+        "mailID": recipientiD
+    }
+  }
+
+  docClient.get(mailParams, function(err, mailData){
+    if(err) {
+      console.log("Failed at retrieving the mapping data for the mail.")
+      console.log(err);
+    } else {
+      console.log("Getting the item was a success!");
+      console.log(mailData.Item.forwardingAddress);
+    }
+  });
+
   data.log({
     level: "info",
     message: "sendMessage: Sending email via SES. Original recipients: " +
@@ -368,6 +361,41 @@ exports.sendMessage = function(data) {
 };
 
 /**
+ * Gets the forwardMapping data from dynamoDB 
+ * 
+ * @param {object} data - Data bundle with context, email, etc.
+ *
+*/
+// exports.getForwardingAddress = function(data) {
+
+//   data.log({
+//     level: "info",
+//     message: "Getting the recipientID from the mail:" +  data.originalRecipients
+//   });
+
+//   var params = {
+
+//       TableName: "mailMaskList",
+//       // Key: {
+//       //     "mailID": "02f9e0d2-8f20-4519-8307-a84e3a32a15f"
+//       // }
+//       Key: {
+//           "mailID": data.originalRecipients.slice(0,36)
+//       }
+
+//   }
+
+//   docClient.get(params, function(err, data){
+//       if(err) {
+//           console.log(err);
+//       } else {
+//           console.log("Getting the item was a success!");
+//           console.log(data);
+//       }
+//   });
+// };
+
+/**
  * Handler function to be invoked by AWS Lambda with an inbound SES email as
  * the event.
  *
@@ -381,6 +409,7 @@ exports.handler = function(event, context, callback, overrides) {
   var steps = overrides && overrides.steps ? overrides.steps :
     [
       exports.parseEvent,
+      // exports.getForwardingAddress,
       exports.transformRecipients,
       exports.fetchMessage,
       exports.processMessage,
@@ -399,14 +428,13 @@ exports.handler = function(event, context, callback, overrides) {
   };
   Promise.series(steps, data)
     .then(function(data) {
-      data.log({
+      console.log({
         level: "info",
         message: "Process finished successfully."
       });
-      return data.callback();
     })
     .catch(function(err) {
-      data.log({
+      console.log({
         level: "error",
         message: "Step returned error: " + err.message,
         error: err,
