@@ -3,7 +3,7 @@
 const AWS = require('aws-sdk');
 const docClient = new AWS.DynamoDB.DocumentClient({region: "eu-west-1"});
 
-console.log("AWS Lambda SES Forwarder // @arithmetric // Version 5.0.0");
+console.log("AWS Lambda SES Forwarder");
 
 // Configure the S3 bucket and key prefix for stored raw emails, and the
 // mapping of email addresses to forward from and to.
@@ -24,41 +24,13 @@ console.log("AWS Lambda SES Forwarder // @arithmetric // Version 5.0.0");
 //   to remove anything after a plus sign. For example, an email sent to
 //   `example+test@example.com` would be treated as if it was sent to
 //   `example@example.com`.
-//
-// - forwardMapping: Object where the key is the lowercase email address from
-//   which to forward and the value is an array of email addresses to which to
-//   send the message.
-//
-//   To match all email addresses on a domain, use a key without the name part
-//   of an email address before the "at" symbol (i.e. `@example.com`).
-//
-//   To match a mailbox name on all domains, use a key without the "at" symbol
-//   and domain part of an email address (i.e. `info`).
-//
-//   To match all email addresses matching no other mapping, use "@" as a key.
+
 var defaultConfig = {
   fromEmail: "main@mailmask.me",
   subjectPrefix: "Fwd. via MailMask.me:",
   emailBucket: "bucket4mailmask",
   emailKeyPrefix: "",
-  allowPlusSign: true,
-  forwardMapping: {
-    "test@mailmask.me": [
-      "hendrik.schuette@t-online.de"
-    ],
-    "2c461869-f9b8-44e1-8b1a-39266e71b075@mailmask.me": [
-        "hendrik.schuette@tutanota.com"
-      ],
-    "i7z9g89g3dwhu@mailmask.me": [
-        "hendrik.schuette@icloud.com"
-      ],
-    "6t7fugzhz78g76u@mailmask.me": [
-        "alexschuette@t-online.de"
-      ],
-    "98uijcs98ww4hr@mailmask.me": [
-        "fabian.emil@t-online.de"
-    ]
-  }
+  allowPlusSign: true
 };
 
 /**
@@ -104,26 +76,8 @@ exports.transformRecipients = function(data) {
       origEmailKey = origEmailKey.replace(/\+.*?@/, '@');
     }
 
-    var recipientiD = origEmailKey.toString().slice(0,36)
+    var recipientiD = origEmailKey.toString().slice(0,8)
     console.log(recipientiD)
-  
-    // try {
-    //   let mailData = docClient.get(mailParams).promise();
-    //   let fwdaddress = mailData.Item.forwardingAddress;
-    //   console.log("SUCCESSFULL GET", fwdaddress);
-    // } catch(err) {
-    //   console.log(err);
-    // }
-    // docClient.get(mailParams, function(err, mailData){
-    //   if(err) {
-    //     console.log("Failed at retrieving the mapping data for the mail.")
-    //     console.log(err);
-    //   } else {
-    //     console.log("Getting the item was a success!");
-    //     console.log(mailData.Item.forwardingAddress);
-    //     fwdaddress = mailData.Item.forwardingAddresss
-    //   }
-    // });
 
     async function getfwdAddress() {
       var mailParams = {
@@ -136,6 +90,7 @@ exports.transformRecipients = function(data) {
       try {
         let res = await docClient.get(mailParams).promise()
         console.log(res)
+        return res
       } catch (error) {
         console.error(error)
       }
@@ -149,36 +104,6 @@ exports.transformRecipients = function(data) {
     console.log(fwdaddress)
 
     newRecipients = newRecipients.concat(fwdaddress)
-    // if (data.config.forwardMapping.hasOwnProperty(origEmailKey)) {
-    //   newRecipients = newRecipients.concat(
-    //     data.config.forwardMapping[origEmailKey]);
-    //   data.originalRecipient = origEmail;
-    // } else {
-    //   var origEmailDomain;
-    //   var origEmailUser;
-    //   var pos = origEmailKey.lastIndexOf("@");
-    //   if (pos === -1) {
-    //     origEmailUser = origEmailKey;
-    //   } else {
-    //     origEmailDomain = origEmailKey.slice(pos);
-    //     origEmailUser = origEmailKey.slice(0, pos);
-    //   }
-    //   if (origEmailDomain &&
-    //       data.config.forwardMapping.hasOwnProperty(origEmailDomain)) {
-    //     newRecipients = newRecipients.concat(
-    //       data.config.forwardMapping[origEmailDomain]);
-    //     data.originalRecipient = origEmail;
-    //   } else if (origEmailUser &&
-    //     data.config.forwardMapping.hasOwnProperty(origEmailUser)) {
-    //     newRecipients = newRecipients.concat(
-    //       data.config.forwardMapping[origEmailUser]);
-    //     data.originalRecipient = origEmail;
-    //   } else if (data.config.forwardMapping.hasOwnProperty("@")) {
-    //     newRecipients = newRecipients.concat(
-    //       data.config.forwardMapping["@"]);
-    //     data.originalRecipient = origEmail;
-    //   }
-    // }
   });
 
   if (!newRecipients.length) {
