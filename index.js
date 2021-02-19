@@ -83,7 +83,7 @@ exports.transformRecipients = function(data) {
       var mailParams = {
         TableName: "mailMaskList",
         Key: {
-            "mailID": recipientiD
+            "mailID": "I4HbFKFT"// recipientiD
         }
       }
 
@@ -96,14 +96,21 @@ exports.transformRecipients = function(data) {
       }
     
     }
-    
-    var fwdItem = getfwdAddress()
-    console.log(fwdItem)
 
+    var fwdItem = ""
+    console.log("Getting the fwd address")
+
+    async function wait4fwd() {
+      fwdItem = await getfwdAddress()
+    }
+
+    wait4fwd()
+    
     var fwdaddress = fwdItem.forwardingAddress
     console.log(fwdaddress)
 
     newRecipients = newRecipients.concat(fwdaddress)
+  
   });
 
   if (!newRecipients.length) {

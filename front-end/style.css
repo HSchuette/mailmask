@@ -23,7 +23,7 @@ html, main {
 }
 
 body {
-    margin-top: 2em;
+    margin-top: 5vh;
     line-height: 1.6;
     font-size: 18px;
     color: var(--textcolor);
@@ -42,8 +42,8 @@ section {
     
 section#home { /* Show #home by default */
     display: block;
-    height: 100vh; 
-    padding: 10px;
+    min-height: 100vh; 
+    padding-right: 20px;
 }
 
 h1 {
@@ -80,12 +80,12 @@ a {
 }
 
 .content {
+    min-width: 80px;
     max-width: 600px;
-    max-height: 60vh;
-    margin: 3em;
-    margin-top: 5em;
-    margin-left: auto;
+    max-height: 100vh;
     margin-right: auto;
+    margin-left: auto;
+    margin-top: 10vh;
     background-color: white;
     border-radius: 20px;
     box-shadow: 2px 1px 45px 0px rgba(0,0,0,0.29);
@@ -165,16 +165,16 @@ input[type="email"]
     opacity: 0.5;
     letter-spacing: 1.5px;
     width: 100%;
-    margin-top: 30vh;
+    margin-top: 35vh;
 }
 
 section#howto {
     background-color: var(--highlight);
-    height: 100vh;
+    min-height: 120vh;
     margin-left: -10px;
-    padding-top: 80px;
-    padding-left: 50px;
-    padding-right: 50px;
+    padding-top: 10vh;
+    padding-left: 2vh;
+    padding-right: 2vh;
 }
 
 .howto-header{
@@ -200,7 +200,7 @@ section#howto {
 .howto-container {
     clear: both;
     max-width: 800px;
-    max-height: 60vh;
+    min-height: 40vh;
     margin-left: auto;
     margin-right: auto;
     background-color: white;
@@ -213,25 +213,46 @@ section#howto {
     margin: auto;
 }
 
-.imprint {
-    margin-top: 20vh;
+.madeby {
+    margin-top: 10vh;
+    text-align: center;
     filter: invert();
 }
 
-
-
-@media only screen and (min-width: 1080px) {    
-    .body {        
-        width: 900px;  
-        display: block;             
-    }
-
-    .container {
-        width: 100%; 
-        justify-content: center;       
-    }
-
-    .form {        
-        display: flex;          
-    }
+.imprint-title {
+    margin-top: 10vh;
+    filter: invert();
+    font-size: 1.8em; 
+    font-weight: bold;
+    letter-spacing: 2.8px;
+    text-align: center;
+    padding-bottom: 10vh;
 }
+
+.imprint-title:hover {
+    padding-bottom: 0vh;
+}
+
+.imprint-toggle:hover ~ .imprint-text {
+    display: block;
+  }
+
+.imprint-text {
+    font-size: 12px;
+    filter: invert();
+    display: none;
+    text-align: center;
+    padding-bottom: 5vh;
+}
+
+
+/* ------- Smaller screens ------- */
+
+@media only screen and (max-width: 570px) {
+    body { font-size: 16px; }
+
+    .form { font-size:  12px;}
+    .how-to-text { font-size:  16px; }
+    .img-logo { width: 50px; }
+    .img-text-logo { width: 130px }
+  }
