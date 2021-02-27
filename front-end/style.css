@@ -4,19 +4,21 @@
     --textcolor: rgb(0, 0, 0);
     --bgcolor: #F6F6F6;
     --highlight: #0095FF;
+    --bg2color: #f6f6f6;
   
 }
-/* 
+
 @media (prefers-color-scheme: dark) {
     * {
-        --textcolor: #f8f8f8;
+        --textcolor: #bbbbbb;
         --bgcolor: #141414;
-        --highlight: #157EFA;
+        --bg2color: #252525;
+        --highlight: #154479;
     }
     .img-text-logo {    
         filter: invert(100%)
     }
-} */
+}
 
 html, main {
     margin-right: -10px
@@ -47,7 +49,6 @@ section#home { /* Show #home by default */
 }
 
 h1 {
-    color: var(--textcolor);
     font-size: 1.8em; 
     font-weight: bold;
     letter-spacing: 2.8px;
@@ -86,7 +87,7 @@ a {
     margin-right: auto;
     margin-left: auto;
     margin-top: 10vh;
-    background-color: white;
+    background-color: var(--bg2color);
     border-radius: 20px;
     box-shadow: 2px 1px 45px 0px rgba(0,0,0,0.29);
 }
@@ -115,9 +116,11 @@ input[type="email"]
     border-radius: 10px;
     border-color: var(--highlight);
     border-width: 2;
+    border-style: solid;
     transition: 1.5ms;
     background: url(img/lockIcon.png) no-repeat scroll 12px 8px;
     background-size: 15px;
+    background-color: var(--bgcolor);
     padding-left: 40px;
     padding-right: 60px
 }
@@ -186,7 +189,7 @@ section#howto {
 
 .howto-title{
     padding-left: 3em;
-    filter: invert();
+    color: var(--bgcolor);
     float: left;
 }
 
@@ -203,7 +206,7 @@ section#howto {
     min-height: 40vh;
     margin-left: auto;
     margin-right: auto;
-    background-color: white;
+    background-color: var(--bg2color);
     border-radius: 20px;
     box-shadow: 2px 1px 45px 0px rgba(0,0,0,0.29);
 }
@@ -216,12 +219,12 @@ section#howto {
 .madeby {
     margin-top: 10vh;
     text-align: center;
-    filter: invert();
+    color: var(--bgcolor);
 }
 
 .imprint-title {
     margin-top: 10vh;
-    filter: invert();
+    color: var(--bgcolor);
     font-size: 1.8em; 
     font-weight: bold;
     letter-spacing: 2.8px;
@@ -239,7 +242,7 @@ section#howto {
 
 .imprint-text {
     font-size: 12px;
-    filter: invert();
+    color: var(--bgcolor);
     display: none;
     text-align: center;
     padding-bottom: 5vh;
