@@ -18,19 +18,12 @@ console.log("AWS Lambda SES Forwarder");
 //
 // - emailKeyPrefix: S3 key name prefix where SES stores email. Include the
 //   trailing slash.
-//
-// - allowPlusSign: Enables support for plus sign suffixes on email addresses.
-//   If set to `true`, the username/mailbox part of an email address is parsed
-//   to remove anything after a plus sign. For example, an email sent to
-//   `example+test@example.com` would be treated as if it was sent to
-//   `example@example.com`.
 
 var defaultConfig = {
   fromEmail: "main@mailmask.me",
-  subjectPrefix: "Fwd. via MailMask.me:",
+  subjectPrefix: "Fwd. via MailMask.me: ",
   emailBucket: "bucket4mailmask",
   emailKeyPrefix: "",
-  allowPlusSign: true
 };
 
 /**
@@ -74,11 +67,8 @@ exports.getFwdAddress = async function(data) {
 
   var origEmailKey = data.originalRecipients[0]
   console.log(origEmailKey)
-  if (data.config.allowPlusSign) {
-    origEmailKey = origEmailKey.replace(/\+.*?@/, '@');
-  }
 
-  var recipientiD = origEmailKey.toString().slice(0,8)
+  var recipientiD = origEmailKey.toString().slice(0,8).toLowerCase()
 
   var mailParams = {
     TableName: "mailMaskList",
@@ -86,17 +76,18 @@ exports.getFwdAddress = async function(data) {
         "mailID": recipientiD
     }
   };
- 
-  data.recipients = await docClient.get(mailParams, function(err, data){
-      if(err) {
-          console.log(err);
-      } else {
-          console.log("Getting the item was a success!");
-          console.log(data)
-          return data
-      }
-  });
-  
+
+  console.log("recipientID is " + recipientiD)
+
+  await docClient.get(mailParams, function(err,response){
+    if (err) {
+      console.error("Unable to read item. Error JSON:", JSON.stringify(err, null, 2));
+    } else {
+      data.recipients = response.Item.forwardingAddress
+    }
+  }).promise()
+
+  console.log(data.recipients)
   return Promise.resolve(data)
 };
 
@@ -286,7 +277,7 @@ exports.deleteMail = function(data) {
  */
 exports.sendMessage = function(data) {
   var recipients = []
-  recipients = recipients.concat(data.recipients.forwardingAddress)
+  recipients = recipients.concat(data.recipients)
 
   var params = {
     Destinations: recipients,
@@ -295,6 +286,8 @@ exports.sendMessage = function(data) {
       Data: data.emailData
     }
   };
+
+  console.log(params)
 
   data.log({
     level: "info",
@@ -334,6 +327,8 @@ exports.sendMessage = function(data) {
  * configuration, SES object, and S3 object.
  */
 exports.handler = function(event, context, callback, overrides) {
+  console.log(event)
+
   var steps = overrides && overrides.steps ? overrides.steps :
     [
       exports.parseEvent,
