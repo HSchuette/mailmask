@@ -20,10 +20,6 @@
     }
 }
 
-html, main {
-    margin-right: -10px
-}
-
 body {
     margin-top: 5vh;
     line-height: 1.6;
@@ -45,7 +41,6 @@ section {
 section#home { /* Show #home by default */
     display: block;
     min-height: 100vh; 
-    padding-right: 20px;
 }
 
 h1 {
@@ -145,6 +140,7 @@ input[type="email"]
     letter-spacing: 1px;
     border-radius: 10px;
     border-width: 0;
+    font-family: 'Avenir Next', sans-serif;
 }
 
 .button-cta:hover {
@@ -169,12 +165,12 @@ input[type="email"]
     letter-spacing: 1.5px;
     width: 100%;
     margin-top: 35vh;
+    color: var(--textcolor);
 }
 
 section#howto {
     background-color: var(--highlight);
     min-height: 120vh;
-    margin-left: -10px;
     padding-top: 10vh;
     padding-left: 2vh;
     padding-right: 2vh;
