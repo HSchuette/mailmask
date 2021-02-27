@@ -49,7 +49,6 @@ section#home { /* Show #home by default */
 }
 
 h1 {
-    color: var(--textcolor);
     font-size: 1.8em; 
     font-weight: bold;
     letter-spacing: 2.8px;
