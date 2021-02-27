@@ -63,31 +63,48 @@ exports.parseEvent = function(data) {
 exports.getFwdAddress = async function(data) {
   data.originalRecipients = data.recipients;
 
-  data.log(data.originalRecipients) // <- debug
+  data.log(data.originalRecipients)
 
-  var origEmailKey = data.originalRecipients[0]
-  console.log(origEmailKey)
+  var newRecipients = [];
 
-  var recipientiD = origEmailKey.toString().slice(0,8).toLowerCase()
+  for (var i = 0, len = data.originalRecipients.length; i < len; i++) {
+    var origEmailKey = data.originalRecipients[i]
+    var recipientiD = origEmailKey.toString().slice(0,8).toLowerCase()
 
-  var mailParams = {
-    TableName: "mailMaskList",
-    Key: {
-        "mailID": recipientiD
-    }
+    console.log("recipientID is " + recipientiD)
+    
+    var mailParams = {
+      TableName: "mailMaskList",
+      Key: {
+          "mailID": recipientiD
+      }
+    };
+
+    await docClient.get(mailParams, function(err,response){
+      if (err) {
+        console.error("Unable to get item. Error JSON:", JSON.stringify(err, null, 2));
+      } else {
+        try {
+          newRecipients = newRecipients.concat(response.Item.forwardingAddress)
+          console.log("Forwarding Address added: ", newRecipients)
+        } catch {
+          console.error("Unable to find recipientID item. Error JSON:", JSON.stringify(err, null, 2));   
+
+        }        
+      }
+    })
+    .promise()
   };
 
-  console.log("recipientID is " + recipientiD)
+  // if (!newRecipients.length) {
+  //   data.log({message: "Finishing process. No recipients found for " +
+  //     "original destinations: " + data.originalRecipients.join(", "),
+  //     level: "info"});
+  //   data.context.succeed();
+  // }
 
-  await docClient.get(mailParams, function(err,response){
-    if (err) {
-      console.error("Unable to read item. Error JSON:", JSON.stringify(err, null, 2));
-    } else {
-      data.recipients = response.Item.forwardingAddress
-    }
-  }).promise()
+  data.recipients = newRecipients;
 
-  console.log(data.recipients)
   return Promise.resolve(data)
 };
 
@@ -276,24 +293,21 @@ exports.deleteMail = function(data) {
  * @return {object} - Promise resolved with data.
  */
 exports.sendMessage = function(data) {
-  var recipients = []
-  recipients = recipients.concat(data.recipients)
-
-  var params = {
-    Destinations: recipients,
-    Source: data.originalRecipient,
-    RawMessage: {
-      Data: data.emailData
-    }
-  };
-
-  console.log(params)
+  if (data.recipients.length) {
+    var params = {
+      Destinations: data.recipients,
+      Source: data.originalRecipient,
+      RawMessage: {
+        Data: data.emailData
+      }
+    };
+    console.log(params)
 
   data.log({
     level: "info",
     message: "sendMessage: Sending email via SES. Original recipients: " +
       data.originalRecipients.join(", ") + ". Transformed recipients: " +
-      recipients + "."
+      data.recipients + "."
   });
   return new Promise(function(resolve, reject) {
     data.ses.sendRawEmail(params, function(err, result) {
@@ -314,6 +328,7 @@ exports.sendMessage = function(data) {
       resolve(data);
     });
   });
+  }
 };
 
 /**
