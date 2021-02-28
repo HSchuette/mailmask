@@ -20,6 +20,11 @@
     }
 }
 
+html, body {
+    margin: 0;
+    padding: 0;
+}
+
 body {
     margin-top: 5vh;
     line-height: 1.6;
@@ -41,6 +46,8 @@ section {
 section#home { /* Show #home by default */
     display: block;
     min-height: 100vh; 
+    padding-left: 2vh;
+    padding-right: 2vh;
 }
 
 h1 {
@@ -136,7 +143,7 @@ input[type="email"]
     height: 50px;
     text-align: center;
     font-size: 14pt;
-    font-weight: 300;
+    font-weight: 400;
     letter-spacing: 1px;
     border-radius: 10px;
     border-width: 0;
