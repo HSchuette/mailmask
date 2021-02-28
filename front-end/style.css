@@ -10,10 +10,10 @@
 
 @media (prefers-color-scheme: dark) {
     * {
-        --textcolor: #bbbbbb;
-        --bgcolor: #141414;
-        --bg2color: #252525;
-        --highlight: #154479;
+        --textcolor: #e7e7e7;
+        --bgcolor: #222222;
+        --bg2color: #161616;
+        --highlight: #21538d;
     }
     .img-text-logo {    
         filter: invert(100%)
