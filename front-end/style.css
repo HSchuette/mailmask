@@ -41,6 +41,13 @@ section {
     width: 100%;
     background: var(--bgcolor);
     scroll-behavior: smooth;
+    display: none;
+    position: absolute;
+    top: 0;
+}
+
+section:target { /* Show section */
+    display: block;
 }
     
 section#home { /* Show #home by default */
@@ -163,7 +170,7 @@ input[type="email"]
     text-align: center;
 }
 
-.howTo-button{
+.howTo-button {
     border: none;
     background-color: inherit;
     font-size: 15pt;
@@ -175,9 +182,9 @@ input[type="email"]
     color: var(--textcolor);
 }
 
-section#howto {
+.howto {
     background-color: var(--highlight);
-    min-height: 120vh;
+    min-height: 100vh;
     padding-top: 10vh;
     padding-left: 2vh;
     padding-right: 2vh;
@@ -217,6 +224,21 @@ section#howto {
 .how-to-text {
     padding: 35px;
     margin: auto;
+}
+
+section#cancel {
+    min-height: 80vh;
+    padding-top: 10vh;
+    padding-left: 2vh;
+    padding-right: 2vh;
+}
+
+.imprint {
+    background-color: var(--highlight);
+    min-height: 20vh;
+    padding-top: 5vh;
+    padding-left: 2vh;
+    padding-right: 2vh;
 }
 
 .madeby {
