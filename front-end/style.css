@@ -33,6 +33,12 @@ body {
     background: var(--bgcolor);
     position: relative;
     font-family: 'Avenir Next', sans-serif;
+    height: 100%;
+}
+
+main {
+    position: relative;
+    min-height: 190vh;
 }
 
 /* ------- Sections ------- */
@@ -43,7 +49,7 @@ section {
     scroll-behavior: smooth;
     display: none;
     position: absolute;
-    top: 0;
+    height: 100%;
 }
 
 section:target { /* Show section */
@@ -52,9 +58,6 @@ section:target { /* Show section */
     
 section#home { /* Show #home by default */
     display: block;
-    min-height: 100vh; 
-    padding-left: 2vh;
-    padding-right: 2vh;
 }
 
 h1 {
@@ -72,6 +75,14 @@ a {
     text-decoration: none;
 }
 
+header {
+    position: relative;
+    width: 50vh;
+    z-index: 2;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
 .img-logo {
     width: 70px;
     display: block;
@@ -87,6 +98,11 @@ a {
     margin-right: auto;
     float: center;
     padding-top: 15px;
+}
+
+.container {
+    margin-left: 2vh;
+    margin-right: 2vh;
 }
 
 .content {
@@ -184,10 +200,10 @@ input[type="email"]
 
 .howto {
     background-color: var(--highlight);
-    min-height: 100vh;
     padding-top: 10vh;
     padding-left: 2vh;
     padding-right: 2vh;
+    min-height: 100vh;
 }
 
 .howto-header{
@@ -233,16 +249,33 @@ section#cancel {
     padding-right: 2vh;
 }
 
+.content-box{
+    clear: both;
+    max-width: 800px;
+    min-height: 40vh;
+    margin-left: auto;
+    margin-right: auto;
+    background-color: var(--bg2color);
+    border-radius: 20px;
+    box-shadow: 2px 1px 45px 0px rgba(0,0,0,0.29);
+    padding-left: 35px;
+    padding-right: 35px;
+    padding-top: 1px;
+    padding-bottom: 35px;
+}
+
 .imprint {
     background-color: var(--highlight);
     min-height: 20vh;
     padding-top: 5vh;
     padding-left: 2vh;
     padding-right: 2vh;
+    width: 100%;
+    position: relative;
 }
 
 .madeby {
-    margin-top: 10vh;
+    margin-top: 2vh;
     text-align: center;
     color: var(--bgcolor);
 }
