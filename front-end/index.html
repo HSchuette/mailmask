@@ -14,47 +14,69 @@
         
         <main>
             <section id="home"> <!-- HOME -->
-                <div class="content">
-                    <div class="innerBox">                        
-                        <div class="innerBox-text">                    
+                <div class="container">
+                    <div class="content">
+                        <div class="innerBox">                        
+                            <div class="innerBox-text">                    
+                                
+                                <h1>Your email deserves <u>privacy</u>.</h1>
                             
-                            <h1>Your email deserves <u>privacy</u>.</h1>
-                           
-                                                                      
-                            <div class="catchphrase">
-                                <p>Generate a unique and random forwarding address so you can still recieve every email, newsletter etc. without sharing your personal address.</p>
-                            </div>    
-                                                
+                                                                        
+                                <div class="catchphrase">
+                                    <p>Generate a unique and random forwarding address so you can still recieve every email, newsletter etc. without sharing your personal address.</p>
+                                </div>    
+                                                    
+                            </div>
+                            <form>            
+                                <input id="mail" placeholder="Enter your email here..." type="email" pattern="[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{1,63}$" required></input>
+                                <button id="submitButton" class="button-cta">Generate Mail</button>
+                            </form>  
+                            <div class="alert alert-success" id="success" style="display:none"> Success Message</div>  
+                        </div>                                            
+                    </div>
+                </div> 
+                
+                <button class="howTo-button" onclick="howtoScroll()" <p>How It Works <br> &#8964;</p></button>            
+
+                <div class="howto", id="howto"> <!-- HOW TO -->
+                    <div class="howto-header">
+                        <div class="howto-title"><h1>How It Works</h1></div>
+                        <img class="illustration" src="img/illustration.png" alt="mail mask racoon">
+                    </div>
+                    <div class="howto-container", id="howto-container">
+                        <div class="how-to-text" id="how-to-text">
+                            <p>MailMask creates a unique and random email address for you. This way your real address is kept secret for the website or the app developer. This email address is uniquely fit to reroute incoming mails from the webpage to your address.</p>
+                            <p>Your MailMask address consists out of a unique id and the domain ending "@mailmask.me".</p>
+                            <p>Any messages sent to this address by the app or website developer are automatically forwarded to your personal email address.</p>
+                            <p>MailMask <b>never</b> processes the content of your incoming mails. The data is stored only for forwarding and is deleted after the mail has been sent to your private email address.</p>
+                        </div>  
+                    </div>                
+                </div>
+            </section>
+            
+            <section id="cancel"> <!-- CANCEL -->
+                <div class="content-box">
+                <div class="cancel-header">
+                    <div class="cancel-title"><h1>Cancel Your MailMask</h1></div>
+                    <div class="cancel-container", id="cancel-container">
+                        <div class="cancel-text" id="cancel-text">
+                            <p>If you wish to cancel or deactivate your MailMask forwarding address, simply paste the email in the following form and confirm your submission.</p>
                         </div>
                         <form>            
-                            <input id="mail" placeholder="Enter your email here..." type="email" pattern="[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{1,63}$" required></input>
-                            <button id="submitButton" class="button-cta">Generate Mail</button>
+                            <input id="mail" placeholder="Your MailMask address here..." type="email" pattern="[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{1,63}$" required></input>
+                            <button id="cancelButton" class="button-cta">Cancel Mail</button>
                         </form>  
-                        <div class="alert alert-success" id="success" style="display:none"> Success Message</div>  
-                    </div>                                            
+                    </div>
                 </div>
-                
-                <button class="howTo-button" onclick="howtoScroll()" <p>How It Works <br> &#8964;</p></button>
+            </div>
+            </section>            
+        </main>
 
-            </section>
-
-            <section id="howto"> <!-- HOW TO -->
-                <div class="howto-header">
-                    <div class="howto-title"><h1>How It Works</h1></div>
-                    <img class="illustration" src="img/illustration.png" alt="mail mask racoon">
-                </div>
-                <div class="howto-container", id="howto-container">
-                    <div class="how-to-text" id="how-to-text">
-                        <p>MailMask creates a unique and random email address for you. This way your real address is kept secret for the website or the app developer. This email address is uniquely fit to reroute incoming mails from the webpage to your address.</p>
-                        <p>Your MailMask address consists out of a unique id and the domain ending "@mailmask.me".</p>
-                        <p>Any messages sent to this address by the app or website developer are automatically forwarded to your personal email address.</p>
-                        <p>MailMask <b>never</b> processes the content of your incoming mails. The data is stored only for forwarding and is deleted after the mail has been sent to your private email address.</p>
-                    </div>  
-                </div>
-
+        <footer>
+            <div class="imprint", id="imprint"> <!-- IMPRINT -->
                 <div class="madeby"
-                    <b>Made with ♥ by Hendrik Schuette</b>
-                </div>
+                        <b>Made with ♥ by Hendrik Schuette</b>
+                    </div>
 
                 <span class="imprint-toggle" tabindex="0">
                     <div class="imprint-title"
@@ -66,37 +88,35 @@
                     <b>Angaben gemäß § 5 TMG: Hendrik Schuette Turmstraße 54, 10551 Berlin
                         Kontakt: hendrik.schuette@tutanota.com</b>
                 </p>
-
-                
-            </section>
-        </main>
+            </div>
+        </footer>
 
         <script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-1.9.0.js"></script>
                 
-                <script type="text/javascript">
-                    var API_URL = "https://423ghva5nf.execute-api.eu-west-1.amazonaws.com/prod/mails";
-                    
-                    $("#submitButton").on("click", function() {
-                        $.ajax({
-                            type: "POST",
-                            url: API_URL,
-                            data: JSON.stringify({"forwardingAddress": $("#mail").val()}),
-                            contentType: "application/JSON",
+        <script type="text/javascript">
+            var API_URL = "https://423ghva5nf.execute-api.eu-west-1.amazonaws.com/prod/mails";
+            
+            $("#submitButton").on("click", function() {
+                $.ajax({
+                    type: "POST",
+                    url: API_URL,
+                    data: JSON.stringify({"forwardingAddress": $("#mail").val()}),
+                    contentType: "application/JSON",
 
-                            success: function(data) {
-                                $("#success").show(),
-                                setTimeout(function() { $("#success").hide(); }, 5000)
-                                $("#mail").val("")
-                            }
-                        }); 
+                    success: function(data) {
+                        $("#success").show(),
+                        setTimeout(function() { $("#success").hide(); }, 5000)
+                        $("#mail").val("")
+                    }
+                }); 
 
-                        return false;
-                    });
+                return false;
+            });
 
-                    function howtoScroll() {
-                        document.getElementById( 'howto' ).scrollIntoView();   
-                    };
-                    
-                </script>
+            function howtoScroll() {
+                document.getElementById( 'howto' ).scrollIntoView();   
+            };
+            
+        </script>
     </body>
 </html>
