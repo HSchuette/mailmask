@@ -69,27 +69,30 @@
                     </div>
                 </div>
             </div>
-            </section>            
+            </section> 
+                       
         </main>
 
-        <footer>
-            <div class="imprint", id="imprint"> <!-- IMPRINT -->
-                <div class="madeby"
-                        <b>Made with ♥ by Hendrik Schuette</b>
-                    </div>
+        <div class="imprint", id="imprint"> <!-- IMPRINT -->
+            <button onclick="document.getElementById('imprint-modal').style.display='block'" class="imprint-button">
+                i
+            </button>
 
-                <span class="imprint-toggle" tabindex="0">
-                    <div class="imprint-title"
-                        <h1>Imprint</h1>
-                    </div>                
-                </span>
-                
-                <p class="imprint-text" >
-                    <b>Angaben gemäß § 5 TMG: Hendrik Schuette Turmstraße 54, 10551 Berlin
-                        Kontakt: hendrik.schuette@tutanota.com</b>
-                </p>
+            <div id="imprint-modal" class="imprint-modal">
+                <div class="imprint-modal-content">
+                  <header class="imprint-container-header"> 
+                    <span onclick="document.getElementById('imprint-modal').style.display='none'">&times;</span>
+                    <h2>Imprint</h2>
+                  </header>
+                  <div class="imprint-container">
+                    <p>Made with ♥ by Hendrik Schuette</p>
+                    <p>Angaben gemäß § 5 TMG: Hendrik Schuette Turmstraße 54, 10551 Berlin
+                        Kontakt: hendrik.schuette@tutanota.com</p>
+                  </div>                      
+                </div>
+              </div>
             </div>
-        </footer>
+        </div>
 
         <script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-1.9.0.js"></script>
                 
