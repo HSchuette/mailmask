@@ -210,7 +210,8 @@ input[type="email"]
     padding-top: 10vh;
     padding-left: 2vh;
     padding-right: 2vh;
-    height: 100vh;
+    min-height: 100vh;
+    padding-bottom: 10vh;
 }
 
 .howto-header{
