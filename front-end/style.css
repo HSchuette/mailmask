@@ -5,6 +5,7 @@
     --bgcolor: #F6F6F6;
     --highlight: #0095FF;
     --bg2color: #f6f6f6;
+    --warning: #aa1515;
   
 }
 
@@ -14,6 +15,7 @@
         --bgcolor: #222222;
         --bg2color: #161616;
         --highlight: #21538d;
+        --warning: #aa1515;
     }
     .img-text-logo {    
         filter: invert(100%)
@@ -32,7 +34,7 @@ main {
 body {
     margin-top: 5vh;
     line-height: 1.6;
-    font-size: 18px;
+    font-size: 1.1rem;
     color: var(--textcolor);
     background: var(--bgcolor);
     position: relative;
@@ -144,7 +146,7 @@ input[type="email"]
     color: var(--textcolor);
     height: 40px;
     width: 100%;
-    font-size: 18px;
+    font-size: 1.1rem;
     border-radius: 10px;
     border-color: var(--highlight);
     border-width: 2;
@@ -161,8 +163,29 @@ input[type="email"]
     color: var(--textcolor);
     opacity: 0.4;
     letter-spacing: 0.4px;
-    font-size: 12pt;
+    font-size: 1 rem;
 }
+
+.privacy-and-terms-checkbox {
+    margin-top: 2vh;
+    padding-left: 1vh;
+    font-size: 0.8rem;
+}
+
+.privacy-and-terms-checkbox > label {
+    padding-left: 0.5vh;
+}
+
+.privacy-and-terms-checkbox > label a {
+    color: var(--highlight);
+}
+
+.privacy-and-terms-checkbox > label a:hover {
+    color: var(--textcolor);
+    text-decoration: underline;
+    cursor: pointer;
+}
+
 
 .button-cta {
     clear: both;
@@ -172,7 +195,7 @@ input[type="email"]
     width: 100%;
     height: 50px;
     text-align: center;
-    font-size: 14pt;
+    font-size: 1.2rem;
     font-weight: 400;
     letter-spacing: 1px;
     border-radius: 10px;
@@ -196,7 +219,7 @@ input[type="email"]
 .howTo-button {
     border: none;
     background-color: inherit;
-    font-size: 15pt;
+    font-size: 1.3rem;
     font-weight: 900;
     opacity: 0.5;
     letter-spacing: 1.5px;
@@ -250,7 +273,7 @@ input[type="email"]
     margin: auto;
 }
 
-section#cancel {
+section#cancel, section#tandc, section#privacy {
     min-height: 80vh;
     padding-top: 10vh;
     padding-left: 2vh;
@@ -259,7 +282,7 @@ section#cancel {
 }
 
 #cancelButton:hover {
-    background-color: rgb(170, 21, 21);
+    background-color: var(--warning);
     color: var(--bgcolor)
 }
 
@@ -294,6 +317,7 @@ section#cancel {
     font-weight: bolder;
     text-align: center;
     color: var(--highlight);
+    overflow: hidden;
 }
 
 .imprint-button:active {
@@ -327,16 +351,16 @@ section#cancel {
 }
 
 .imprint-container {
-    font-size: 12px;
+    font-size: 1rem;
 }
 
 
 /* ------- Smaller screens ------- */
 
 @media only screen and (max-width: 570px) {
-    body { font-size: 16px; }
-    .form { font-size:  12px;}
-    .how-to-text { font-size:  16px; }
+    body { font-size: 1.4rem; }
+    .form { font-size:  1rem;}
+    .how-to-text { font-size:  1.4rem; }
     .img-logo { width: 50px; }
     .img-text-logo { width: 130px }
   }
