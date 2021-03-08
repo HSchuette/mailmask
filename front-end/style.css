@@ -50,7 +50,9 @@ button {
  }
 
 input[type="submit"] { 
-    appearance: push-button
+    -webkit-appearance: none;
+    border:none;
+    outline:none;
 }
 
 
