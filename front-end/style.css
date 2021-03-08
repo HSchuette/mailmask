@@ -25,6 +25,10 @@ html, body {
     padding: 0;
 }
 
+main {
+    position: relative;
+}
+
 body {
     margin-top: 5vh;
     line-height: 1.6;
@@ -33,13 +37,7 @@ body {
     background: var(--bgcolor);
     position: relative;
     font-family: 'Avenir Next', sans-serif;
-    height: 100%;
-}
-
-main {
-    position: relative;
-    min-height: 190vh;
-    overflow: hidden;
+    min-height: 100vh;
 }
 
 /*removes button styles */
@@ -52,18 +50,19 @@ button {
 /* ------- Sections ------- */
 
 section {
-    width: 100%;
-    background: var(--bgcolor);
-    scroll-behavior: smooth;
     display: none;
     position: absolute;
+    top: 0;
+    width: 100%;
+    background: var(--bgcolor);
+    min-height: 100vh;
 }
 
 section:target { /* Show section */
     display: block;
 }
-    
-section#home { /* Show #home by default */
+
+section#home {
     display: block;
 }
 
@@ -258,6 +257,11 @@ section#cancel {
     height: 100%;
 }
 
+#cancelButton:hover {
+    background-color: rgb(170, 21, 21);
+    color: var(--bgcolor)
+}
+
 .content-box{
     clear: both;
     max-width: 800px;
@@ -271,15 +275,12 @@ section#cancel {
     padding-right: 35px;
     padding-top: 1px;
     padding-bottom: 35px;
-}
-
-.imprint {
-    padding: 5%;
+    margin-bottom: 5vh;
 }
 
 .imprint-button {
-    bottom: 50px; 
-    right: 50px; 
+    bottom: 5vh; 
+    right: 5vh; 
     border-radius: 20%;
     height: 50px;
     width: 50px;
@@ -311,7 +312,7 @@ section#cancel {
     right: 0;
     left: 0;
     max-width: 600px;
-    margin: 5% auto;
+    margin: 5%;
     border-radius: 2rem;
     background: rgba(255, 255, 255, 0.5);
     box-shadow: 0 8px 32px 0 rgba( 31, 38, 135, 0.37 );
@@ -333,7 +334,6 @@ section#cancel {
 
 @media only screen and (max-width: 570px) {
     body { font-size: 16px; }
-
     .form { font-size:  12px;}
     .how-to-text { font-size:  16px; }
     .img-logo { width: 50px; }
