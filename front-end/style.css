@@ -306,8 +306,8 @@ section#cancel, section#tandc, section#privacy {
     bottom: 5vh; 
     right: 5vh; 
     border-radius: 20%;
-    height: 50px;
-    width: 50px;
+    height: 50px !important;
+    width: 50px !important;
     background: var(--bgcolor) 0.5;
     box-shadow: 0 8px 32px 0 rgba( 31, 38, 135, 0.37 );
     backdrop-filter: blur( 4px );
