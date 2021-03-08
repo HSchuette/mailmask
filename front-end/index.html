@@ -8,8 +8,8 @@
     </head>
     <body>
         <header>
-            <a href="#home"><img class="img-logo" src="img/logo_onWhite.png" alt="illustration logo"></a>
-            <a href="#home"><img class="img-text-logo" src="img/logoText_simpleBlack.png" alt="mailmask logo"></a>
+            <a href=""><img class="img-logo" src="img/logo_onWhite.png" alt="illustration logo"></a>
+            <a href=""><img class="img-text-logo" src="img/logoText_simpleBlack.png" alt="mailmask logo"></a>
         </header>
         
         <main>
@@ -27,10 +27,14 @@
                                 </div>    
                                                     
                             </div>
-                            <form>            
-                                <input id="mail" placeholder="Enter your email here..." type="email" pattern="[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{1,63}$" required></input>
-                                <button id="submitButton" class="button-cta">Generate Mail</button>
-                            </form>  
+                            <form action="">           
+                                <input id="mail" placeholder="Enter your email here..." type="email" name="email" pattern="[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{1,63}$" required/>                                
+                                <div class = "privacy-and-terms-checkbox">
+                                    <input type="checkbox" id="checkbox" name="checkbox" required />
+                                    <label>I agree with the <a href="#tandc">Terms & Conditions</a> and the <a href="#privacy">Privacy Policy</a>. </label>
+                                </div>
+                                <input type="submit" name="submitButton" id="submitButton" class="button-cta" value="Generate Mail">
+                            </form>
                             <div class="alert alert-success" id="success" style="display:none"> Success Message</div>  
                         </div>                                            
                     </div>
@@ -70,6 +74,32 @@
                 </div>
             </div>
             </section> 
+
+            <section id="tandc"> <!-- Terms and Conditions -->
+                <div class="content-box">
+                <div class="tandc-header">
+                    <div class="tandc-title"><h1>Terms and Conditions</h1></div>
+                    <div class="tandc-container", id="sub-container">
+                        <div class="sub-text" id="sub-text">
+                            <p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</p>
+                        </div>                        
+                    </div>
+                </div>
+            </div>
+            </section> 
+
+            <section id="privacy"> <!-- Terms and Conditions -->
+                <div class="content-box">
+                <div class="privacy-header">
+                    <div class="privacy-title"><h1>Privacy Policy</h1></div>
+                    <div class="privacy-container", id="sub-container">
+                        <div class="sub-text" id="sub-text">
+                            <p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</p>
+                        </div>                        
+                    </div>
+                </div>
+            </div>
+            </section> 
                        
         </main>
 
@@ -99,21 +129,28 @@
         <script type="text/javascript">
             var API_URL = "https://423ghva5nf.execute-api.eu-west-1.amazonaws.com/prod/mails";
             
-            $("#submitButton").on("click", function() {
-                $.ajax({
-                    type: "POST",
-                    url: API_URL,
-                    data: JSON.stringify({"forwardingAddress": $("#mail").val()}),
-                    contentType: "application/JSON",
+            $("#submitButton").on('click', function() {
+                if (!$("#mail").val()) {
+                    console.log("Error - invalid request. No email input.") 
+                } else {
+                    if ($("#checkbox").prop('checked') == false) {
+                        console.log("Error - invalid request. fml.")
+                    } else {
+                        $.ajax({
+                        type: "POST",
+                        url: API_URL,
+                        data: JSON.stringify({"forwardingAddress": $("#mail").val()}),
+                        contentType: "application/JSON",
 
-                    success: function(data) {
-                        $("#success").show(),
-                        setTimeout(function() { $("#success").hide(); }, 5000)
-                        $("#mail").val("")
+                        success: function(data) {
+                            $("#success").show(),
+                            setTimeout(function() { $("#success").hide(); }, 5000)
+                            $("#mail").val("")
+                        }
+                    }); 
+                    return false;
                     }
-                }); 
-
-                return false;
+                }                    
             });
 
             function howtoScroll() {
