@@ -49,6 +49,11 @@ button {
     outline:none;
  }
 
+input[type="submit"] { 
+    appearance: push-button
+}
+
+
 /* ------- Sections ------- */
 
 section {
@@ -146,7 +151,7 @@ input[type="email"]
     color: var(--textcolor);
     height: 40px;
     width: 100%;
-    font-size: 1.1rem;
+    font-size: 1rem;
     border-radius: 10px;
     border-color: var(--highlight);
     border-width: 2;
@@ -163,7 +168,7 @@ input[type="email"]
     color: var(--textcolor);
     opacity: 0.4;
     letter-spacing: 0.4px;
-    font-size: 1 rem;
+    font-size: 0.8 rem;
 }
 
 .privacy-and-terms-checkbox {
@@ -306,9 +311,9 @@ section#cancel, section#tandc, section#privacy {
     bottom: 5vh; 
     right: 5vh; 
     border-radius: 20%;
-    height: 50px !important;
-    width: 50px !important;
-    background: var(--bgcolor) 0.5;
+    height: 50px;
+    width: 50px;
+    background: var(--bg2color) 0.8;
     box-shadow: 0 8px 32px 0 rgba( 31, 38, 135, 0.37 );
     backdrop-filter: blur( 4px );
     -webkit-backdrop-filter: blur( 4px );
@@ -322,7 +327,7 @@ section#cancel, section#tandc, section#privacy {
 
 .imprint-button:active {
     box-shadow: inset 20px 20px 60px rgba( 255, 255, 255, 0.25 ),
-    inset -20px -20px 60px rgba( 255, 255, 255, 0.45 ),
+    inset -20px -20px 60px var(--bg2color) 0.45,
     0 8px 32px 0 rgba( 31, 38, 135, 0.10 );
 }
 
@@ -339,7 +344,7 @@ section#cancel, section#tandc, section#privacy {
     max-width: 600px;
     margin: 5%;
     border-radius: 2rem;
-    background: var(--bgcolor) 0.5;
+    background: var(--bg2color) 0.8;
     box-shadow: 0 8px 32px 0 rgba( 31, 38, 135, 0.37 );
     backdrop-filter: blur( 6px );
     -webkit-backdrop-filter: blur( 6px );
