@@ -66,9 +66,9 @@
                         <div class="cancel-text" id="cancel-text">
                             <p>If you wish to cancel or deactivate your MailMask forwarding address, simply paste the email in the following form and confirm your submission.</p>
                         </div>
-                        <form>            
-                            <input id="mail" placeholder="Your MailMask address here..." type="email" pattern="[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{1,63}$" required></input>
-                            <button id="cancelButton" class="button-cta">Cancel Mail</button>
+                        <form action="">            
+                            <input id="cancelMail" name="email" placeholder="Your MailMask address here..." type="email" pattern="[A-Za-z0-9._%+-]+@mailmask\.me" required></input>
+                            <input type="submit" id="cancelButton" name="cancelButton" class="button-cta" value="Cancel Mail">
                         </form>  
                     </div>
                 </div>
@@ -134,7 +134,7 @@
                     console.log("Error - invalid request. No email input.") 
                 } else {
                     if ($("#checkbox").prop('checked') == false) {
-                        console.log("Error - invalid request. fml.")
+                        console.log("Error - invalid request. Checkbox not checked.")
                     } else {
                         $.ajax({
                         type: "POST",
@@ -151,6 +151,37 @@
                     return false;
                     }
                 }                    
+            });
+
+            function validateEmail(email) {
+                var pattern = new RegExp(/[+a-zA-Z0-9._-]+@mailmask+\.me/gmi);
+                return pattern.test( email );
+            }
+
+            $("#cancelButton").on('click', function() {                
+                if (!$("#cancelMail").val()) {
+                    console.log("Error - invalid request. No email input.") 
+                } else {
+                    if (!validateEmail($("#cancelMail").val())) {
+                    console.log("Error - invalid request. Wrong email format.")
+                    console.log($("#cancelMail"))
+                } else {
+                    console.log("Canceling was a success!") 
+                        $.ajax({
+                        type: "DELETE",
+                        url: API_URL,
+                        data: JSON.stringify({"routingAddress": $("#cancelMail").val()}),
+                        contentType: "application/JSON",
+
+                        success: function(data) {
+                            $("#success").show(),
+                            setTimeout(function() { $("#success").hide(); }, 5000)
+                            $("#cancelMail").val("")
+                        }
+                    }); 
+                    return false;
+                    }
+                }
             });
 
             function howtoScroll() {
