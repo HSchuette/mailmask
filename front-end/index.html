@@ -40,7 +40,7 @@
                     </div>
                 </div> 
                 
-                <button class="howTo-button" onclick="howtoScroll()" <p>How It Works <br> &#8964;</p></button>            
+                <button class="howTo-button" <p>How It Works <br> &#8964;</p></button>            
 
                 <div class="howto", id="howto"> <!-- HOW TO -->
                     <div class="howto-header">
@@ -187,9 +187,32 @@
                 }
             });
 
-            function howtoScroll() {
-                document.getElementById( 'howto' ).scrollIntoView();   
+            function getUrlVars() {
+                var vars = {};
+                var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(m,key,value) {
+                    vars[key] = value;
+                });
+                return vars;
+            }
+
+            function getUrlParam(parameter, defaultvalue){
+                var urlparameter = defaultvalue;
+                if(window.location.href.indexOf(parameter) > -1){
+                    urlparameter = getUrlVars()[parameter];
+                    }
+                return urlparameter;
             };
+
+            window.onload = function() {
+                var cancelMail = decodeURI(getUrlParam("cancelMail", ""));
+
+                cancelMail = cancelMail.replace("%40", "@")
+                cancelMail = cancelMail.replace("#cancel", "")
+                console.log(cancelMail)
+                $("#cancelMail").val(cancelMail)
+
+            };
+
             
         </script>
     </body>
