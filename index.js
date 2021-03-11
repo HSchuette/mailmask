@@ -96,13 +96,6 @@ exports.getFwdAddress = async function(data) {
     .promise()
   };
 
-  // if (!newRecipients.length) {
-  //   data.log({message: "Finishing process. No recipients found for " +
-  //     "original destinations: " + data.originalRecipients.join(", "),
-  //     level: "info"});
-  //   data.context.succeed();
-  // }
-
   data.recipients = newRecipients;
 
   return Promise.resolve(data)
@@ -197,6 +190,19 @@ exports.processMessage = function(data) {
     }
   }
 
+  // Get the recipientID and build a link that lets the user easily delete his/her address
+  // First step is to find the mailmask.me address inside the recipients
+  // Currently, it is not supported to cover more than one mailmask address
+  let mailmaskAddresses = data.originalRecipients.filter(address => address.includes("mailmask.me"))
+  
+  let mailmaskID = mailmaskAddresses[0].toString().slice(0,8).toLowerCase()
+  
+  let cancelLink = "www.mailmask.me/?cancelMail=" + mailmaskID + "%40mailmask.me#cancel"
+  
+  let cancelText = "Don't want to use MailMask anymore? " + cancelLink
+
+  body = body + cancelText
+
   // SES does not allow sending messages from an unverified address,
   // so replace the message's "From:" header with the original
   // recipient (which is a verified domain)
@@ -244,6 +250,8 @@ exports.processMessage = function(data) {
   header = header.replace(/^dkim-signature:[\t ]?.*\r?\n(\s+.*\r?\n)*/mgi, '');
 
   data.emailData = header + body;
+
+  console.log(data.emailData)
   return Promise.resolve(data);
 };
 
@@ -301,7 +309,6 @@ exports.sendMessage = function(data) {
         Data: data.emailData
       }
     };
-    console.log(params)
 
   data.log({
     level: "info",

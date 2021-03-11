@@ -309,21 +309,22 @@ section#cancel, section#tandc, section#privacy {
 }
 
 .imprint-button {
-    bottom: 5vh; 
-    right: 5vh; 
-    border-radius: 20%;
+    bottom: 2.1rem; 
+    right: 2.1rem; 
+    border-radius: 2rem;
     height: 50px;
     width: 50px;
-    background: var(--bg2color) 0.8;
+    background: var(--bg2color) 0.9;
     box-shadow: 0 8px 32px 0 rgba( 31, 38, 135, 0.37 );
-    backdrop-filter: blur( 4px );
-    -webkit-backdrop-filter: blur( 4px );
+    backdrop-filter: blur( 8px );
+    -webkit-backdrop-filter: blur( 8px );
     position: fixed;
     font-size: 2rem; 
     font-weight: bolder;
     text-align: center;
     color: var(--highlight);
     overflow: hidden;
+    z-index: 1;
 }
 
 .imprint-button:active {
@@ -332,23 +333,29 @@ section#cancel, section#tandc, section#privacy {
     0 8px 32px 0 rgba( 31, 38, 135, 0.10 );
 }
 
-.imprint:hover ~ .imprint-text  {
-    display: block;
-}
-
 .imprint-modal {
     position: fixed;
-    display: none;
-    bottom: 10%;
+    display: block;
+    bottom: 0;
     right: 0;
-    left: 0;
     max-width: 600px;
-    margin: 5%;
+    margin: 2rem;
     border-radius: 2rem;
-    background: var(--bg2color) 0.8;
+    background: var(--bg2color) 0.9;
     box-shadow: 0 8px 32px 0 rgba( 31, 38, 135, 0.37 );
-    backdrop-filter: blur( 6px );
-    -webkit-backdrop-filter: blur( 6px );
+    backdrop-filter: blur( 10px );
+    -webkit-backdrop-filter: blur( 10px );
+    clip-path: inset(100% 0% 0% 100% round 2rem);
+    transition: clip-path .5s ease-in-out;
+    z-index: 2;
+}
+
+.imprint-modal span {
+    position: absolute;
+    font-size: 2rem;
+    right: -1rem;
+    bottom: 0;
+    padding: 1rem;    
 }
 
 .imprint-modal-content {
