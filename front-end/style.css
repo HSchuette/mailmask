@@ -92,8 +92,8 @@ a {
 
 header {
     position: relative;
-    min-width: 50vh;
-    max-width: 70vh;
+    min-width: 300px;
+    max-width: 600px;
     z-index: 2;
     margin-left: auto;
     margin-right: auto;
@@ -163,7 +163,6 @@ input[type="email"]
     background-size: 15px;
     background-color: var(--bgcolor);
     padding-left: 40px;
-    padding-right: 60px
 }
 
 ::placeholder {
@@ -281,7 +280,7 @@ input[type="email"]
 }
 
 section#cancel, section#tandc, section#privacy {
-    min-height: 80vh;
+    min-height: 100vh;
     padding-top: 10vh;
     padding-left: 2vh;
     padding-right: 2vh;
@@ -295,7 +294,7 @@ section#cancel, section#tandc, section#privacy {
 
 .content-box{
     clear: both;
-    max-width: 800px;
+    max-width: 600px;
     min-height: 40vh;
     margin-left: auto;
     margin-right: auto;
