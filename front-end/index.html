@@ -70,6 +70,7 @@
                             <input id="cancelMail" name="email" placeholder="Your MailMask address here..." type="email" pattern="[A-Za-z0-9._%+-]+@mailmask\.me" required></input>
                             <input type="submit" id="cancelButton" name="cancelButton" class="button-cta" value="Cancel Mail">
                         </form>  
+                        <div class="alert alert-success" id="cancelSuccess" style="display:none"> Success Message</div>  
                     </div>
                 </div>
             </div>
@@ -166,16 +167,18 @@
                     console.log("Error - invalid request. Wrong email format.")
                     console.log($("#cancelMail"))
                 } else {
+                    var mailID = $("#cancelMail").val().toString().slice(0,8).toLowerCase()                    
+
                     console.log("Canceling was a success!") 
                         $.ajax({
                         type: "DELETE",
                         url: API_URL,
-                        data: JSON.stringify({"routingAddress": $("#cancelMail").val()}),
+                        data: JSON.stringify({"mailID": mailID}),
                         contentType: "application/JSON",
 
                         success: function(data) {
-                            $("#success").show(),
-                            setTimeout(function() { $("#success").hide(); }, 5000)
+                            $("#cancelSuccess").show(),
+                            setTimeout(function() { $("#cancelSuccess").hide(); }, 5000)
                             $("#cancelMail").val("")
                         }
                     }); 
