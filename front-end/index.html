@@ -40,7 +40,7 @@
                     </div>
                 </div> 
                 
-                <button class="howTo-button" onclick="howtoScroll()" <p>How It Works <br> &#8964;</p></button>            
+                <button class="howTo-button" <p>How It Works <br> &#8964;</p></button>            
 
                 <div class="howto", id="howto"> <!-- HOW TO -->
                     <div class="howto-header">
@@ -66,10 +66,11 @@
                         <div class="cancel-text" id="cancel-text">
                             <p>If you wish to cancel or deactivate your MailMask forwarding address, simply paste the email in the following form and confirm your submission.</p>
                         </div>
-                        <form>            
-                            <input id="mail" placeholder="Your MailMask address here..." type="email" pattern="[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{1,63}$" required></input>
-                            <button id="cancelButton" class="button-cta">Cancel Mail</button>
+                        <form action="">            
+                            <input id="cancelMail" name="email" placeholder="Your MailMask address here..." type="email" pattern="[A-Za-z0-9._%+-]+@mailmask\.me" required></input>
+                            <input type="submit" id="cancelButton" name="cancelButton" class="button-cta" value="Cancel Mail">
                         </form>  
+                        <div class="alert alert-success" id="cancelSuccess" style="display:none"> Success Message</div>  
                     </div>
                 </div>
             </div>
@@ -134,7 +135,7 @@
                     console.log("Error - invalid request. No email input.") 
                 } else {
                     if ($("#checkbox").prop('checked') == false) {
-                        console.log("Error - invalid request. fml.")
+                        console.log("Error - invalid request. Checkbox not checked.")
                     } else {
                         $.ajax({
                         type: "POST",
@@ -153,9 +154,65 @@
                 }                    
             });
 
-            function howtoScroll() {
-                document.getElementById( 'howto' ).scrollIntoView();   
+            function validateEmail(email) {
+                var pattern = new RegExp(/[+a-zA-Z0-9._-]+@mailmask+\.me/gmi);
+                return pattern.test( email );
+            }
+
+            $("#cancelButton").on('click', function() {                
+                if (!$("#cancelMail").val()) {
+                    console.log("Error - invalid request. No email input.") 
+                } else {
+                    if (!validateEmail($("#cancelMail").val())) {
+                    console.log("Error - invalid request. Wrong email format.")
+                    console.log($("#cancelMail"))
+                } else {
+                    var mailID = $("#cancelMail").val().toString().slice(0,8).toLowerCase()                    
+
+                    console.log("Canceling was a success!") 
+                        $.ajax({
+                        type: "DELETE",
+                        url: API_URL,
+                        data: JSON.stringify({"mailID": mailID}),
+                        contentType: "application/JSON",
+
+                        success: function(data) {
+                            $("#cancelSuccess").show(),
+                            setTimeout(function() { $("#cancelSuccess").hide(); }, 5000)
+                            $("#cancelMail").val("")
+                        }
+                    }); 
+                    return false;
+                    }
+                }
+            });
+
+            function getUrlVars() {
+                var vars = {};
+                var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(m,key,value) {
+                    vars[key] = value;
+                });
+                return vars;
+            }
+
+            function getUrlParam(parameter, defaultvalue){
+                var urlparameter = defaultvalue;
+                if(window.location.href.indexOf(parameter) > -1){
+                    urlparameter = getUrlVars()[parameter];
+                    }
+                return urlparameter;
             };
+
+            window.onload = function() {
+                var cancelMail = decodeURI(getUrlParam("cancelMail", ""));
+
+                cancelMail = cancelMail.replace("%40", "@")
+                cancelMail = cancelMail.replace("#cancel", "")
+                console.log(cancelMail)
+                $("#cancelMail").val(cancelMail)
+
+            };
+
             
         </script>
     </body>
