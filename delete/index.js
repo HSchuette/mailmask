@@ -19,7 +19,7 @@ exports.handler = function(event, context, callback) {
 
         TableName: "mailMaskList",
         Key: {
-            "routingAddress": event.routingAddress
+            "mailID": event.mailID
         }
     }
 
