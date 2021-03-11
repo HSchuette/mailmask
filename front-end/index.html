@@ -105,14 +105,14 @@
         </main>
 
         <div class="imprint", id="imprint"> <!-- IMPRINT -->
-            <button onclick="document.getElementById('imprint-modal').style.display='block'" class="imprint-button">
+            <button onclick="document.getElementById('imprint-modal').style.clipPath='inset(-20% -20% -20% -20% round 2rem)'" class="imprint-button">
                 i
             </button>
 
             <div id="imprint-modal" class="imprint-modal">
                 <div class="imprint-modal-content">
                   <header class="imprint-container-header"> 
-                    <span onclick="document.getElementById('imprint-modal').style.display='none'">&times;</span>
+                    <span onclick="document.getElementById('imprint-modal').style.clipPath='inset(100% 0% 0% 100% round 2rem)'">&times;</span>
                     <h2>Imprint</h2>
                   </header>
                   <div class="imprint-container">
@@ -208,7 +208,6 @@
 
                 cancelMail = cancelMail.replace("%40", "@")
                 cancelMail = cancelMail.replace("#cancel", "")
-                console.log(cancelMail)
                 $("#cancelMail").val(cancelMail)
 
             };
