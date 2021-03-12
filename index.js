@@ -201,6 +201,14 @@ exports.processMessage = function(data) {
   
   let cancelText = "Don't want to use MailMask anymore? " + cancelLink
 
+  // Test if the mail is a multipart MIME mail or not
+  if (body.match(/(Content-Type: multipart\/alternative;)/gmi)) {
+      console.log("Found a multipart MIME mail")
+      boundary = body.match(/(?<=boundary=").*(?=")/)
+      console.log(boundary)
+  }
+
+
   body = body + cancelText
 
   // SES does not allow sending messages from an unverified address,
