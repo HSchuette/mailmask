@@ -199,17 +199,38 @@ exports.processMessage = function(data) {
   
   let cancelLink = "www.mailmask.me/?cancelMail=" + mailmaskID + "%40mailmask.me#cancel"
   
-  let cancelText = "Don't want to use MailMask anymore? " + cancelLink
+  let cancelText = "Don't want to use MailMask anymore? " + cancelLink + "\n"
+
+  let cancelHTML = "<p style='text-align: center;'><a href=" + cancelLink + " style='color: #000000;'><strong>test</strong></a></p>"
+
+  // This function cleans up the string to make this pattern searchable in regex
+  RegExp.cleanUp = function(str) {
+    return str.toString().replace(/([.?*+^$[\]\\(){}|-])/g, "\\$1");
+  };
 
   // Test if the mail is a multipart MIME mail or not
-  if (body.match(/(Content-Type: multipart\/alternative;)/gmi)) {
-      console.log("Found a multipart MIME mail")
-      boundary = body.match(/(?<=boundary=").*(?=")/)
-      console.log(boundary)
+  // If the email is a multipart MIME mail, search for the boundary
+  if (body.match(/(Content-Type: multipart\/alternative;)/mi)) {
+    console.log("Found a multipart MIME mail")
+    // boundarys could also have no "" <- need to fix this
+    boundary = body.match(/(?<=boundary=").*(?="\n)/)
+    console.log("Boundary found: " + boundary)
+
+    var regBoundary = RegExp.cleanUp(boundary)
+
+    console.log(regBoundary)
+
+    plainRegex = RegExp("(?<=" + regBoundary + "\nContent-Type: text\/plain;\n[\\s\\S]*?)(?=--" + regBoundary + ")")
+
+    console.log("Regex to search for: " + plainRegex)
+
+    var body = body.replace(plainRegex, cancelText)
+
+    htmlRegex = RegExp("(?<=" + regBoundary + "\nContent-Type: text\/html;\n[\\s\\S]*?)(?=</body>)")
+    console.log("\nRegex to search for: " + htmlRegex)
+
+    body = body.replace(htmlRegex, cancelHTML)
   }
-
-
-  body = body + cancelText
 
   // SES does not allow sending messages from an unverified address,
   // so replace the message's "From:" header with the original
