@@ -65,6 +65,7 @@ section {
     width: 100%;
     background: var(--bgcolor);
     min-height: 100vh;
+    z-index: 1;
 }
 
 section:target { /* Show section */
@@ -195,10 +196,12 @@ input[type="email"]
 
 .button-cta {
     clear: both;
+    left: 20%;
+    position: relative;
     margin-top: 2em;
     background-color: var(--highlight);
     color: white;
-    width: 100%;
+    width: 60%;
     height: 50px;
     text-align: center;
     font-size: 1.2rem;
@@ -220,6 +223,10 @@ input[type="email"]
 
 .success {
     text-align: center;
+}
+
+.mail-overlay {
+    display: none;
 }
 
 .howTo-button {
@@ -376,4 +383,26 @@ section#cancel, section#tandc, section#privacy {
     .how-to-text { font-size:  1rem; }
     .img-logo { width: 50px; }
     .img-text-logo { width: 130px }
+  }
+
+  @media only screen and (min-width: 620px) {
+    .mail-overlay {
+        display: block;        
+        max-width: 660px;
+        margin-left: auto;
+        margin-right: auto;         
+    }
+
+    .img-mail-overlay {
+        margin-top: -90px;  
+        filter: drop-shadow(0px -2px 3px rgba(0, 0, 0, 0.1));      
+    }
+
+    .img-mail-backdrop {
+        position: absolute;
+        z-index: -1;
+        max-width: 660px;
+        margin-top: 10vh;
+        filter: drop-shadow(2px 2px 60px rgba(0, 0, 0, 0.1));      
+    }
   }
