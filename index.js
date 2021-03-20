@@ -210,30 +210,40 @@ exports.processMessage = function(data) {
 
   // Test if the mail is a multipart MIME mail or not
   // If the email is a multipart MIME mail, search for the boundary
-  if (body.match(/Content-Type: multipart\/alternative;/g)) {
+  if (header.match(/Content-Type: multipart\/alternative;/g)) {
     console.log("Found a multipart MIME mail")
     // boundarys could also have no "" <- need to fix this
-    boundary = body.match(/(?<=boundary=").*(?="\n)|(?<=boundary=).*(?=\n)/)
+    var boundary = body.match(/(?<=boundary=").*(?="\n)|(?<=boundary=).*(?=\n)/)
     console.log("Boundary found: " + boundary)
 
-    var regBoundary = RegExp.cleanUp(boundary)
+    if (boundary != NULL) {
+      var regBoundary = RegExp.cleanUp(boundary)
 
-    console.log(regBoundary)
+      console.log(regBoundary)
 
-    plainRegex = RegExp("(?<=" + regBoundary + "\nContent-Type: text\/plain;\n[\\s\\S]*?)(?=--" + regBoundary + ")")
+      var plainRegex = RegExp("(?<=" + regBoundary + "\nContent-Type: text\/plain;\n[\\s\\S]*?)(?=--" + regBoundary + ")")
 
-    console.log("Regex to search for: " + plainRegex)
+      console.log("Regex to search for: " + plainRegex)
 
-    var body = body.replace(plainRegex, cancelText)
+      var body = body.replace(plainRegex, cancelText)
+    }    
 
-    htmlRegex = RegExp("(?<=" + regBoundary + "\nContent-Type: text\/html;\n[\\s\\S]*?)(?=</body>)")
+    // (?<=" + regBoundary + "\nContent-Type: text\/html;\n[\\s\\S]*?)(?=<\/body>)
+    var htmlRegex = RegExp("<\/body>")
     console.log("\nRegex to search for: " + htmlRegex)
 
+    cancelHTML = cancelHTML + "<\/body>"
+
     body = body.replace(htmlRegex, cancelHTML)
+  } else if (header.match(/Content-Type: text\/html;/g)) {
+    console.log("This seems like a text/html MIME mail")
+
+    body = body + cancelHTML
+
   } else {
     console.log("This does not seems like a MIME mail")
 
-    cancelText = "\n\nDon't want to use MailMask anymore? Cancel this MailMask\n" + cancelLink
+    cancelText = "\n\nDon't want to use MailMask anymore? Click the following link to cancel.\n\n" + cancelLink
 
     body = body + cancelText
   }

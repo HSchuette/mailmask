@@ -2,11 +2,14 @@ let mailmaskID = "guiawhia"
 
 let cancelLink = "www.mailmask.me/?cancelMail=" + mailmaskID + "%40mailmask.me#cancel"
   
-let cancelText = "Don't want to use MailMask anymore? " + cancelLink + "\n"
+let cancelText = "\nDon't want to use MailMask anymore? " + cancelLink + "\n"
 
 let cancelHTML = "<p style='text-align: center;'><a href=" + cancelLink + " style='color: #000000;'><strong>test</strong></a></p>"
 
-var body = 'Content-Type: multipart/alternative; boundary="wLUf7VheakOD=_?:"\n Reply-To: The North Face <thenorthface@newsletter.thenorthface.com> --wLUf7VheakOD=_?:\nContent-Type: text/plain;\ncharset="utf-8\n--wLUf7VheakOD=_?:" --wLUf7VheakOD=_?:\nContent-Type: text/html;\n<html>\n<body>\n<a style="test">Test</a>\n</body>\n<html/>\n--wLUf7VheakOD=_?:--' 
+var body = 'Content-Type: multipart/alternative;\nboundary="==58cb55cf85023a8c23dd3eb2002acbd8"\n\nThis is a multi-part message in MIME format.\n\n--==58cb55cf85023a8c23dd3eb2002acbd8\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: quoted-printable"' 
+
+console.log(cancelText)
+
 
 // This function cleans up the string to make this pattern searchable in regex
 RegExp.cleanUp = function(str) {
@@ -14,7 +17,7 @@ RegExp.cleanUp = function(str) {
 };
 
 // If the email is a multipart MIME mail, search for the boundary
-if (body.match(/(Content-Type: multipart\/alternative;)/mi)) {
+if (body.match(/(Content-Type: multipart\/alternative;)/g)) {
     console.log("Found a multipart MIME mail")
     boundary = body.match(/(?<=boundary=").*(?="\n)/)
     console.log("Boundary found: " + boundary)
@@ -37,3 +40,4 @@ if (body.match(/(Content-Type: multipart\/alternative;)/mi)) {
     console.log(newText)
 }
 
+console.log(body)
