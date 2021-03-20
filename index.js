@@ -199,9 +199,54 @@ exports.processMessage = function(data) {
   
   let cancelLink = "www.mailmask.me/?cancelMail=" + mailmaskID + "%40mailmask.me#cancel"
   
-  let cancelText = "Don't want to use MailMask anymore? " + cancelLink
+  let cancelText = "Don't want to use MailMask anymore? " + cancelLink + "\n"
 
-  body = body + cancelText
+  let cancelHTML = "<p style='text-align: center;font-family: 'Avenir Next', sans-serif; margin-top: 2rem; margin-bottom: 2rem;'>Don't want to use MailMask anymore? <a href=" + cancelLink + " style='color: #0095FF;'><strong>Cancel this MailMask!</strong></a></p>"
+
+  // This function cleans up the string to make this pattern searchable in regex
+  RegExp.cleanUp = function(str) {
+    return str.toString().replace(/([.?*+^$[\]\\(){}|-])/g, "\\$1");
+  };
+
+  // Test if the mail is a multipart MIME mail or not
+  // If the email is a multipart MIME mail, search for the boundary
+  if (header.match(/Content-Type: multipart\/alternative;/g)) {
+    console.log("Found a multipart MIME mail")
+    // boundarys could also have no "" <- need to fix this
+    var boundary = body.match(/(?<=boundary=").*(?="\n)|(?<=boundary=).*(?=\n)/)
+    console.log("Boundary found: " + boundary)
+
+    if (boundary != NULL) {
+      var regBoundary = RegExp.cleanUp(boundary)
+
+      console.log(regBoundary)
+
+      var plainRegex = RegExp("(?<=" + regBoundary + "\nContent-Type: text\/plain;\n[\\s\\S]*?)(?=--" + regBoundary + ")")
+
+      console.log("Regex to search for: " + plainRegex)
+
+      var body = body.replace(plainRegex, cancelText)
+    }    
+
+    // (?<=" + regBoundary + "\nContent-Type: text\/html;\n[\\s\\S]*?)(?=<\/body>)
+    var htmlRegex = RegExp("<\/body>")
+    console.log("\nRegex to search for: " + htmlRegex)
+
+    cancelHTML = cancelHTML + "<\/body>"
+
+    body = body.replace(htmlRegex, cancelHTML)
+  } else if (header.match(/Content-Type: text\/html;/g)) {
+    console.log("This seems like a text/html MIME mail")
+
+    body = body + cancelHTML
+
+  } else {
+    console.log("This does not seems like a MIME mail")
+
+    cancelText = "\n\nDon't want to use MailMask anymore? Click the following link to cancel.\n\n" + cancelLink
+
+    body = body + cancelText
+  }
 
   // SES does not allow sending messages from an unverified address,
   // so replace the message's "From:" header with the original
