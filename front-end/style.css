@@ -385,12 +385,12 @@ section#cancel, section#tandc, section#privacy {
     .img-text-logo { width: 130px }
   }
 
-  @media only screen and (min-width: 620px) {
+  @media only screen and (min-width: 620px) and (min-height: 600px) {
     .mail-overlay {
         display: block;        
         max-width: 660px;
         margin-left: auto;
-        margin-right: auto;         
+        margin-right: auto;        
     }
 
     .img-mail-overlay {
@@ -403,6 +403,6 @@ section#cancel, section#tandc, section#privacy {
         z-index: -1;
         max-width: 660px;
         margin-top: 10vh;
-        filter: drop-shadow(2px 2px 60px rgba(0, 0, 0, 0.1));      
+        filter: drop-shadow(2px 2px 60px rgba(0, 0, 0, 0.1));     
     }
   }
