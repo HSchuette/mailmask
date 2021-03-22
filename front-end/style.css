@@ -318,7 +318,7 @@ section#cancel, section#tandc, section#privacy {
 .imprint-button {
     bottom: 2.1rem; 
     right: 2.1rem; 
-    border-radius: 2rem;
+    border-radius: 200%;
     height: 50px;
     width: 50px;
     background: var(--bg2color) 0.9;
@@ -368,6 +368,7 @@ section#cancel, section#tandc, section#privacy {
 .imprint-modal-content {
     color: var(--textcolor);
     padding: 2em;
+    font-size: 1rem;
 }
 
 .imprint-container {

@@ -201,7 +201,7 @@ exports.processMessage = function(data) {
   
   let cancelText = "Don't want to use MailMask anymore? " + cancelLink + "\n"
 
-  let cancelHTML = "<p style='text-align: center;font-family: 'Avenir Next', sans-serif; margin-top: 2rem; margin-bottom: 2rem;'>Don't want to use MailMask anymore? <a href=" + cancelLink + " style='color: #0095FF;'><strong>Cancel this MailMask!</strong></a></p>"
+  let cancelHTML = "<p style='text-align: center;font-family: 'Avenir Next', sans-serif; margin: 50px; font-size: 1rem;'>Don't want to use MailMask anymore? <a href=" + cancelLink + " style='color: #0095FF;'><strong>Cancel this MailMask</strong></a></p>"
 
   // This function cleans up the string to make this pattern searchable in regex
   RegExp.cleanUp = function(str) {
@@ -216,7 +216,7 @@ exports.processMessage = function(data) {
     var boundary = body.match(/(?<=boundary=").*(?="\n)|(?<=boundary=).*(?=\n)/)
     console.log("Boundary found: " + boundary)
 
-    if (boundary != NULL) {
+    if (boundary = null) {
       var regBoundary = RegExp.cleanUp(boundary)
 
       console.log(regBoundary)
