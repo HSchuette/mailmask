@@ -286,7 +286,7 @@ input[type="email"]
     margin: auto;
 }
 
-section#cancel, section#tandc, section#privacy {
+section#cancel, section#support, section#tandc, section#privacy {
     min-height: 100vh;
     padding-top: 10vh;
     padding-left: 2vh;
@@ -297,6 +297,32 @@ section#cancel, section#tandc, section#privacy {
 #cancelButton:hover {
     background-color: var(--warning);
     color: var(--bgcolor)
+}
+
+.support-img {
+    width: 100px;
+    float: right;
+}
+
+.support-list {
+    padding-bottom: 2rem;
+}
+
+.support-row-label {
+    width: 20%;
+    font-size: 1.1rem;
+    line-height: 3rem;
+    color: var(--textcolor);
+    margin-left: 2%;
+}
+
+.support-row-input {
+    float: right;
+    width: 70%;
+    text-align: center;
+    font-size: 0.9rem;
+    background: var(--bgcolor);
+    color: var(--textcolor);
 }
 
 .content-box{
@@ -318,7 +344,7 @@ section#cancel, section#tandc, section#privacy {
 .imprint-button {
     bottom: 2.1rem; 
     right: 2.1rem; 
-    border-radius: 200%;
+    border-radius: 100%;
     height: 50px;
     width: 50px;
     background: var(--bg2color) 0.9;
@@ -347,7 +373,7 @@ section#cancel, section#tandc, section#privacy {
     right: 0;
     max-width: 600px;
     margin: 2rem;
-    border-radius: 2rem;
+    border-radius: 20px;
     background: var(--bg2color) 0.9;
     box-shadow: 0 8px 32px 0 rgba( 31, 38, 135, 0.37 );
     backdrop-filter: blur( 10px );
@@ -361,7 +387,7 @@ section#cancel, section#tandc, section#privacy {
     position: absolute;
     font-size: 2rem;
     right: -1rem;
-    bottom: 0;
+    bottom: 0rem;
     padding: 1rem;    
 }
 
@@ -372,7 +398,7 @@ section#cancel, section#tandc, section#privacy {
 }
 
 .imprint-container {
-    font-size: 1rem;
+    font-size: 0.8rem;
 }
 
 
