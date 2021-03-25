@@ -2,7 +2,7 @@
     /* Color scheme */
     
     --textcolor: rgb(0, 0, 0);
-    --bgcolor: #F6F6F6;
+    --bgcolor: #f3f3f3;
     --highlight: #0095FF;
     --bg2color: #f6f6f6;
     --warning: #aa1515;
@@ -183,11 +183,11 @@ input[type="email"]
     padding-left: 0.5vh;
 }
 
-.privacy-and-terms-checkbox > label a {
+.privacy-and-terms-checkbox > label a, .how-to-text > a {
     color: var(--highlight);
 }
 
-.privacy-and-terms-checkbox > label a:hover {
+.privacy-and-terms-checkbox > label a:hover, .how-to-text > a:hover {
     color: var(--textcolor);
     text-decoration: underline;
     cursor: pointer;
@@ -310,7 +310,7 @@ section#cancel, section#support, section#tandc, section#privacy {
 
 .support-row-label {
     width: 20%;
-    font-size: 1.1rem;
+    font-size: 1rem;
     line-height: 3rem;
     color: var(--textcolor);
     margin-left: 2%;
@@ -319,10 +319,13 @@ section#cancel, section#support, section#tandc, section#privacy {
 .support-row-input {
     float: right;
     width: 70%;
-    text-align: center;
-    font-size: 0.9rem;
-    background: var(--bgcolor);
+    font-size: 0.8rem;
+    line-height: 2rem;
+    background-color: var(--bgcolor);
+    padding-left: 8px;
     color: var(--textcolor);
+    border-radius: 5px;
+    border: none;
 }
 
 .content-box{
@@ -422,7 +425,7 @@ section#cancel, section#support, section#tandc, section#privacy {
 
     .img-mail-overlay {
         margin-top: -90px;  
-        filter: drop-shadow(0px -2px 3px rgba(0, 0, 0, 0.1));      
+        filter: drop-shadow(0px 10px 15px rgba(0, 0, 0, 0.2));      
     }
 
     .img-mail-backdrop {
