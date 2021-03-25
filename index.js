@@ -346,7 +346,7 @@ exports.deleteMail = function(data) {
  * @return {object} - Promise resolved with data.
  */
 exports.sendMessage = function(data) {
-  if (data.recipients.length) {
+  if (data.recipients.length && data !== null) {
     var params = {
       Destinations: data.recipients,
       Source: data.originalRecipient,
