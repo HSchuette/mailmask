@@ -39,7 +39,7 @@ body {
     background: var(--bgcolor);
     position: relative;
     font-family: 'Avenir Next', sans-serif;
-    min-height: 100vh;
+    min-height: 700px;
 }
 
 /*removes button styles */
@@ -64,7 +64,7 @@ section {
     top: 0;
     width: 100%;
     background: var(--bgcolor);
-    min-height: 100vh;
+    min-height: 700px;
     z-index: 1;
 }
 
@@ -125,7 +125,7 @@ header {
 .content {
     min-width: 80px;
     max-width: 600px;
-    max-height: 100vh;
+    max-height: 700px;
     margin-right: auto;
     margin-left: auto;
     margin-top: 10vh;
@@ -204,7 +204,7 @@ input[type="email"]
     width: 60%;
     height: 50px;
     text-align: center;
-    font-size: 1.2rem;
+    font-size: 1.1rem;
     font-weight: 400;
     letter-spacing: 1px;
     border-radius: 10px;
@@ -246,7 +246,7 @@ input[type="email"]
     padding-top: 10vh;
     padding-left: 2vh;
     padding-right: 2vh;
-    min-height: 100vh;
+    min-height: 120vh;
     padding-bottom: 10vh;
 }
 
@@ -287,7 +287,7 @@ input[type="email"]
 }
 
 section#cancel, section#support, section#tandc, section#privacy {
-    min-height: 100vh;
+    min-height: 700px;
     padding-top: 10vh;
     padding-left: 2vh;
     padding-right: 2vh;
@@ -413,9 +413,16 @@ section#cancel, section#support, section#tandc, section#privacy {
     .how-to-text { font-size:  1rem; }
     .img-logo { width: 50px; }
     .img-text-logo { width: 130px }
+    .support-row-label { width: 100% }
+    .support-row-input { width: 100% }
   }
 
-  @media only screen and (min-width: 620px) and (min-height: 600px) {
+@media only screen and (min-width: 700px) and (min-height: 760px) {
+    section#cancel, section#support, section#tandc, section#privacy {
+        min-height: 1000px;
+ 
+     }
+
     .mail-overlay {
         display: block;        
         max-width: 660px;
@@ -435,4 +442,4 @@ section#cancel, section#support, section#tandc, section#privacy {
         margin-top: 10vh;
         filter: drop-shadow(2px 2px 60px rgba(0, 0, 0, 0.1));     
     }
-  }
+}
