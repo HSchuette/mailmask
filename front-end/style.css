@@ -463,9 +463,11 @@ section#cancel, section#support, section#tandc, section#privacy {
 
     section#home {
         padding-top: calc(6em + 5vw);
+        padding-bottom: calc(6em + 5vw);
     }
 
     section#cancel, section#support, section#tandc, section#privacy {
         padding-top: calc(6em + 20vw);
+        min-height: 150vh;
     }
 }
