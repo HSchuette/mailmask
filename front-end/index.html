@@ -8,8 +8,16 @@
     </head>
     <body>
         <header>
-            <a href=""><img class="img-logo" src="img/logo_onWhite.png" alt="illustration logo"></a>
-            <a href=""><img class="img-text-logo" src="img/logoText_simpleBlack.png" alt="mailmask logo"></a>
+            <div class="header-logo">
+                <a href=""><img class="img-logo" src="img/logo_onWhite.png" alt="illustration logo"></a>
+                <a href=""><img class="img-text-logo" src="img/logoText_simpleBlack.png" alt="mailmask logo"></a>    
+            </div>
+            
+            <nav>
+                <a class="nav-link" href="#howto">How It Works</a>                            
+                <a class="nav-link" href="#support">Support</a>   
+                <a class="nav-link" href="#cancel">Cancel Your MailMask</a> 
+            </nav> 
         </header>
         
         <main>
@@ -45,11 +53,11 @@
 
                 <div class="mail-overlay">
                     <img class="img-mail-overlay" src="img/mail.svg">
-                </div>
-                
-                <button class="howTo-button" <p>How It Works <br> &#8964;</p></button>            
+                </div>                    
+            </section>
 
-                <div class="howto", id="howto"> <!-- HOW TO -->
+            <section id="howto">
+                <div class="howto-div", id="howto"> <!-- HOW TO -->
                     <div class="howto-header">
                         <div class="howto-title"><h1>How It Works</h1></div>
                         <img class="illustration" src="img/illustration.png" alt="mail mask racoon">
@@ -59,12 +67,7 @@
                             <p>MailMask creates a unique and random email address for you. This way your real address is kept secret for the website or the app developer. This email address is uniquely fit to reroute incoming mails from the webpage to your address.</p>
                             <p>Your MailMask address consists out of a unique id and the domain ending "@mailmask.me".</p>
                             <p>Any messages sent to this address by the app or website developer are automatically forwarded to your personal email address.</p>
-                            <p>MailMask <b>never</b> processes the content of your incoming mails. The data is stored only for forwarding and is deleted after the mail has been sent to your private email address.</p>
-                            <br>
-                            <p><strong>Links</strong></p>
-                            <a href="#support">Support me</a>
-                            <br>
-                            <a href="#cancel">Cancel your MailMask</a>
+                            <p>MailMask <b>never</b> processes the content of your incoming mails. The data is stored only for forwarding and is deleted after the mail has been sent to your private email address.</p>                                                
                         </div>  
                     </div>                
                 </div>
@@ -139,8 +142,7 @@
                 </div>
             </div>
             </section> 
-                       
-        </main>
+        </main>        
 
         <div class="imprint", id="imprint"> <!-- IMPRINT -->
             <button onclick="document.getElementById('imprint-modal').style.clipPath='inset(-20% -20% -20% -20% round 2rem)'" class="imprint-button">
@@ -162,7 +164,7 @@
               </div>
             </div>
         </div>
-
+        
         <script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-1.9.0.js"></script>
                 
         <script type="text/javascript">
