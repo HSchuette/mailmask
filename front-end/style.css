@@ -64,7 +64,7 @@ section {
     top: 0;
     width: 100%;
     background: var(--bgcolor);
-    min-height: 700px;
+    min-height: 100vh;
     z-index: 1;
 }
 
@@ -92,29 +92,38 @@ a {
 }
 
 header {
-    position: relative;
-    min-width: 300px;
-    max-width: 600px;
+    padding: 0vw 10vw 0 10vw;
+    display: flex;
+    flex-wrap: wrap;   
+    position: absolute; 
+    width: 100%;
     z-index: 2;
-    margin-left: auto;
-    margin-right: auto;
-  }
+    justify-content: center;
+}
+
+.header-logo {
+    display: flex;
+    height: 70px;
+    flex: 1;
+    margin-bottom: 20px;
+}
 
 .img-logo {
     width: 70px;
-    display: block;
-    margin-right: auto;
-    margin-left: 20px;
-    position: absolute;
 }
 
 .img-text-logo {    
     width: 180px;
-    display: block; 
-    margin-left: auto;
-    margin-right: auto;
-    float: center;
-    padding-top: 15px;
+    margin: 20px;
+}
+
+.nav-link {
+    color: var(--highlight);
+    font-size: 1rem;
+    padding: 10px;
+    align-items: center;
+    line-height: 70px;
+    white-space: nowrap;
 }
 
 .container {
@@ -196,12 +205,12 @@ input[type="email"]
 
 .button-cta {
     clear: both;
-    left: 20%;
+    left: 0%;
     position: relative;
     margin-top: 2em;
     background-color: var(--highlight);
     color: white;
-    width: 60%;
+    width: 100%;
     height: 50px;
     text-align: center;
     font-size: 1.1rem;
@@ -229,24 +238,10 @@ input[type="email"]
     display: none;
 }
 
-.howTo-button {
-    border: none;
-    background-color: inherit;
-    font-size: 1.3rem;
-    font-weight: 900;
-    opacity: 0.5;
-    letter-spacing: 1.5px;
-    width: 100%;
-    margin-top: 35vh;
-    color: var(--textcolor);
-}
-
-.howto {
-    background-color: var(--highlight);
-    padding-top: 10vh;
+.howto-div {
+    background-color: var(--bgcolor);
     padding-left: 2vh;
     padding-right: 2vh;
-    min-height: 120vh;
     padding-bottom: 10vh;
 }
 
@@ -273,7 +268,6 @@ input[type="email"]
 .howto-container {
     clear: both;
     max-width: 800px;
-    min-height: 40vh;
     margin-left: auto;
     margin-right: auto;
     background-color: var(--bg2color);
@@ -284,10 +278,10 @@ input[type="email"]
 .how-to-text {
     padding: 35px;
     margin: auto;
+    color: var(--textcolor);
 }
 
 section#cancel, section#support, section#tandc, section#privacy {
-    min-height: 700px;
     padding-top: 10vh;
     padding-left: 2vh;
     padding-right: 2vh;
@@ -418,10 +412,10 @@ section#cancel, section#support, section#tandc, section#privacy {
   }
 
 @media only screen and (min-width: 700px) and (min-height: 760px) {
-    section#cancel, section#support, section#tandc, section#privacy {
-        min-height: 1000px;
- 
-     }
+    .button-cta {
+        width: 60%;
+        left: 20%;
+    }
 
     .mail-overlay {
         display: block;        
@@ -439,7 +433,39 @@ section#cancel, section#support, section#tandc, section#privacy {
         position: absolute;
         z-index: -1;
         max-width: 660px;
-        margin-top: 10vh;
+        margin-top: 10.5vh;
         filter: drop-shadow(2px 2px 60px rgba(0, 0, 0, 0.1));     
+    }
+}
+
+@media only screen and (max-width: 840px) {
+    header {
+        padding: 0;
+        
+    }
+    
+    nav {
+        width: 100%;
+        text-align: center;
+    }
+
+    .nav-link {
+        line-height: 2rem;        
+    }
+
+    .header-logo {
+        justify-content: center;
+    }
+
+    section#howto {
+        padding-top: calc(6em + 5vw);
+    }
+
+    section#home {
+        padding-top: calc(6em + 5vw);
+    }
+
+    section#cancel, section#support, section#tandc, section#privacy {
+        padding-top: calc(6em + 20vw);
     }
 }
