@@ -88,8 +88,8 @@ exports.getFwdAddress = async function(data) {
           newRecipients = newRecipients.concat(response.Item.forwardingAddress)
           console.log("Forwarding Address added: ", newRecipients)
         } catch {
-          console.error("Unable to find recipientID item. Error JSON:", JSON.stringify(err, null, 2));   
-
+          console.error("Unable to find recipientID item. Error JSON:", JSON.stringify(err, null, 2));        
+          newRecipients = []
         }        
       }
     })
@@ -171,133 +171,141 @@ exports.processMessage = function(data) {
   var header = match && match[1] ? match[1] : data.emailData;
   var body = match && match[2] ? match[2] : '';
 
-  // Add "Reply-To:" with the "From" address if it doesn't already exists
-  if (!/^reply-to:[\t ]?/mi.test(header)) {
-    match = header.match(/^from:[\t ]?(.*(?:\r?\n\s+.*)*\r?\n)/mi);
-    var from = match && match[1] ? match[1] : '';
-    if (from) {
-      header = header + 'Reply-To: ' + from;
-      data.log({
-        level: "info",
-        message: "Added Reply-To address of: " + from
-      });
-    } else {
-      data.log({
-        level: "info",
-        message: "Reply-To address not added because From address was not " +
-          "properly extracted."
-      });
-    }
-  }
-
-  // Get the recipientID and build a link that lets the user easily delete his/her address
-  // First step is to find the mailmask.me address inside the recipients
-  // Currently, it is not supported to cover more than one mailmask address
-  let mailmaskAddresses = data.originalRecipients.filter(address => address.includes("mailmask.me"))
-  
-  let mailmaskID = mailmaskAddresses[0].toString().slice(0,8).toLowerCase()
-  
-  let cancelLink = "www.mailmask.me/?cancelMail=" + mailmaskID + "%40mailmask.me#cancel"
-  
-  let cancelText = "Don't want to use MailMask anymore? " + cancelLink + "\n"
-
-  let cancelHTML = "<p style='text-align: center;font-family: 'Avenir Next', sans-serif; margin: 50px; font-size: 1rem;'>Don't want to use MailMask anymore? <a href=" + cancelLink + " style='color: #0095FF;'><strong>Cancel this MailMask</strong></a></p>"
-
-  // This function cleans up the string to make this pattern searchable in regex
-  RegExp.cleanUp = function(str) {
-    return str.toString().replace(/([.?*+^$[\]\\(){}|-])/g, "\\$1");
-  };
-
-  // Test if the mail is a multipart MIME mail or not
-  // If the email is a multipart MIME mail, search for the boundary
-  if (header.match(/Content-Type: multipart\/alternative;/g)) {
-    console.log("Found a multipart MIME mail")
-    // boundarys could also have no "" <- need to fix this
-    var boundary = body.match(/(?<=boundary=").*(?="\n)|(?<=boundary=).*(?=\n)/)
-    console.log("Boundary found: " + boundary)
-
-    if (boundary = null) {
-      var regBoundary = RegExp.cleanUp(boundary)
-
-      console.log(regBoundary)
-
-      var plainRegex = RegExp("(?<=" + regBoundary + "\nContent-Type: text\/plain;\n[\\s\\S]*?)(?=--" + regBoundary + ")")
-
-      console.log("Regex to search for: " + plainRegex)
-
-      var body = body.replace(plainRegex, cancelText)
-    }    
-
-    // (?<=" + regBoundary + "\nContent-Type: text\/html;\n[\\s\\S]*?)(?=<\/body>)
-    var htmlRegex = RegExp("<\/body>")
-    console.log("\nRegex to search for: " + htmlRegex)
-
-    cancelHTML = cancelHTML + "<\/body>"
-
-    body = body.replace(htmlRegex, cancelHTML)
-  } else if (header.match(/Content-Type: text\/html;/g)) {
-    console.log("This seems like a text/html MIME mail")
-
-    body = body + cancelHTML
-
+  // Break the process and delete the mail in case the mailID does not exist
+  if (data.recipients.length === 0) {
+    console.log("No match has been found, closing task.")
+    console.log(data)
+    return Promise.resolve(data);
   } else {
-    console.log("This does not seems like a MIME mail")
-
-    cancelText = "\n\nDon't want to use MailMask anymore? Click the following link to cancel.\n\n" + cancelLink
-
-    body = body + cancelText
-  }
-
-  // SES does not allow sending messages from an unverified address,
-  // so replace the message's "From:" header with the original
-  // recipient (which is a verified domain)
-  header = header.replace(
-    /^from:[\t ]?(.*(?:\r?\n\s+.*)*)/mgi,
-    function(match, from) {
-      var fromText;
-      if (data.config.fromEmail) {
-        fromText = 'From: ' + from.replace(/<(.*)>/, '').trim() +
-        ' <' + data.config.fromEmail + '>';
+    // Add "Reply-To:" with the "From" address if it doesn't already exists
+    if (!/^reply-to:[\t ]?/mi.test(header)) {
+      match = header.match(/^from:[\t ]?(.*(?:\r?\n\s+.*)*\r?\n)/mi);
+      var from = match && match[1] ? match[1] : '';
+      if (from) {
+        header = header + 'Reply-To: ' + from;
+        data.log({
+          level: "info",
+          message: "Added Reply-To address of: " + from
+        });
       } else {
-        fromText = 'From: ' + from.replace('<', 'at ').replace('>', '') +
-        ' <' + data.originalRecipient + '>';
+        data.log({
+          level: "info",
+          message: "Reply-To address not added because From address was not " +
+            "properly extracted."
+        });
       }
-      return fromText;
-    });
+    }
 
-  // Add a prefix to the Subject
-  if (data.config.subjectPrefix) {
+    // Get the recipientID and build a link that lets the user easily delete his/her address
+    // First step is to find the mailmask.me address inside the recipients
+    // Currently, it is not supported to cover more than one mailmask address
+    let mailmaskAddresses = data.originalRecipients.filter(address => address.includes("mailmask.me"))
+    
+    let mailmaskID = mailmaskAddresses[0].toString().slice(0,8).toLowerCase()
+    
+    let cancelLink = "www.mailmask.me/?cancelMail=" + mailmaskID + "%40mailmask.me#cancel"
+    
+    let cancelText = "Don't want to use MailMask anymore?\n" + cancelLink + "\n"
+
+    let cancelHTML = "<p style='text-align: center;font-family: 'Avenir Next', sans-serif; margin: 50px; font-size: 1rem;'>Don't want to use MailMask anymore? <a href=" + cancelLink + " style='color: #0095FF;'><strong>Cancel this MailMask</strong></a></p>"
+
+    let cancelHeaderImage = "<img style='margin: 2rem; border-radius: 15px;' src='https://mailmask-images.s3-eu-west-1.amazonaws.com/mailheader.svg'>"
+
+    // This function cleans up the string to make this pattern searchable in regex
+    RegExp.cleanUp = function(str) {
+      return str.toString().replace(/([.?*+^$[\]\\(){}|-])/g, "\\$1");
+    };
+
+    // Test if the mail is a multipart MIME mail or not
+    // If the email is a multipart MIME mail, search for the boundary
+    if (header.match(/Content-Type: multipart\/alternative;/g)) {
+      console.log("Found a multipart MIME mail")
+      // boundarys could also have no "" <- need to fix this
+      var boundary = body.match(/(?<=boundary=").*(?="\n)|(?<=boundary=).*(?=\n)/)
+      console.log("Boundary found: " + boundary)
+
+      if (boundary = null) {
+        var regBoundary = RegExp.cleanUp(boundary)
+
+        console.log(regBoundary)
+
+        var plainRegex = RegExp("(?<=" + regBoundary + "\nContent-Type: text\/plain;\n[\\s\\S]*?)(?=--" + regBoundary + ")")
+
+        console.log("Regex to search for: " + plainRegex)
+
+        var body = body.replace(plainRegex, cancelText)
+      }    
+
+      var htmlRegex = RegExp("<\/body>")
+      console.log("\nRegex to search for: " + htmlRegex)
+
+      cancelHTML = cancelHeaderImage + cancelHTML + "<\/body>"
+
+      body = body.replace(htmlRegex, cancelHTML)
+    } else if (header.match(/Content-Type: text\/html;/g)) {
+      console.log("This seems like a text/html MIME mail")
+
+      body = body + cancelHTML
+
+    } else {
+      console.log("This does not seems like a MIME mail")
+
+      cancelText = "\n\nDon't want to use MailMask anymore? Click the following link to cancel.\n\n" + cancelLink
+
+      body = body + cancelText
+    }
+
+    // SES does not allow sending messages from an unverified address,
+    // so replace the message's "From:" header with the original
+    // recipient (which is a verified domain)
     header = header.replace(
-      /^subject:[\t ]?(.*)/mgi,
-      function(match, subject) {
-        return 'Subject: ' + data.config.subjectPrefix + subject;
+      /^from:[\t ]?(.*(?:\r?\n\s+.*)*)/mgi,
+      function(match, from) {
+        var fromText;
+        if (data.config.fromEmail) {
+          fromText = 'From: ' + from.replace(/<(.*)>/, '').trim() +
+          ' <' + data.config.fromEmail + '>';
+        } else {
+          fromText = 'From: ' + from.replace('<', 'at ').replace('>', '') +
+          ' <' + data.originalRecipient + '>';
+        }
+        return fromText;
       });
+
+    // Add a prefix to the Subject
+    if (data.config.subjectPrefix) {
+      header = header.replace(
+        /^subject:[\t ]?(.*)/mgi,
+        function(match, subject) {
+          return 'Subject: ' + data.config.subjectPrefix + subject;
+        });
+    }
+
+    // Replace original 'To' header with a manually defined one
+    if (data.config.toEmail) {
+      header = header.replace(/^to:[\t ]?(.*)/mgi, () => 'To: ' + data.config.toEmail);
+    }
+
+    // Remove the Return-Path header.
+    header = header.replace(/^return-path:[\t ]?(.*)\r?\n/mgi, '');
+
+    // Remove Sender header.
+    header = header.replace(/^sender:[\t ]?(.*)\r?\n/mgi, '');
+
+    // Remove Message-ID header.
+    header = header.replace(/^message-id:[\t ]?(.*)\r?\n/mgi, '');
+
+    // Remove all DKIM-Signature headers to prevent triggering an
+    // "InvalidParameterValue: Duplicate header 'DKIM-Signature'" error.
+    // These signatures will likely be invalid anyways, since the From
+    // header was modified.
+    header = header.replace(/^dkim-signature:[\t ]?.*\r?\n(\s+.*\r?\n)*/mgi, '');
+
+    data.emailData = header + body;
+
+    console.log(data.emailData)
+    return Promise.resolve(data);
   }
-
-  // Replace original 'To' header with a manually defined one
-  if (data.config.toEmail) {
-    header = header.replace(/^to:[\t ]?(.*)/mgi, () => 'To: ' + data.config.toEmail);
-  }
-
-  // Remove the Return-Path header.
-  header = header.replace(/^return-path:[\t ]?(.*)\r?\n/mgi, '');
-
-  // Remove Sender header.
-  header = header.replace(/^sender:[\t ]?(.*)\r?\n/mgi, '');
-
-  // Remove Message-ID header.
-  header = header.replace(/^message-id:[\t ]?(.*)\r?\n/mgi, '');
-
-  // Remove all DKIM-Signature headers to prevent triggering an
-  // "InvalidParameterValue: Duplicate header 'DKIM-Signature'" error.
-  // These signatures will likely be invalid anyways, since the From
-  // header was modified.
-  header = header.replace(/^dkim-signature:[\t ]?.*\r?\n(\s+.*\r?\n)*/mgi, '');
-
-  data.emailData = header + body;
-
-  console.log(data.emailData)
-  return Promise.resolve(data);
 };
 
 /**
@@ -380,6 +388,9 @@ exports.sendMessage = function(data) {
       resolve(data);
     });
   });
+  } else {
+    console.log("Skipped sending mail. No data.recipients were found.")
+    return Promise.resolve(data);
   }
 };
 
