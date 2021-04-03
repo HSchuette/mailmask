@@ -32,7 +32,6 @@ main {
 }
 
 body {
-    margin-top: 5vh;
     line-height: 1.6;
     font-size: 1.1rem;
     color: var(--textcolor);
@@ -74,6 +73,7 @@ section:target { /* Show section */
 
 section#home {
     display: block;
+    padding-top: 5rem;
 }
 
 h1 {
@@ -92,7 +92,8 @@ a {
 }
 
 header {
-    padding: 0vw 10vw 0 10vw;
+    padding: 0vw 10vw 0vw 10vw;
+    margin-top: 2rem;
     display: flex;
     flex-wrap: wrap;   
     position: absolute; 
@@ -243,6 +244,7 @@ input[type="email"]
     padding-left: 2vh;
     padding-right: 2vh;
     padding-bottom: 10vh;
+    padding-top: 6rem;
 }
 
 .howto-header{
@@ -282,10 +284,10 @@ input[type="email"]
 }
 
 section#cancel, section#support, section#tandc, section#privacy {
-    padding-top: 10vh;
     padding-left: 2vh;
     padding-right: 2vh;
-    height: 100%;
+    padding-top: 10rem;
+    min-height: 150vh;
 }
 
 #cancelButton:hover {
@@ -380,8 +382,12 @@ section#cancel, section#support, section#tandc, section#privacy {
     z-index: 2;
 }
 
+.imprint-container-header {
+    position: relative;
+}
+
 .imprint-modal span {
-    position: absolute;
+    position:absolute;
     font-size: 2rem;
     right: -1rem;
     bottom: 0rem;
@@ -441,7 +447,6 @@ section#cancel, section#support, section#tandc, section#privacy {
 @media only screen and (max-width: 840px) {
     header {
         padding: 0;
-        
     }
     
     nav {
@@ -458,16 +463,16 @@ section#cancel, section#support, section#tandc, section#privacy {
     }
 
     section#howto {
-        padding-top: calc(6em + 5vw);
+        padding-top: calc(5em);
     }
 
     section#home {
-        padding-top: calc(6em + 5vw);
+        padding-top: calc(6em + 6vw);
         padding-bottom: calc(6em + 5vw);
     }
 
     section#cancel, section#support, section#tandc, section#privacy {
-        padding-top: calc(6em + 20vw);
+        padding-top: calc(12em + 6vw);
         min-height: 150vh;
     }
 }
