@@ -174,7 +174,6 @@ exports.processMessage = function(data) {
   // Break the process and delete the mail in case the mailID does not exist
   if (data.recipients.length === 0) {
     console.log("No match has been found, closing task.")
-    console.log(data)
     return Promise.resolve(data);
   } else {
     // Add "Reply-To:" with the "From" address if it doesn't already exists
