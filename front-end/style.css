@@ -193,7 +193,7 @@ input[type="email"]
     padding-left: 0.5vh;
 }
 
-.privacy-and-terms-checkbox > label a, .how-to-text > a {
+.privacy-and-terms-checkbox > label a, .how-to-text > a, a {
     color: var(--highlight);
 }
 
