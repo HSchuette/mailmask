@@ -37,7 +37,7 @@
                         <div class="innerBox">                        
                             <div class="innerBox-text">                    
                                 
-                                <h1>Your email deserves <u>privacy</u>.</h1>
+                                <h1 class="decrypt-title">Your email deserves <u id="decrypt"></u></h1>                                
                             
                                                                         
                                 <div class="catchphrase">
@@ -71,10 +71,15 @@
                     </div>
                     <div class="howto-container", id="howto-container">
                         <div class="how-to-text" id="how-to-text">
-                            <p>MailMask creates a unique and random email address for you. This way your real address is kept secret for the website or the app developer. This email address is uniquely fit to reroute incoming mails from the webpage to your address.</p>
+                            <h2>How It Works</h2>
+                            <p>MailMask is an easy to use email forwarding service that helps you to stay save and private on the internet.</p>
+                            <p>After entering your own email address, we send you a mail with a unique and randomly generated MailMask address. This email address is uniquely fit to reroute incoming mails to your address. This way your real address is kept secret for the website, app or newsletter you hand the MailMask address to while still receiving every message you want.</p>
                             <p>Your MailMask address consists out of a unique id and the domain ending "@mailmask.me".</p>
-                            <p>Any messages sent to this address by the app or website developer are automatically forwarded to your personal email address.</p>
-                            <p>MailMask <b>never</b> processes the content of your incoming mails. The data is stored only for forwarding and is deleted after the mail has been sent to your private email address.</p>                                                
+                            <p>MailMask <b>never</b> processes the content of your incoming mails. The data is stored only for forwarding and is deleted after the mail has been sent to your real email address. We value privacy and invite you to go through our <a href="#privacy">privacy policy</a>.</p>
+                            <b>Canceling your MailMask address</b>
+                            <p>In case you want to cancel all incoming messages to the address, simply click the link of every incoming mail or head <a href="#cancel">here</a>. This deletes every trace of the address from our servers and cancels all future emails.</p>                                                
+                            <b>How does MailMask make money?</b>
+                            <p>We don't generate any revenue from our services. MailMask is a self-financed project which needs community support to operate. Head to the <a href="#support">support page</a> if you want to support the development and help us grow the project.</p>
                         </div>  
                     </div>                
                 </div>
@@ -251,6 +256,27 @@
                     }
                 }                    
             });
+
+            function getRandomString() {
+                word = "privacy."
+                for (let i = 1; i < 10; i++) {
+                    setTimeout(function timer() {                        
+                        word = Math.random().toString(36).substring(2, 4) + Math.random().toString(36).substring(2, 5);                        
+                        if (i == 9) {
+                            word = "privacy."
+                        }
+                        document.getElementById("decrypt").innerHTML = word
+
+                    }, i * 100);                    
+                }               
+            }
+
+            getRandomString()
+
+            $(".decrypt-title").on("mouseover", function() {
+                getRandomString()
+            })
+             
 
             function validateEmail(email) {
                 var pattern = new RegExp(/[+a-zA-Z0-9._-]+@mailmask+\.me/gmi);
