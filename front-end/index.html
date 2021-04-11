@@ -45,7 +45,7 @@
                                 </div>    
                                                     
                             </div>
-                            <form action="">           
+                            <form action="" id="emailInputForm">           
                                 <input id="mail" placeholder="Enter your email here..." type="email" name="email" pattern="[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{1,63}$" required/>                                
                                 <div class = "privacy-and-terms-checkbox">
                                     <input type="checkbox" id="checkbox" name="checkbox" required />
@@ -54,9 +54,10 @@
                                 <input type="submit" name="submitButton" id="submitButton" class="button-cta" value="Generate Mail">
                             </form>
                             <div class="alert alert-success" id="success" style="display:none"> 
+                                <hr>
                                 <h2>Thank you!</h2>
                                 <p>We just sent you an email with your personal MailMask address. All incoming emails are automatically forwarded to your personal address.</p>
-                                <p>If you like MailMask, feed free to spread the word and head to our <a href="#support">support page</a>.</p>
+                                <p>If you like MailMask, feel free to spread the word and head to our <a href="#support">support page</a>.</p>
                             </div>  
                         </div>                                            
                     </div>                    
@@ -97,11 +98,17 @@
                         <div class="cancel-text" id="cancel-text">
                             <p>If you wish to cancel or deactivate your MailMask forwarding address, simply paste the email in the following form and confirm your submission.</p>
                         </div>
-                        <form action="">            
+                        <form action="" id="cancelInputForm">            
                             <input id="cancelMail" name="email" placeholder="Your MailMask address here..." type="email" pattern="[A-Za-z0-9._%+-]+@mailmask\.me" required></input>
                             <input type="submit" id="cancelButton" name="cancelButton" class="button-cta" value="Cancel Mail">
                         </form>  
-                        <div class="alert alert-success" id="cancelSuccess" style="display:none"> Success Message</div>  
+                        <div class="alert alert-success" id="cancelSuccess" style="display:none">
+                            <hr>
+                            <h2>Cancelation Successful!</h2>
+                            <p>Thank you for using MailMask. We now deleted the forwarding address. Your real email address will be deleted from our servers.</p>
+                            <p>In case you wish to use create a new address head to the <a href="#home">main page</a>.</p>
+                            <p>If you like MailMask, feel free to spread the word and head to our <a href="#support">support page</a>.</p>
+                        </div>  
                     </div>
                 </div>
             </div>
@@ -252,7 +259,7 @@
 
                         success: function(data) {
                             $("#success").show(),
-                            setTimeout(function() { $("#success").hide(); }, 5000)
+                            $("#emailInputForm").hide(),
                             $("#mail").val("")
                         }
                     }); 
@@ -306,7 +313,7 @@
 
                         success: function(data) {
                             $("#cancelSuccess").show(),
-                            setTimeout(function() { $("#cancelSuccess").hide(); }, 5000)
+                            $("#cancelInputForm").hide(),
                             $("#cancelMail").val("")
                         }
                     }); 
