@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang=”en”>
+<html>
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -27,12 +27,20 @@
     }
 
     body {
+        padding: 0;
         line-height: 1.6;
         font-size: 1.1rem;
         color: var(--textcolor);        
         position: relative;
         font-family: 'Avenir Next', sans-serif; 
-        margin: 40px;             
+        margin: 2rem;             
+    }
+
+    .main-image {
+      border-radius: 15px; 
+      width:100%;
+      position: relative;
+      padding: 0;
     }
 
     .container {
@@ -43,7 +51,7 @@
     }
 
     .main-text {
-      margin: 35px;
+      margin: 2.4rem;
     }
 
     .main-email {
@@ -61,12 +69,22 @@
       color: var(--highlight)
     }
 
+    @media only screen and (max-width: 600px) {
+      body {
+        margin: 0rem;   
+      }
+
+      .main-text {
+      margin: 1.2rem;
+      }
+    }
+
     </style>
   </head>
 
     <body class="main-content">
       <div class="container">
-        <img style="border-radius: 15px;" src="https://mailmask-images.s3-eu-west-1.amazonaws.com/mailmask-mailheader.svg">
+        <img class="main-image" src="https://mailmask-images.s3-eu-west-1.amazonaws.com/mailmask-mailheader.svg">
           <div class="main-text">
             <p>Hello there!</p>
             <p>Your new MailMask address has arrived. All incoming emails to this address are automatically forwarded to your personal address.</p>
