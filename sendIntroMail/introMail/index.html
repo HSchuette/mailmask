@@ -37,7 +37,7 @@
     }
 
     .main-image {
-      border-radius: 15px; 
+      border-radius: 15px;
       width:100%;
       position: relative;
       padding: 0;
@@ -47,7 +47,7 @@
       background-color: white;      
       box-shadow: 2px 1px 45px 0px rgba(0,0,0,0.29);
       border-radius: 15px;
-      padding-bottom: 10px;
+      padding-bottom: 1rem;
     }
 
     .main-text {
@@ -77,6 +77,10 @@
       .main-text {
       margin: 1.2rem;
       }
+
+      .main-image {
+        border-radius: 0px; 
+      }      
     }
 
     </style>
@@ -91,7 +95,7 @@
           </div>
 
           <div class="main-email">
-            <a type="email"><b><u>ulbjhgkvb@mailmask.me</u></b></a>
+            <a href="{{mail}}"><b><u>{{mail}}</u></b></a>
           </div>
 
           <div class="main-text">
@@ -102,7 +106,7 @@
     </body>
 
     <footer>
-      <a href="www.mailmask.me">www.mailmask.me</a>
+      <a href="www.mailmask.me" target="_blank">www.mailmask.me</a>
       <p>© 2020 All Rights Reserved</p>
       <p>Hendrik Schuette, Turmstraße 54, 10551 Berlin</p>
     </footer>
