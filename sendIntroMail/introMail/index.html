@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html>
-  <head>
+<head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="x-apple-disable-message-reformatting">
@@ -10,16 +10,16 @@
     * {box-sizing: border-box; 
         /* Color scheme */
         
-      --textcolor: rgb(0, 0, 0);
-      --bgcolor: #f3f3f3;
-      --highlight: #0095FF;
-      --bg2color: #f6f6f6;
-      --warning: #aa1515;
-      
+    --textcolor: rgb(0, 0, 0);
+    --bgcolor: #f3f3f3;
+    --highlight: #0095FF;
+    --bg2color: #f6f6f6;
+    --warning: #aa1515;
+    
     }
     
     html {
-      background-color: var(--bgcolor);
+    background-color: var(--bgcolor);
     }
 
     main {
@@ -33,12 +33,13 @@
         color: var(--textcolor);        
         position: relative;
         font-family: 'Avenir Next', sans-serif; 
-        margin: 2rem;             
+        margin: 2rem;  
+        min-width: 100%;          
     }
 
     .main-image {
       border-radius: 15px;
-      width:100%;
+      width: 100%;
       position: relative;
       padding: 0;
     }
@@ -70,45 +71,52 @@
     }
 
     @media only screen and (max-width: 600px) {
-      body {
-        margin: 0rem;   
-      }
+    body {
+        margin: 0rem;          
+    }
 
-      .main-text {
-      margin: 1.2rem;
-      }
+    .container {
+      border-radius: 0px;
+    }
 
-      .main-image {
-        border-radius: 0px; 
-      }      
+
+    .main-text {
+      margin: 1.2rem; 
+    }
+
+    .main-image {
+        border-radius: 0px;
+        overflow: auto;
+    }      
     }
 
     </style>
-  </head>
+
+</head>
 
     <body class="main-content">
-      <div class="container">
+    <div class="container">
         <img class="main-image" src="https://mailmask-images.s3-eu-west-1.amazonaws.com/mailmask-mailheader.svg">
-          <div class="main-text">
+        <div class="main-text">
             <p>Hello there!</p>
             <p>Your new MailMask address has arrived. All incoming emails to this address are automatically forwarded to your personal address.</p>
-          </div>
+        </div>
 
-          <div class="main-email">
-            <a href="{{mail}}"><b><u>{{mail}}</u></b></a>
-          </div>
+        <div class="main-email">
+            <a href="mailto:{{routingAddress}}"><b><u>{{routingAddress}}</u></b></a>
+        </div>
 
-          <div class="main-text">
+        <div class="main-text">
             <p>If you like MailMask, feel free to spread the word and head to our <a href="www.mailmask.me#support">support page</a>.</p>
             <p>In case you did not trigger this mail or do not want to receive any mails from us, feel free to cancel the forwarding address <a href="www.mailmask.me#cancel">here</a>.</p>
-          </div>
+        </div>
         </div>
     </body>
 
     <footer>
-      <a href="www.mailmask.me" target="_blank">www.mailmask.me</a>
-      <p>© 2020 All Rights Reserved</p>
-      <p>Hendrik Schuette, Turmstraße 54, 10551 Berlin</p>
+    <a href="www.mailmask.me" target="_blank">www.mailmask.me</a>
+    <p>© 2020 All Rights Reserved</p>
+    <p>Hendrik Schuette, Turmstraße 54, 10551 Berlin</p>
     </footer>
 
 </html>
