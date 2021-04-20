@@ -463,11 +463,11 @@ section#cancel, section#support, section#tandc, section#privacy {
     }
 
     section#howto {
-        padding-top: calc(5em);
+        padding-top: calc(2em);
     }
 
     section#home {
-        padding-top: calc(6em + 6vw);
+        padding-top: calc(8em + 6vw);
         padding-bottom: calc(6em + 5vw);
     }
 
