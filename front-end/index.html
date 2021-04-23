@@ -36,14 +36,10 @@
                     <div class="content">
                         <div class="innerBox">                        
                             <div class="innerBox-text">                    
-                                
-                                <h1 class="decrypt-title">Your email deserves <u id="decrypt"></u></h1>                                
-                            
-                                                                        
+                                <h1 class="decrypt-title">Your email deserves <u id="decrypt"></u></h1>                                                         
                                 <div class="catchphrase">
                                     <p>Generate a unique and random forwarding address so you can still receive every email, newsletter etc. without sharing your personal address.</p>
                                 </div>    
-                                                    
                             </div>
                             <form action="?" id="emailInputForm">           
                                 <input id="mail" placeholder="Enter your email here..." type="email" name="email" pattern="[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{1,63}$" required/>                                
@@ -266,6 +262,7 @@
                         success: function(data) {
                             $("#success").show(),
                             $("#emailInputForm").hide(),
+                            $(".catchphrase").hide(),
                             $("#mail").val("")
                         }
                     }); 
