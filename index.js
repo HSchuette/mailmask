@@ -202,13 +202,13 @@ exports.processMessage = function(data) {
     
     let mailmaskID = mailmaskAddresses[0].toString().slice(0,8).toLowerCase()
     
-    let cancelLink = "www.mailmask.me/?cancelMail=" + mailmaskID + "%40mailmask.me#cancel"
+    let cancelLink = "https://www.mailmask.me/?cancelMail=" + mailmaskID + "%40mailmask.me#cancel"
     
     let cancelText = "Don't want to use MailMask anymore?\n" + cancelLink + "\n"
 
     let cancelHTML = "<p style='text-align: center;font-family: 'Avenir Next', sans-serif; margin: 50px; font-size: 1rem;'>Don't want to use MailMask anymore? <br><a href=" + cancelLink + " style='color: #0095FF;'><strong>Cancel this MailMask</strong></a></p>"
     
-    let cancelHeaderImage = "<img style='border-radius: 15px; margin-top: 10px; max-width: 400px; align-items: center; display: block; margin-left: auto; margin-right: auto;' src='https://mailmask-images.s3-eu-west-1.amazonaws.com/mailheader.svg'>"
+    let cancelHeaderImage = "<img style='border-radius: 15px; margin-top: 10px; max-width: 300px; align-items: center; display: block; margin-left: auto; margin-right: auto;' src='https://mailmask-images.s3-eu-west-1.amazonaws.com/mailheader.svg'>"
 
     // This function cleans up the string to make this pattern searchable in regex
     RegExp.cleanUp = function(str) {
