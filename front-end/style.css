@@ -234,6 +234,7 @@ input[type="email"]
 
 .success {
     text-align: center;
+    margin-bottom: 65px;
 }
 
 .mail-overlay {
