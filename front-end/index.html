@@ -245,6 +245,7 @@
                 
         <script type="text/javascript">
             var API_URL = "https://423ghva5nf.execute-api.eu-west-1.amazonaws.com/prod/mails";
+            let mailmaskRegex = /.*@mailmask\.me/
             
             $("#submitButton").on('click', function() {
                 if (!$("#mail").val()) {
@@ -253,19 +254,23 @@
                     if ($("#checkbox").prop('checked') == false) {
                         console.log("Error - invalid request. Checkbox not checked.")
                     } else {
-                        $.ajax({
-                        type: "POST",
-                        url: API_URL,
-                        data: JSON.stringify({"forwardingAddress": $("#mail").val()}),
-                        contentType: "application/JSON",
+                        if(mailmaskRegex.test($("#mail").val())) {
+                            console.log("Error - invalid request. Looping mails are not allowed.")
+                        } else {
+                            $.ajax({
+                            type: "POST",
+                            url: API_URL,
+                            data: JSON.stringify({"forwardingAddress": $("#mail").val()}),
+                            contentType: "application/JSON",
 
-                        success: function(data) {
-                            $("#success").show(),
-                            $("#emailInputForm").hide(),
-                            $(".catchphrase").hide(),
-                            $("#mail").val("")
-                        }
-                    }); 
+                            success: function(data) {
+                                $("#success").show(),
+                                $("#emailInputForm").hide(),
+                                $(".catchphrase").hide(),
+                                $("#mail").val("")
+                            }
+                            })                     
+                        }; 
                     return false;
                     }
                 }                    
