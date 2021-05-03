@@ -36,13 +36,22 @@ exports.handler = function(event, context, callback) {
         TableName: "mailMaskList"
     };
 
-    docClient.put(params, function(err, data) {
-        if(err) {
-            console.log(err);
-            callback(err, null);
-        } else {
-            console.log("Writing was a success!");
-            callback(null, data);
-        }
-    });
+    let mailmaskRegex = /.*@mailmask\.me/
+
+    console.log(event.forwardingAddress)
+    console.log(mailmaskRegex.test(event.forwardingAddress))
+    
+    if (mailmaskRegex.test(event.forwardingAddress)) {
+        console.log("Did not write because of looping mail.")
+    } else {
+        docClient.put(params, function(err, data) {
+            if(err) {
+                console.log(err);
+                callback(err, null);
+            } else {
+                console.log("Writing was a success!");
+                callback(null, data);
+            }
+        });
+    }
 }
