@@ -1,0 +1,23 @@
+{
+  "dependencies": {
+    "crypto-js": "^4.0.0"
+  },
+  "name": "mailmask",
+  "version": "1.0.0",
+  "main": "index.js",
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/HSchuette/mailmask.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/HSchuette/mailmask/issues"
+  },
+  "homepage": "https://github.com/HSchuette/mailmask#readme",
+  "description": ""
+}
