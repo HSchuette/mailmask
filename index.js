@@ -21,7 +21,7 @@ console.log("AWS Lambda SES Forwarder");
 
 var defaultConfig = {
   fromEmail: "main@mailmask.me",
-  subjectPrefix: "Fwd. via MailMask.me: ",
+  subjectPrefix: "Fwd. via mailmask.me: ",
   emailBucket: "bucket4mailmask",
   emailKeyPrefix: "",
 };
