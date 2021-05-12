@@ -1,4 +1,5 @@
 const AWS = require('aws-sdk');
+const CryptoJS = require("crypto-js");
 const ses = new AWS.SES();
  
 exports.handler = async (event) => {
@@ -6,7 +7,9 @@ exports.handler = async (event) => {
     let newDBEntry = event.Records[0].dynamodb;
     console.log(newDBEntry);
  
-    let forwardingAddress = newDBEntry.NewImage.forwardingAddress.S;
+    let hashedForwardingAddress = newDBEntry.NewImage.forwardingAddress.S;
+    let key = process.env.hashKey
+    let forwardingAddress = CryptoJS.AES.decrypt(hashedForwardingAddress, key).toString(CryptoJS.enc.Utf8)  
     let routingAddress = newDBEntry.NewImage.routingAddress.S;
     let messagebody = 'Hi! Your new mailmask address is: ' + routingAddress
 
