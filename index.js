@@ -1,6 +1,7 @@
 "use strict";
 
 const AWS = require('aws-sdk');
+const CryptoJS = require("crypto-js");
 const docClient = new AWS.DynamoDB.DocumentClient({region: "eu-west-1"});
 
 console.log("AWS Lambda SES Forwarder");
@@ -65,11 +66,13 @@ exports.getFwdAddress = async function(data) {
 
   data.log(data.originalRecipients)
 
+  var hashedRecipientArray = []
   var newRecipients = [];
 
   for (var i = 0, len = data.originalRecipients.length; i < len; i++) {
     var origEmailKey = data.originalRecipients[i]
     var recipientiD = origEmailKey.toString().slice(0,8).toLowerCase()
+    let key = process.env.hashKey
 
     console.log("recipientID is " + recipientiD)
     
@@ -85,8 +88,14 @@ exports.getFwdAddress = async function(data) {
         console.error("Unable to get item. Error JSON:", JSON.stringify(err, null, 2));
       } else {
         try {
-          newRecipients = newRecipients.concat(response.Item.forwardingAddress)
-          console.log("Forwarding Address added: ", newRecipients)
+          hashedRecipientArray = hashedRecipientArray.concat(response.Item.forwardingAddress)
+          console.log("Hashed Addresses: ", hashedRecipientArray)
+          hashedRecipientArray.forEach(recipient => {
+            console.log(recipient)
+            var unhashedForwardingAddress = CryptoJS.AES.decrypt(recipient, key).toString(CryptoJS.enc.Utf8)
+            newRecipients.push(unhashedForwardingAddress)
+          })
+          console.log("Unhashed Addresses: ", newRecipients)
         } catch {
           console.error("Unable to find recipientID item. Error JSON:", JSON.stringify(err, null, 2));        
           newRecipients = []
