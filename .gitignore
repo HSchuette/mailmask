@@ -1,0 +1,7 @@
+testMail.html
+node_modules/
+**/node_modules/
+event.json
+test.js
+*.zip
+.DS_Store
