@@ -1,11 +1,14 @@
 "use strict";
 
+// Getting the required packages
 const AWS = require('aws-sdk');
 const CryptoJS = require("crypto-js");
 const docClient = new AWS.DynamoDB.DocumentClient({region: "eu-west-1"});
 
 console.log("AWS Lambda SES Forwarder");
 
+// Thanks to https://gist.github.com/rs77 for laying the foundation of this code
+//
 // Configure the S3 bucket and key prefix for stored raw emails, and the
 // mapping of email addresses to forward from and to.
 //
@@ -21,9 +24,9 @@ console.log("AWS Lambda SES Forwarder");
 //   trailing slash.
 
 var defaultConfig = {
-  fromEmail: "main@mailmask.me",
+  fromEmail: process.env.fromEmail,
   subjectPrefix: "Fwd. via mailmask.me: ",
-  emailBucket: "bucket4mailmask",
+  emailBucket: process.env.emailBucket,
   emailKeyPrefix: "",
 };
 
@@ -441,32 +444,8 @@ exports.handler = function(event, context, callback, overrides) {
       message: "Process finished successfully."
     });
   });
-
-  // Promise.series(steps, data)
-  //   .then(function(data) {
-  //     console.log({
-  //       level: "info",
-  //       message: "Process finished successfully."
-  //     });
-  //   })
-  //   .catch(function(err) {
-  //     console.log({
-  //       level: "error",
-  //       message: "Step returned error: " + err.message,
-  //       error: err,
-  //       stack: err.stack
-  //     });
-  //     return data.callback(new Error("Error: Step returned error."));
-  //   });
 };
 
-// Promise.series = function(promises, initValue) {
-//   return promises.reduce(function(chain, promise) {
-//     if (typeof promise !== 'function') {
-//       return Promise.reject(new Error("Error: Invalid promise item: " +
-//         promise));
-//     }
-//     return chain.then(promise);
-//   }, Promise.resolve(initValue));
-// };
+
+
 
