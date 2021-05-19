@@ -1,4 +1,5 @@
 // DELETEMAIL
+// Lambda function that deletes the emails upon request
 
 console.log("starting the lambda function");
 
