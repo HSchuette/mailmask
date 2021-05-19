@@ -9,8 +9,8 @@ console.log("AWS Lambda SES Forwarder");
 
 // Thanks to https://gist.github.com/rs77 for laying the foundation of this code
 //
-// Configure the S3 bucket and key prefix for stored raw emails, and the
-// mapping of email addresses to forward from and to.
+// This is the main forwardig function. An incoming mail is being stored on S3, forwarded to the
+// corresponding mailaddress and then deleted.
 //
 // Expected keys/values:
 //
