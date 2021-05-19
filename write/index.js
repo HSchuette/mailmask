@@ -1,4 +1,5 @@
 // POSTMAIL
+// Lambda function that creates a new mailmask forwarding mail
 
 console.log("starting the lambda function");
 
