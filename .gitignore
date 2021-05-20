@@ -4,4 +4,6 @@ node_modules/
 event.json
 test.js
 *.zip
-.DS_Store
+<<<<<<< HEAD
+.DS_Stores
+mailmask.git
