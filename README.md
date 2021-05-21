@@ -16,9 +16,9 @@
     <br />
     <a href="https://mailmask.me">Test It</a>
     ·
-    <a href="https://github.com/othneildrew/Best-README-Template/issues">Report Bug</a>
+    <a href="https://github.com/HSchuette/mailmask/issues">Report Bug</a>
     ·
-    <a href="https://github.com/othneildrew/Best-README-Template/issues">Request Feature</a>
+    <a href="https://github.com/HSchuette/mailmask/issues">Request Feature</a>
   </p>
 </p>
 
@@ -47,7 +47,7 @@
 ## About The Project
 
 <p align="center">
- <img src="images/screenshot-rocks.jpeg" alt="Screenshot Preview" height="300">
+ <img src="images/screenshot-rocks.jpeg" alt="Screenshot Preview" width="800">
 </p>
 
 Mailmask started as I searched for a simple solution to get a newsletter without sharing my real emailaddress. Trashmails were my first go-to but due to their temporary nature, the solution was flawed. 
