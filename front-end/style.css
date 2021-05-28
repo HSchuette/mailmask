@@ -457,7 +457,7 @@ section#cancel, section#support, section#tandc, section#privacy {
     }
 }
 
-@media only screen and (max-width: 840px) {
+@media only screen and (max-width: 1000px) {
     header {
         padding: 0;
     }
