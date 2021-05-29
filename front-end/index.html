@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang=”en”>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>MailMask</title>
+        <link rel="stylesheet" href="style.css"> 
+        <link rel="apple-touch-icon" sizes="180x180" href="img/apple-touch-icon.png">
+        <link rel="icon" type="image/png" sizes="32x32" href="img/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+        <link rel="manifest" href="img/site.webmanifest">
+        <link rel="mask-icon" href="img/safari-pinned-tab.svg" color="#5bbad5">
+        <meta name="msapplication-TileColor" content="#da532c">
+        <meta name="theme-color" content="#ffffff">               
+    </head>
+    <body>
+        <header>
+            <div class="header-logo">
+                <a href=""><img class="img-logo" src="img/logo_onWhite.png" alt="illustration logo"></a>
+                <a href=""><img class="img-text-logo" src="img/logoText_simpleBlack.png" alt="mailmask logo"></a>    
+            </div>
+            
+            <nav>
+                <a class="nav-link" href="#howto">How It Works</a>                            
+                <a class="nav-link" href="https://github.com/HSchuette/mailmask.git">Source Code</a>
+                <a class="nav-link" href="#support">Support</a>   
+                <a class="nav-link" href="#cancel">Cancel Your MailMask</a> 
+            </nav> 
+        </header>
+        
+        <main>
+            <section id="home"> <!-- HOME -->
+                <div class="mail-overlay">
+                    <img class="img-mail-backdrop" src="img/mail-backdrop.svg">
+                </div>
+                <div class="container">
+                    <div class="content">
+                        <div class="innerBox">                        
+                            <div class="innerBox-text">                    
+                                <h1 class="decrypt-title">Your email deserves <u id="decrypt"></u></h1>                                                         
+                                <div class="catchphrase">
+                                    <p>Generate a unique and random forwarding address so you can still receive every email, newsletter etc. without sharing your personal address.</p>
+                                </div>    
+                            </div>
+                            <form action="?" id="emailInputForm">           
+                                <input id="mail" placeholder="Enter your email here..." type="email" name="email" pattern="[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{1,63}$" required/>                                
+                                <div class = "privacy-and-terms-checkbox">
+                                    <input type="checkbox" id="checkbox" name="checkbox" required />
+                                    <label>I agree with the <a href="#tandc">Terms & Conditions</a> and the <a href="#privacy">Privacy Policy</a>. </label>
+                                </div>
+                                <input type="submit" name="submitButton" id="submitButton" class="button-cta" value="Generate Mail">
+                            </form>
+                            <div class="alert alert-success" id="success" style="display:none; padding-bottom: 50px;"> 
+                                <hr>
+                                <h2>Thank you!</h2>
+                                <p>We just sent you an email with your personal MailMask address. All incoming emails are automatically forwarded to your personal address.</p>
+                                <p>If you like MailMask, feel free to spread the word and head to our <a href="#support">support page</a>.</p>
+                            </div>  
+                        </div>                                            
+                    </div>                    
+                </div> 
+
+                <div class="mail-overlay">
+                    <img class="img-mail-overlay" src="img/mail.svg">
+                </div>                    
+            </section>
+
+            <section id="howto">
+                <div class="howto-div", id="howto"> <!-- HOW TO -->
+                    <div class="howto-header">
+                        <div class="howto-title"><h1>How It Works</h1></div>
+                        <img class="illustration" src="img/illustration.png" alt="mail mask racoon">
+                    </div>
+                    <div class="howto-container", id="howto-container">
+                        <div class="how-to-text" id="how-to-text">
+                            <h2>How It Works</h2>
+                            <p>MailMask is an easy to use email forwarding service that helps you to stay save and private on the internet.</p>                            
+                            <p>After entering your own email address, we send you a mail with a unique and randomly generated MailMask address. This email address is uniquely fit to reroute incoming mails to your address. This way your real address is kept secret for the website, app or newsletter you hand the MailMask address to while still receiving every message you want.</p>
+                            <p>Your MailMask address consists out of a unique id and the domain ending "@mailmask.me".</p>
+                            <p>MailMask <b>never</b> processes the content of your incoming mails. The data is stored only for forwarding and is deleted after the mail has been sent to your real email address. We value privacy and invite you to go through our <a href="#privacy">privacy policy</a>.</p>
+                            <p>This project is open source. In case you want to know more about the inner workings of MailMask, head to the source code <a href="https://github.com/HSchuette/mailmask.git">here</a>.</p>
+                            <b>Canceling your MailMask address</b>
+                            <p>In case you want to cancel all incoming messages to the address, simply click the link of every incoming mail or head <a href="#cancel">here</a>. This deletes every trace of the address from our servers and cancels all future emails.</p>                                                
+                            <b>How does MailMask make money?</b>
+                            <p>We don't generate any revenue from our services. MailMask is a self-financed project which needs community support to operate. Head to the <a href="#support">support page</a> if you want to support the development and help us grow the project.</p>
+                        </div>  
+                    </div>                
+                </div>
+            </section>
+            
+            <section id="cancel"> <!-- CANCEL -->
+                <div class="content-box">
+                <div class="cancel-header">
+                    <div class="cancel-title"><h1>Cancel Your MailMask</h1></div>
+                    <div class="cancel-container", id="cancel-container">
+                        <div class="cancel-text" id="cancel-text">
+                            <p>If you wish to cancel or deactivate your MailMask forwarding address, simply paste the email in the following form and confirm your submission.</p>
+                        </div>
+                        <form action="?" id="cancelInputForm">            
+                            <input id="cancelMail" name="email" placeholder="Your MailMask address here..." type="email" pattern="[A-Za-z0-9._%+-]+@mailmask\.me" required></input>
+                            <input type="submit" id="cancelButton" name="cancelButton" class="button-cta" value="Cancel Mail">
+                        </form>  
+                        <div class="alert alert-success" id="cancelSuccess" style="display:none">
+                            <hr>
+                            <h2>Cancelation Successful!</h2>
+                            <p>Thank you for using MailMask. We now deleted the forwarding address. Your real email address will be deleted from our servers.</p>
+                            <p>In case you wish to use create a new address head to the <a href="#home">main page</a>.</p>
+                            <p>If you like MailMask, feel free to spread the word and head to our <a href="#support">support page</a>.</p>
+                        </div>  
+                    </div>
+                </div>
+            </div>
+            </section> 
+
+            <section id="support"> <!-- Support -->
+                <div class="content-box">
+                <div class="support-header">
+                    <div class="support-title"><h1>Support MailMask</h1></div>
+                    <div class="support-img"><img src="img/support-img.svg" alt="MailMask racoon playing with a bitcoin - illustration"></div>
+                    <div class="support-container", id="sub-container">
+                        <div class="sub-text" id="sub-text">
+                            <p>Please feel free to donate in case you enjoy my service. MailMask currently runs without ads and does not make any revenue other than donations.</p>
+                            <p>Your donations will be used to cover the costs of servers, domains and work for the project.</p>
+                            <p>Currently, MailMask supports the following ways of payments. I consider every donation as private and anonymous.</p>
+                            <div class="support-list">
+                                <label class="support-row-label" for="BTC"><strong>Bitcoin (BTC)</strong></label>
+                                <input class="support-row-input" type="text" value="3H2X76ENsrzxWuEH4JtbE8TYr2BzjJHcZn" readonly>
+                                <br>
+                                <label class="support-row-label" for="ETH"><strong>Ethereum (ETH)</strong></label>
+                                <input class="support-row-input" type="text" value="0xF76F0780bff4660Bdab0965FA50ACe904d60B8a7" readonly>
+                                <br>
+                                <label class="support-row-label" for="ETH"><strong>ZCash (ZEC)</strong></label>
+                                <input class="support-row-input" type="text" value="zs17h2f90evhcpxdumrtwqwt3e98ez69llrznajc05ythkh8mdcv7e9kczhfwcmpzg7dqcgsfelf56" readonly>
+                                <br>
+                                <label class="support-row-label" for="ETH"><strong>Bitcoin Cash (BCH)</strong></label>
+                                <input class="support-row-input" type="text" value="bitcoincash:qzasfyun53zhgsdxljcd8dggp42j6wma65yt8j744u" readonly>
+                                <br>
+                                <label class="support-row-label" for="ETH"><strong>Dash (DASH)</strong></label>
+                                <input class="support-row-input" type="text" value="Xw6EMp6yjBa4dEvecwE85m5LETn3T1qbj7" readonly>
+                            </div>
+                        </div>                        
+                    </div>
+                </div>
+            </div>
+            </section> 
+
+            <section id="tandc"> <!-- Terms and Conditions -->
+                <div class="content-box">
+                <div class="tandc-header">
+                    <div class="tandc-title"><h1>Terms and Conditions</h1></div>
+                    <div class="tandc-container", id="sub-container">
+                        <div class="sub-text" id="sub-text">
+                            <p>MailMask is an email forwarding service. The service lets users create alias addresses of their own personal email. Any incoming mail will get forwarded to the corresponding personal email address.</p>                            
+                            <p>You agree to these Terms and Conditions (“Terms”) by clicking on the “I agree” (or similar button or checkbox) that is presented to you in the sign up flow or using our apps, services, or website (together, “Services”).</p>
+                            <p>This Agreement (“Terms” or “Terms of Service” or “Service Agreement” or “Subscription Terms”) is between you and Hendrik Schuette, Turmstraße 54, 10551 Berlin, Germany, hereinafter referred to as "MailMask" or "we" or “us” or "me".</p>
+                            <h2>About MailMask services</h2>
+                            <p><strong>Minimum Age. </strong>You must be at least 13 years old to use our Services. The minimum age to use our Services without parental approval may be higher in your home country.</p>
+                            <p><strong>Account Registration. </strong>To create an account you must register for our Services using your email address. You agree to receive email messages from us and third parties.</p>
+                            <p>Please read the <a href="#privacy">Privacy Policy</a> to understand how we safeguard the information you provide when using our Services.</p>
+                            <h2>Using MailMask</h2>
+                            <p><strong>Our Terms and Policies. </strong>You must use our Services according to our Terms and posted policies. If we disable your account for a violation of our Terms, you will not create another account without our permission.</p>
+                            <p><strong>Legal and Acceptable Use. </strong>You agree to use our Services only for legal, authorized, and acceptable purposes. You will not use (or assist others in using) our Services in ways that: (a) violate or infringe the rights of MailMask, our users, or others, including privacy, publicity, intellectual property, or other proprietary rights; (b) involve receiving illegal or impermissible communications.</p>
+                            <p><strong>Harm to MailMask. </strong>You must not (or assist others to) access, use, modify, distribute, transfer, or exploit our Services in unauthorized manners, or in ways that harm MailMask, our Services, or systems. For example you must not (a) gain or try to gain unauthorized access to our Services or systems; (b) disrupt the integrity or performance of our Services; (c) create accounts for our Services through unauthorized or automated means; (d) collect information about our users in any unauthorized manner; or (e) sell, rent, or charge for our Services.</p>
+                            <p><strong>Keeping Your Account Secure. </strong>MailMask embraces privacy by design and does not have the ability to access the receiving/forwarded emails. You are responsible for keeping your device and your email account safe and secure. In case of losing access to your email account, MailMask will not change or reroute the current mailing addess.</p>
+                            <p><strong>Third-party services. </strong>Our Services allow you to access, use, or interact with third-party websites, apps, content, and other products and services. When you use third-party services, their terms and privacy policies govern your use of those services. In case of a violation of third-party terms, MailMask will disable your account.</p>
+                            <h2>Your Rights and License with MailMask</h2>
+                            <p><strong>Your Rights. </strong>You own the information you receive through our Services. You must have the rights to the email account you use to sign up for your MailMask account.</p>
+                            <p><strong>MailMask Rights. </strong>We own all copyrights, trademarks, domains, logos, trade dress, trade secrets, patents, and other intellectual property rights associated with our Services. You may not use our copyrights, trademarks, domains, logos, trade dress, patents, and other intellectual property rights unless you have our written permission. To report copyright, trademark, or other intellectual property infringement, please contact <a>hendrik.schuette@tutanota.com</a>.</p>                
+                            <p><strong>MailMask's License to You. </strong>We grant you a limited, revocable, non-exclusive, and non-transferable license to use our Services in accordance with these Terms.</p>
+                            <h2>Disclaimers and Limitations</h2>
+                            <p><strong>Disclaimers. </strong>Use of the services provided by MailMask is at your own risk and is subject to the following disclaimers. We provide our services "as is" and "as available" without warranties of any kind. We neither express or imply, including, but not limited to, warranties of merchantability, fitness for a particular purpose, title, non-infringement, and freedom from computer viruses or other harmful code. MailMask does not warrant that the information we provide is accurate, complete or useful, that our services will be operational, error-free, secure or protected, or that our services will operate without interruptions, delays or imperfections. We have no control over, and are not responsible for controlling, how or when our users use our Services. We are not responsible for the actions or information (including content) of our users or other third parties. You release us, affiliates, directors, officers, employees, partners and agents from any and all claims, complaints, causes of action, controversies or disputes (collectively, "Claim") and damages, known and unknown, relating to, arising out of or in any way connected with such Claim.</p>
+                            <p><strong>Limitation of liability. </strong>The MailMask Parties will not be liable to you for any lost profits or consequential, special, punitive, indirect or incidental damages relating to, arising out of or in any way connected with our Terms, us or our Services, even if the MailMask Parties have been advised of the possibility of such damages. The foregoing disclaimer of specific damages and limitation of liability apply to the fullest extent permitted by applicable law. The laws of some states or jurisdictions may not allow the exclusion or limitation of certain damages, so some or all of the above exclusions and limitations may not apply to you. Notwithstanding anything to the contrary in our Terms, in such cases, the MailMask Parties' liability is limited to the fullest extent permitted by law.</p>
+                            <p><strong>Availability of Our Services. </strong>Our Services may be interrupted, including for maintenance, upgrades, or network or equipment failures. We may discontinue some or all of our Services, including certain features and the support for certain devices and platforms, at any time.</p>
+                            <h2>Applicable Law and place of Jurisdiction</h2>
+                            <p><strong>Applicable Law. </strong> The law of the Federal Republic of Germany governs these Terms, as well as any disputes, whether in court or arbitration, which might arise between MailMask and you, without regard to conflict of law provisions.</p>
+                            <p><strong>Place of Jurisdiction. </strong>The place of jurisdiction for all disputes relating to or arising out of our Terms, us, or our Services exclusively shall exclusively be Berlin, Germany.</p>                            
+                            <h2>Ending the Terms</h2>
+                            <p>You may terminate the Agreement at any time with notice to MailMask (by for example writing to hendrik.schuette@tutanota.com). We may modify, suspend, or terminate your access to or use of our Services anytime for any reason, such as if you violate the letter or spirit of our Terms or create harm, risk, or possible legal exposure for MailMask.</p>
+                            <h2>Updates</h2>
+                            <p>MailMask may update the Terms from time to time. When we update our Terms, we will update the “Last Modified” date associated with the updated Terms. Your continued use of our Services confirms your acceptance of our updated Terms and supersedes any prior Terms. You will comply with all applicable export control and trade sanctions laws. Our Terms cover the entire agreement between you and MailMask regarding our Services. If you do not agree with our Terms, you should stop using our Services.</p>
+                            <hr>
+                            <p>Effective as of April 6, 2021</p>
+                        </div>                        
+                    </div>
+                </div>
+            </div>
+            </section> 
+
+            <section id="privacy"> <!-- Terms and Conditions -->
+                <div class="content-box">
+                <div class="privacy-header">
+                    <div class="privacy-title"><h1>Privacy Policy</h1></div>
+                    <div class="privacy-container", id="sub-container">
+                        <div class="sub-text" id="sub-text">
+                            <p>MailMask is an email forwarding service. The service lets users create alias addresses of their own personal email. Any incoming mail will get forwarded to the corresponding personal email address.</p>
+                            <h2>Information you provide</h1>
+                            <p><strong>Account Information. </strong>You register by entering your email address when creating your MailMask account. MailMask stores this with the generated forwarding address.</p>
+                            <p><strong>Emails. </strong>Any incoming email to a verified "@mailmask.me" address gets stored for the sole purpose of forwarding the email to the corresponding user email address.</p>
+                            <p>In case the user canceled his/her MailMask address or the email does not exist, MailMask deletes the email anyway.</p>
+                            <p>MailMask does not save or the content, recipient or sending behaviour permanently and does not intent on doing so.</p>
+                            <p><strong>Logs. </strong> Logs of the incoming emails are kept for the sake of debugging the service. The logs include potential errors in forwarding the address but do not store the email contents, original recipient or forwarded personal email address. The logs are stored for 24h.</p>
+                            <p><strong>User Support. </strong>If you contact MailMask User Support, any personal data you may share with us is kept only for the purposes of researching the issue and contacting you about your case.</p>
+                            <h2>Information we may share</h1>
+                            <p><strong>Third Parties. </strong> MailMask may word with third parties to provide some of their services. For example, MailMask may use an email service to trigger and forward the incoming mails. These providers are bound by their Privacy Policies to safeguard that information.</p>
+                            <p><strong>Other instances where MailMask may need to share your data</strong></p>
+                            <li>To meet any applicable law, regulation, legal process or enforceable governmental request.</li>
+                            <li>To enforce applicable Terms, including investigation of potential violations.</li>
+                            <li>To detect, prevent, or otherwise address fraud, security, or technical issues.</li>
+                            <li>To protect against harm to the rights, property, or safety of Signal, our users, or the public as required or permitted by law.</li>
+                            <h2>Updates</h1>
+                            <p>MailMask will update this privacy policy as needed so it is current and reflects the ongoing developement of this service. You are advised to check this page periodically as we will notify you by posting the new changes to this website. Your continued use of our Services confirms your acceptance of our updated Privacy Policy.</p>
+                            <h2>Terms</h1>
+                            <p>Please also read our <a href="#tandc">Terms & Conditions</a> which also governs the terms of this Privacy Policy.</p>
+                            <h2>Contact</h1>
+                            <p>If you have any questions or suggestions about my Privacy Policy, do not hesitate to contact us at hendrik.schuette@tutanota.com.</p>
+                            <hr>
+                            <p>Effective as of April 6, 2021</p>
+                        </div>                        
+                    </div>
+                </div>
+            </div>
+            </section> 
+        </main>        
+
+        <div class="imprint", id="imprint"> <!-- IMPRINT -->
+            <button onclick="document.getElementById('imprint-modal').style.clipPath='inset(-20% -20% -20% -20% round 2rem)'" class="imprint-button">
+                i
+            </button>
+
+            <div id="imprint-modal" class="imprint-modal">
+                <div class="imprint-modal-content">
+                  <div class="imprint-container-header"> 
+                    <span onclick="document.getElementById('imprint-modal').style.clipPath='inset(100% 0% 0% 100% round 2rem)'">&times;</span>
+                    <h2>Imprint</h2>
+                  </div>
+                  <div class="imprint-container">
+                    <p>Made with ♥ by Hendrik Schuette</p>
+                    <p>Angaben gemäß § 5 TMG: Hendrik Schuette Turmstraße 54, 10551 Berlin
+                        Kontakt: hendrik.schuette@tutanota.com</p>
+                  </div>                      
+                </div>
+              </div>
+            </div>
+        </div>
+        
+        <script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-1.9.0.js"></script>
+                
+        <script type="text/javascript">
+            var API_URL = "https://423ghva5nf.execute-api.eu-west-1.amazonaws.com/prod/mails";
+            let mailmaskRegex = /.*@mailmask\.me/
+            
+            $("#submitButton").on('click', function() {
+                if (!$("#mail").val()) {
+                    console.log("Error - invalid request. No email input.") 
+                } else {
+                    if ($("#checkbox").prop('checked') == false) {
+                        console.log("Error - invalid request. Checkbox not checked.")
+                    } else {
+                        if(mailmaskRegex.test($("#mail").val())) {
+                            console.log("Error - invalid request. Looping mails are not allowed.")
+                        } else {
+                            $.ajax({
+                            type: "POST",
+                            url: API_URL,
+                            data: JSON.stringify({"forwardingAddress": $("#mail").val()}),
+                            contentType: "application/JSON",
+
+                            success: function(data) {
+                                $("#success").show(),
+                                $("#emailInputForm").hide(),
+                                $(".catchphrase").hide(),
+                                $("#mail").val("")
+                            }
+                            })                     
+                        }; 
+                    return false;
+                    }
+                }                    
+            });
+
+            function getRandomString() {
+                word = "privacy."
+                for (let i = 1; i < 10; i++) {
+                    setTimeout(function timer() {                        
+                        word = Math.random().toString(36).substring(2, 4) + Math.random().toString(36).substring(2, 5);                        
+                        if (i == 9) {
+                            word = "privacy."
+                        }
+                        document.getElementById("decrypt").innerHTML = word
+
+                    }, i * 100);                    
+                }               
+            }
+
+            getRandomString()
+
+            $(".decrypt-title").on("mouseover", function() {
+                getRandomString()
+            })
+             
+
+            function validateEmail(email) {
+                var pattern = new RegExp(/[+a-zA-Z0-9._-]+@mailmask+\.me/gmi);
+                return pattern.test( email );
+            }
+
+            $("#cancelButton").on('click', function() {                
+                if (!$("#cancelMail").val()) {
+                    console.log("Error - invalid request. No email input.") 
+                } else {
+                    if (!validateEmail($("#cancelMail").val())) {
+                    console.log("Error - invalid request. Wrong email format.")
+                    console.log($("#cancelMail"))
+                } else {
+                    var mailID = $("#cancelMail").val().toString().slice(0,8).toLowerCase()                    
+
+                    console.log("Canceling was a success!") 
+                        $.ajax({
+                        type: "DELETE",
+                        url: API_URL,
+                        data: JSON.stringify({"mailID": mailID}),
+                        contentType: "application/JSON",
+
+                        success: function(data) {
+                            $("#cancelSuccess").show(),
+                            $("#cancelInputForm").hide(),
+                            $("#cancelMail").val("")
+                        }
+                    }); 
+                    return false;
+                    }
+                }
+            });
+
+            function getUrlVars() {
+                var vars = {};
+                var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(m,key,value) {
+                    vars[key] = value;
+                });
+                return vars;
+            }
+
+            function getUrlParam(parameter, defaultvalue){
+                var urlparameter = defaultvalue;
+                if(window.location.href.indexOf(parameter) > -1){
+                    urlparameter = getUrlVars()[parameter];
+                    }
+                return urlparameter;
+            };
+
+            window.onload = function() {
+                var cancelMail = decodeURI(getUrlParam("cancelMail", ""));
+
+                cancelMail = cancelMail.replace("%40", "@")
+                cancelMail = cancelMail.replace("#cancel", "")
+                $("#cancelMail").val(cancelMail)
+
+            };
+
+            
+        </script>
+    </body>
+</html>

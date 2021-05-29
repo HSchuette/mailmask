@@ -1,0 +1,17 @@
+{
+     "version": "0.2.0",
+     "configurations": [
+         {
+             "name": "Maik Mask",
+             "type": "node",
+             "request": "attach",
+             "address": "localhost",
+             "port": 5858,
+             // From the sam init example, it would be "${workspaceRoot}/hello-world"
+             "localRoot": "${workspaceRoot}/{directory of node app}",
+             "remoteRoot": "/var/task",
+             "protocol": "inspector",
+             "stopOnEntry": false
+         }
+     ]
+ }
