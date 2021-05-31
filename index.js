@@ -74,15 +74,16 @@ exports.getFwdAddress = async function(data) {
 
   for (var i = 0, len = data.originalRecipients.length; i < len; i++) {
     var origEmailKey = data.originalRecipients[i]
-    var recipientiD = origEmailKey.toString().slice(0,8).toLowerCase()
+    var regexForID = /.*(?=@mailmask\.me)/
+    var recipientID = origEmailKey.match(regexForID).toString().toLowerCase()
     let key = process.env.hashKey
 
-    console.log("recipientID is " + recipientiD)
+    console.log("recipientID is " + recipientID)
     
     var mailParams = {
       TableName: "mailMaskList",
       Key: {
-          "mailID": recipientiD
+          "mailID": recipientID
       }
     };
 
@@ -98,7 +99,6 @@ exports.getFwdAddress = async function(data) {
             var unhashedForwardingAddress = CryptoJS.AES.decrypt(recipient, key).toString(CryptoJS.enc.Utf8)
             newRecipients.push(unhashedForwardingAddress)
           })
-          console.log("Unhashed Addresses: ", newRecipients)
         } catch {
           console.error("Unable to find recipientID item. Error JSON:", JSON.stringify(err, null, 2));        
           newRecipients = []
