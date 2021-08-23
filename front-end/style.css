@@ -22,6 +22,21 @@
     }        
 }
 
+
+@font-face {
+    font-family: 'atkinson_hyperlegibleregular';
+    src: url('fonts/AtkinsonHyperlegible-Regular.woff2') format('woff2');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'atkinson_hyperlegibleregular';
+    src: url('fonts/AtkinsonHyperlegible-Bold.woff2') format('woff2');
+    font-weight: bold;
+    font-style: bold;
+}
+
 html, body {
     margin: 0;
     padding: 0;
@@ -37,7 +52,7 @@ body {
     color: var(--textcolor);
     background: var(--bgcolor);
     position: relative;
-    font-family: 'Avenir Next', sans-serif;
+    font-family: 'atkinson_hyperlegibleregular';
     min-height: 700px;
 }
 
@@ -78,7 +93,6 @@ section#home {
 
 h1 {
     font-size: 1.8em; 
-    font-weight: bold;
     letter-spacing: 2.8px;
 }
 
