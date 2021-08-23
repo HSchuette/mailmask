@@ -93,6 +93,7 @@ section#home {
 
 h1 {
     font-size: 1.8em; 
+    font-weight: bold;
     letter-spacing: 2.8px;
 }
 
