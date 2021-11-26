@@ -60,6 +60,7 @@ body {
 button { 
     border:none;
     background-color:transparent;
+    font-family: 'atkinson_hyperlegibleregular';
     outline:none;
  }
 
@@ -67,6 +68,7 @@ input[type="submit"] {
     -webkit-appearance: none;
     border:none;
     outline:none;
+    font-family: 'atkinson_hyperlegibleregular';
 }
 
 

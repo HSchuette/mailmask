@@ -58,7 +58,7 @@ exports.parseEvent = function(data) {
 };
 
 /**
- * Getting the forwarding addresses of the incommig mails
+ * Getting the forwarding addresses of the incoming mails
  *
  * @param {object} data - Data bundle with context, email, etc.
  *
