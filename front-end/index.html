@@ -274,7 +274,7 @@
                             $.ajax({
                             type: "POST",
                             url: API_URL,
-                            data: JSON.stringify({"forwardingAddress": $("#mail").val()}),
+                            data: JSON.stringify({"forwardingAddress": $("#mail").val(), "label": $("#label").val()}),
                             contentType: "application/JSON",
 
                             success: function(data) {

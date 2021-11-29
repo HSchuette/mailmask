@@ -24,6 +24,7 @@ exports.handler = function(event, context, callback) {
 
     let mailmaskRegex = /.*@mailmask\.me/
     console.log(mailmaskRegex.test(event.forwardingAddress))
+    console.log(event.label)
 
     if (mailmaskRegex.test(event.forwardingAddress)) {
         console.log("Did not write because of looping mail.")
@@ -31,6 +32,13 @@ exports.handler = function(event, context, callback) {
         let key = process.env.hashKey
 
         var id = nanoid(8).toLowerCase()
+
+        if (event.label ) {
+            var id = id + "+" + event.label
+        }
+
+        console.log(id)
+
         var hashedForwardingAddress = CryptoJS.AES.encrypt(event.forwardingAddress, key).toString()
 
         console.log(hashedForwardingAddress)
@@ -41,6 +49,7 @@ exports.handler = function(event, context, callback) {
                 mailID: id,
                 routingAddress: id + "@mailmask.me",
                 forwardingAddress: hashedForwardingAddress,
+                label: event.label,
                 isBoundToNewsletter: false,
                 boundedMail: null
             },
