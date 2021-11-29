@@ -75,7 +75,14 @@ exports.getFwdAddress = async function(data) {
   for (var i = 0, len = data.originalRecipients.length; i < len; i++) {
     var origEmailKey = data.originalRecipients[i]
     var regexForID = /.*(?=@mailmask\.me)/
-    var recipientID = origEmailKey.match(regexForID).toString().toLowerCase()
+    var regexForIdWithLabel = /.*(?=(?:\+[Aa-zZ0-9]{0,15}?@mailmask\.me))/
+    var regexFindPlus = /\+/
+    if (regexFindPlus.test(origEmailKey)) {
+      var recipientID = origEmailKey.match(regexForIdWithLabel).toString().toLowerCase()
+    } else {
+      var recipientID = origEmailKey.match(regexForID).toString().toLowerCase()
+    }
+    
     let key = process.env.hashKey
 
     console.log("recipientID is " + recipientID)

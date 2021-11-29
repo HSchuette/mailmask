@@ -46,9 +46,16 @@
                                     <p>Generate a unique and random forwarding address so you can still receive every email, newsletter etc. without sharing your personal address.</p>
                                 </div>    
                             </div>
-                            <form action="?" id="emailInputForm">           
-                                <input id="mail" placeholder="Enter your email here..." type="email" name="email" pattern="[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{1,63}$" required/>                                
-                                <div class = "privacy-and-terms-checkbox">
+                            <form action="?" id="emailInputForm">   
+                                <div class="emailInput">
+                                    <input id="mail" placeholder="Enter your email here..." type="email" name="email" pattern="[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{1,63}$" required/>                                                                    
+                                    <label class="add-label-button" title="Add a label to your mailmask mail" for="label-toggle">🔖</label>                                                                        
+                                    <input type='checkbox' id="label-toggle">                                
+                                    <div class="add-label-box">
+                                        <input id="label" placeholder="Add a label..." type="text" name="label" maxlength="15" autocomplete="off" pattern="[A-Za-z0-9]">                                                                    
+                                    </div>
+                                </div>                                                                                                                                                                                                                 
+                                <div class="privacy-and-terms-checkbox">
                                     <input type="checkbox" id="checkbox" name="checkbox" required />
                                     <label>I agree with the <a href="#tandc">Terms & Conditions</a> and the <a href="#privacy">Privacy Policy</a>. </label>
                                 </div>
@@ -267,14 +274,15 @@
                             $.ajax({
                             type: "POST",
                             url: API_URL,
-                            data: JSON.stringify({"forwardingAddress": $("#mail").val()}),
+                            data: JSON.stringify({"forwardingAddress": $("#mail").val(), "label": $("#label").val()}),
                             contentType: "application/JSON",
 
                             success: function(data) {
                                 $("#success").show(),
                                 $("#emailInputForm").hide(),
                                 $(".catchphrase").hide(),
-                                $("#mail").val("")
+                                $("#mail").val(""),
+                                $("#label").val("")
                             }
                             })                     
                         }; 
