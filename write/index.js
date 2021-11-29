@@ -33,7 +33,7 @@ exports.handler = function(event, context, callback) {
 
         var id = nanoid(8).toLowerCase()
 
-        if (event.label ) {
+        if (event.label) {
             var id = id + "+" + event.label
         }
 
