@@ -52,7 +52,7 @@
                                     <label class="add-label-button" title="Add a label to your mailmask mail" for="label-toggle">🔖</label>                                                                        
                                     <input type='checkbox' id="label-toggle">                                
                                     <div class="add-label-box">
-                                        <input id="label" placeholder="Add a label..." type="text" name="label" maxlength="15" autocomplete="off" pattern="[A-Za-z0-9]">                                                                    
+                                        <input id="label-text" placeholder="Add a label..." type="text" name="label" maxlength="15" autocomplete="off" pattern="[A-Za-z0-9]">                                                                    
                                     </div>
                                 </div>                                                                                                                                                                                                                 
                                 <div class="privacy-and-terms-checkbox">
@@ -274,7 +274,7 @@
                             $.ajax({
                             type: "POST",
                             url: API_URL,
-                            data: JSON.stringify({"forwardingAddress": $("#mail").val(), "label": $("#label").val()}),
+                            data: JSON.stringify({"forwardingAddress": $("#mail").val(), "label": $("#label-text").val()}),
                             contentType: "application/JSON",
 
                             success: function(data) {
@@ -282,7 +282,7 @@
                                 $("#emailInputForm").hide(),
                                 $(".catchphrase").hide(),
                                 $("#mail").val(""),
-                                $("#label").val("")
+                                $("#label-text").val("")
                             }
                             })                     
                         }; 
