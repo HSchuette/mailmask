@@ -176,11 +176,18 @@ form {
     padding-top: 1em;
 }
 
+.emailInput {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+
 input[type="email"]
 {
     color: var(--textcolor);
     height: 40px;
-    width: 100%;
+    width: 90%;
     font-size: 1rem;
     border-radius: 10px;
     border-color: var(--highlight);
@@ -191,19 +198,59 @@ input[type="email"]
     background-size: 15px;
     background-color: var(--bgcolor);
     padding-left: 40px;
+    flex: 1;
 }
 
 ::placeholder {
     color: var(--textcolor);
     opacity: 0.4;
+    margin-left: 15px;
     letter-spacing: 0.4px;
     font-size: 0.8 rem;
+}
+
+.add-label-button {    
+    margin-left: 15px;
+    width: 10%;
+    align-items: flex-end;
+    font-size: 30px;
+    cursor: pointer;
+}
+
+#label-toggle {
+    display: none;   
+}
+
+.add-label-box {
+    display: none;
+    align-content: flex-start;
+    flex-basis: 100%;
+}
+
+#label-toggle:checked ~ .add-label-box { 
+    display: block; 
+}
+
+input[type="text"]
+{
+    color: var(--textcolor);
+    height: 40px;
+    width: 100%;
+    font-size: 1rem;
+    border-radius: 10px;
+    border-color: var(--textcolor);    
+    border-width: 2;
+    border-style: solid;
+    transition: 1.5ms;
+    background-color: var(--bgcolor);
+    padding-left: 10px;
 }
 
 .privacy-and-terms-checkbox {
     margin-top: 2vh;
     padding-left: 1vh;
     font-size: 0.8rem;
+    float:left
 }
 
 .privacy-and-terms-checkbox > label {
@@ -237,7 +284,6 @@ input[type="email"]
     letter-spacing: 1px;
     border-radius: 10px;
     border-width: 0;
-    font-family: 'Avenir Next', sans-serif;
 }
 
 .button-cta:hover {
