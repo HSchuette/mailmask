@@ -317,7 +317,7 @@
                 return pattern.test( email );
             }
 
-            $("#cancelButton").on('click', function() {              
+            $("#cancelButton").on('click', function() {                
                 if (!$("#cancelMail").val()) {
                     console.log("Error - invalid request. No email input.") 
                 } else {
@@ -328,7 +328,6 @@
                     var mailID = $("#cancelMail").val().toString().toLowerCase()
                     let regex = new RegExp(/.*@mailmask\.me/)
                     var mailID = regex.match( mailID )
-                    return mailID
 
                     console.log("Canceling was a success!") 
                         $.ajax({
