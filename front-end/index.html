@@ -317,7 +317,7 @@
                 return pattern.test( email );
             }
 
-            $("#cancelButton").on('click', function() {                
+            $("#cancelButton").on('click', function() {              
                 if (!$("#cancelMail").val()) {
                     console.log("Error - invalid request. No email input.") 
                 } else {
@@ -325,7 +325,10 @@
                     console.log("Error - invalid request. Wrong email format.")
                     console.log($("#cancelMail"))
                 } else {
-                    var mailID = $("#cancelMail").val().toString().slice(0,8).toLowerCase()                    
+                    var mailID = $("#cancelMail").val().toString().toLowerCase()
+                    let regex = new RegExp(/.*@mailmask\.me/)
+                    var mailID = regex.match( mailID )
+                    return mailID
 
                     console.log("Canceling was a success!") 
                         $.ajax({

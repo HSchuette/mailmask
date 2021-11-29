@@ -16,6 +16,8 @@ exports.handler = function(event, context, callback) {
         }
     });
 
+    console.log(event);
+
     var params = {
 
         TableName: "mailMaskList",
