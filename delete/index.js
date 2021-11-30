@@ -18,7 +18,7 @@ exports.handler = function(event, context, callback) {
 
     console.log(event);
 
-    let mailmaskRegex = /.*@mailmask\.me/
+    let mailmaskRegex = /.*(?=@mailmask\.me)/
     var id = event.mailID.match(mailmaskRegex).toString().toLowerCase()
 
     var params = {
