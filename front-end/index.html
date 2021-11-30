@@ -325,9 +325,7 @@
                     console.log("Error - invalid request. Wrong email format.")
                     console.log($("#cancelMail"))
                 } else {
-                    var mailID = $("#cancelMail").val().toString().toLowerCase()
-                    let regex = new RegExp(/.*@mailmask\.me/)
-                    var mailID = regex.match( mailID )
+                    var mailID = $("#cancelMail").val().toString().toLowerCase()                    
 
                     console.log("Canceling was a success!") 
                         $.ajax({
