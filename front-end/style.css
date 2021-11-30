@@ -422,6 +422,7 @@ section#cancel, section#support, section#tandc, section#privacy {
     color: var(--highlight);
     overflow: hidden;
     z-index: 1;
+    padding: 0px;
 }
 
 .imprint-button:active {
