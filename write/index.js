@@ -34,7 +34,9 @@ exports.handler = function(event, context, callback) {
         var id = nanoid(8).toLowerCase()
 
         if (event.label) {
-            var id = id + "+" + event.label.toLowerCase()
+            let allowedCharactersRegex = /[^aA-zZ0-9!#$%&'*+/=?^_`{|}~-]/
+            var cleanedLabel = event.label.replace(allowedCharactersRegex)
+            var id = id + "+" + cleanedLabel.toLowerCase()
         }
 
         console.log(id)
