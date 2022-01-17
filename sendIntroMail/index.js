@@ -148,7 +148,7 @@ Content-Disposition: inline
 
     <body class="main-content">
     <div class="container"> 
-        <img class="main-image" src="https://mailmask-images.s3.eu-west-1.amazonaws.com/mailmask-mailheader.svg">       
+        <img class="main-image" src="https://mailmask-images.s3.eu-west-1.amazonaws.com/mailmask-mailheader.png">       
         <div class="main-text">
             <p>Hello there!</p>
             <p>Your new MailMask address has arrived. All incoming emails to this address are automatically forwarded to your personal address.</p>
