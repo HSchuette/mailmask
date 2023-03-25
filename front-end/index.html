@@ -293,6 +293,7 @@
                                 $("#label-text").val("")
                             }
                             })                     
+                            window.metrical.trackEvent("click_create_new")
                         }; 
                     return false;
                     }
@@ -348,6 +349,7 @@
                             $("#cancelMail").val("")
                         }
                     }); 
+                    window.metrical.trackEvent("click_delete")
                     return false;
                     }
                 }
