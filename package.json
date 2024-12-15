@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "aws-sdk": "^2.1692.0",
     "crypto-js": "^4.0.0"
   },
   "name": "mailmask",

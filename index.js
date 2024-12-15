@@ -1,452 +1,380 @@
 "use strict";
 
 // Getting the required packages
-const AWS = require('aws-sdk');
+const AWS = require("aws-sdk");
 const CryptoJS = require("crypto-js");
-const docClient = new AWS.DynamoDB.DocumentClient({region: "eu-west-1"});
+const docClient = new AWS.DynamoDB.DocumentClient({ region: "eu-west-1" });
+const dns = require('dns').promises;
 
 console.log("AWS Lambda SES Forwarder");
 
-// Thanks to https://gist.github.com/rs77 for laying the foundation of this code
-//
-// This is the main forwardig function. An incoming mail is being stored on S3, forwarded to the
-// corresponding mailaddress and then deleted.
-//
-// Expected keys/values:
-//
-// - fromEmail: Forwarded emails will come from this verified address
-//
-// - subjectPrefix: Forwarded emails subject will contain this prefix
-//
-// - emailBucket: S3 bucket name where SES stores emails.
-//
-// - emailKeyPrefix: S3 key name prefix where SES stores email. Include the
-//   trailing slash.
+// Expected environment variables:
+// - fromEmail: Verified sender address in SES
+// - subjectPrefix: Prefix for forwarded email subjects
+// - emailBucket: S3 bucket where SES stores emails
+// - emailKeyPrefix: optional prefix for S3 keys
+// - hashKey: Key used to decrypt stored forwarding addresses
+// - BLOCKED_DOMAINS: Comma-separated list of blocked domains (optional)
 
-var defaultConfig = {
+const defaultConfig = {
   fromEmail: process.env.fromEmail,
   subjectPrefix: "Fwd. via mailmask.me: ",
   emailBucket: process.env.emailBucket,
-  emailKeyPrefix: "",
+  emailKeyPrefix: process.env.emailKeyPrefix || "",
+  hashKey: process.env.hashKey,
 };
 
-/**
- * Parses the SES event record provided for the `mail` and `receipients` data.
- *
- * @param {object} data - Data bundle with context, email, etc.
- *
- * @return {object} - Promise resolved with data.
- */
-exports.parseEvent = function(data) {
-  // Validate characteristics of a SES event record.
-  if (!data.event ||
-      !data.event.hasOwnProperty('Records') ||
-      data.event.Records.length !== 1 ||
-      !data.event.Records[0].hasOwnProperty('eventSource') ||
-      data.event.Records[0].eventSource !== 'aws:ses' ||
-      data.event.Records[0].eventVersion !== '1.0') {
-    data.log({
-      message: "parseEvent() received invalid SES message:",
-      level: "error", event: JSON.stringify(data.event)
-    });
-    return Promise.reject(new Error('Error: Received invalid SES message.'));
+// Parse blocked domains from environment variable
+function getBlockedDomains() {
+  const blockedDomainsEnv = process.env.BLOCKED_DOMAINS || "";
+  return blockedDomainsEnv.split(",").map(domain => domain.trim().toLowerCase()).filter(d => d);
+}
+
+// Validate email format
+function isValidEmail(email) {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(email);
+}
+
+// Extract the domain from an email address
+function extractDomain(email) {
+  return email.split('@')[1].toLowerCase();
+}
+
+// Check if email's domain is blocked
+function isBlockedDomain(email, blockedDomains) {
+  const domain = extractDomain(email);
+  return blockedDomains.includes(domain);
+}
+
+// Check if the domain has valid MX records
+async function hasValidMxRecords(domain) {
+  try {
+    const mxRecords = await dns.resolveMx(domain);
+    return mxRecords.length > 0; // Valid if at least one MX record is found
+  } catch (err) {
+    console.error(`Error fetching MX records for ${domain}:`, err.message);
+    return false;
+  }
+}
+
+function verifyConfig(config) {
+  const requiredVars = ["fromEmail", "emailBucket", "hashKey"];
+  const missing = requiredVars.filter((v) => !config[v]);
+  if (missing.length > 0) {
+    throw new Error(`Missing required environment variables: ${missing.join(", ")}`);
+  }
+}
+
+function insertSupportAndCancel(body, header, data, cancelLink) {
+  // Combined support + cancel at the end
+  const combinedText = `\n\nThank you for using MailMask.me!\n\n` +
+    `MailMask.me is a free service designed to protect your email privacy. ` +
+    `We rely on your support to keep the service running and growing. If MailMask has been useful, ` +
+    `please consider supporting us at: https://www.mailmask.me/#support\n\n` +
+    `Thank you for helping keep email privacy accessible!\n\n` +
+    `Don't want to use MailMask anymore?\n${cancelLink}\n`;
+
+  const combinedHTML = `
+<p style="font-family: 'Avenir Next', sans-serif; margin: 20px; font-size: 1rem;">
+  Thank you for using <strong>MailMask.me</strong>!<br> MailMask.me is a free service protecting your email privacy.
+  We rely on your support to keep it running and growing. <br><br>If MailMask helped you, please consider supporting us at 
+  <a href="https://www.mailmask.me/#support" style="color: #0095FF; font-weight: bold;">https://www.mailmask.me/#support</a>.
+</p>
+<img style='border-radius: 15px; margin-top: 10px; max-width: 300px; align-items: center; display: block; margin-left: auto; margin-right: auto;' src='https://mailmask-images.s3-eu-west-1.amazonaws.com/mailheader.svg'>
+<p style="text-align: center; font-family: 'Avenir Next', sans-serif; margin: 50px; font-size: 1rem;">
+  Don't want to use MailMask anymore? <br>
+  <a href="${cancelLink}" style="color: #0095FF; font-weight: bold;">Cancel this MailMask</a>
+</p>
+`;
+
+  let isHTML = /<html>/i.test(body) || /<body[^>]*>/i.test(body);
+
+  if (isHTML) {
+    console.log("Treating email as HTML.");
+    if (/<body[^>]*>/i.test(body)) {
+      // Insert combinedHTML before </body>
+      body = body.replace(/<\/body>/i, combinedHTML + "\n</body>");
+    } else {
+      // No <body>, just append at end of HTML content
+      body = body + "\n" + combinedHTML;
+    }
+  } else {
+    console.log("Treating email as plain-text.");
+    // Just append the combined text at the end
+    if (!body.includes(combinedText.trim())) {
+      body = body + combinedText;
+    }
+  }
+
+  return body;
+}
+
+// Parse the SES event
+exports.parseEvent = async function (data) {
+  if (
+    !data.event ||
+    !data.event.Records ||
+    data.event.Records.length !== 1 ||
+    data.event.Records[0].eventSource !== "aws:ses" ||
+    data.event.Records[0].eventVersion !== "1.0"
+  ) {
+    console.error("Invalid SES message:", JSON.stringify(data.event));
+    throw new Error("Error: Received invalid SES message.");
   }
 
   data.email = data.event.Records[0].ses.mail;
   data.recipients = data.event.Records[0].ses.receipt.recipients;
-  return Promise.resolve(data);
+  return data;
 };
 
-/**
- * Getting the forwarding addresses of the incoming mails
- *
- * @param {object} data - Data bundle with context, email, etc.
- *
- * @return {object} - Promise resolved with data.
- */
-exports.getFwdAddress = async function(data) {
+// Get forwarding addresses from DynamoDB
+exports.getFwdAddress = async function (data) {
   data.originalRecipients = data.recipients;
+  console.log("Original Recipients:", data.originalRecipients);
 
-  data.log(data.originalRecipients)
+  let newRecipients = [];
 
-  var hashedRecipientArray = []
-  var newRecipients = [];
+  for (let origEmailKey of data.originalRecipients) {
+    const regexForID = /.*(?=@mailmask\.me)/;
+    const recipientID = origEmailKey.match(regexForID).toString().toLowerCase();
 
-  for (var i = 0, len = data.originalRecipients.length; i < len; i++) {
-    var origEmailKey = data.originalRecipients[i]
-    var regexForID = /.*(?=@mailmask\.me)/
-    var recipientID = origEmailKey.match(regexForID).toString().toLowerCase()
-        
-    let key = process.env.hashKey
+    console.log("Looking up recipientID:", recipientID);
 
-    console.log("recipientID is " + recipientID)
-    
-    var mailParams = {
+    const mailParams = {
       TableName: "mailMaskList",
-      Key: {
-          "mailID": recipientID
-      }
+      Key: { mailID: recipientID },
     };
 
-    await docClient.get(mailParams, function(err,response){
-      if (err) {
-        console.error("Unable to get item. Error JSON:", JSON.stringify(err, null, 2));
+    try {
+      const response = await docClient.get(mailParams).promise();
+      if (response.Item && response.Item.forwardingAddress) {
+        const unhashedForwardingAddress = CryptoJS.AES.decrypt(
+          response.Item.forwardingAddress,
+          data.config.hashKey
+        ).toString(CryptoJS.enc.Utf8);
+        newRecipients.push(unhashedForwardingAddress);
       } else {
-        try {
-          hashedRecipientArray = hashedRecipientArray.concat(response.Item.forwardingAddress)
-          console.log("Hashed Addresses: ", hashedRecipientArray)
-          hashedRecipientArray.forEach(recipient => {
-            console.log(recipient)
-            var unhashedForwardingAddress = CryptoJS.AES.decrypt(recipient, key).toString(CryptoJS.enc.Utf8)
-            newRecipients.push(unhashedForwardingAddress)
-          })
-        } catch {
-          console.error("Unable to find recipientID item. Error JSON:", JSON.stringify(err, null, 2));        
-          newRecipients = []
-        }        
+        console.warn("No forwarding address found for:", recipientID);
       }
-    })
-    .promise()
-  };
+    } catch (err) {
+      console.error("Error retrieving forwarding address:", err);
+    }
+  }
 
   data.recipients = newRecipients;
-
-  return Promise.resolve(data)
+  return data;
 };
 
-/**
- * Fetches the message data from S3.
- *
- * @param {object} data - Data bundle with context, email, etc.
- *
- * @return {object} - Promise resolved with data.
- */
-exports.fetchMessage = function(data) {
-  // Copying email object to ensure read permission
-  data.log({
-    level: "info",
-    message: "Fetching email at s3://" + data.config.emailBucket + '/' +
-      data.config.emailKeyPrefix + data.email.messageId
-  });
-  return new Promise(function(resolve, reject) {
-    data.s3.copyObject({
-      Bucket: data.config.emailBucket,
-      CopySource: data.config.emailBucket + '/' + data.config.emailKeyPrefix +
-        data.email.messageId,
-      Key: data.config.emailKeyPrefix + data.email.messageId,
-      ACL: 'private',
-      ContentType: 'text/plain',
-      StorageClass: 'STANDARD'
-    }, function(err) {
-      if (err) {
-        data.log({
-          level: "error",
-          message: "copyObject() returned error:",
-          error: err,
-          stack: err.stack
-        });
-        return reject(
-          new Error("Error: Could not make readable copy of email."));
-      }
+// Fetch message from S3
+exports.fetchMessage = async function (data) {
+  console.log(
+    `Fetching email at s3://${data.config.emailBucket}/${data.config.emailKeyPrefix}${data.email.messageId}`
+  );
 
-      // Load the raw email from S3
-      data.s3.getObject({
+  const s3 = data.s3;
+  try {
+    await s3
+      .copyObject({
         Bucket: data.config.emailBucket,
-        Key: data.config.emailKeyPrefix + data.email.messageId
-      }, function(err, result) {
-        if (err) {
-          data.log({
-            level: "error",
-            message: "getObject() returned error:",
-            error: err,
-            stack: err.stack
-          });
-          return reject(
-            new Error("Error: Failed to load message body from S3."));
-        }
-        data.emailData = result.Body.toString();
-        return resolve(data);
-      });
-    });
-  });
+        CopySource: `${data.config.emailBucket}/${data.config.emailKeyPrefix}${data.email.messageId}`,
+        Key: data.config.emailKeyPrefix + data.email.messageId,
+        ACL: "private",
+        ContentType: "text/plain",
+        StorageClass: "STANDARD",
+      })
+      .promise();
+
+    const result = await s3
+      .getObject({
+        Bucket: data.config.emailBucket,
+        Key: data.config.emailKeyPrefix + data.email.messageId,
+      })
+      .promise();
+
+    data.emailData = result.Body.toString();
+    return data;
+  } catch (err) {
+    console.error("Error fetching message from S3:", err);
+    throw new Error("Error: Failed to load message body from S3.");
+  }
 };
 
-/**
- * Processes the message data, making updates to recipients and other headers
- * before forwarding message.
- *
- * @param {object} data - Data bundle with context, email, etc.
- *
- * @return {object} - Promise resolved with data.
- */
-exports.processMessage = function(data) {
-  var match = data.emailData.match(/^((?:.+\r?\n)*)(\r?\n(?:.*\s+)*)/m);
-  var header = match && match[1] ? match[1] : data.emailData;
-  var body = match && match[2] ? match[2] : '';
-
-  // Break the process and delete the mail in case the mailID does not exist
+// Process message: add support & cancel link, modify headers
+exports.processMessage = async function (data) {
   if (data.recipients.length === 0) {
-    console.log("No match has been found, closing task.")
-    return Promise.resolve(data);
-  } else {
-    // Add "Reply-To:" with the "From" address if it doesn't already exists
-    if (!/^reply-to:[\t ]?/mi.test(header)) {
-      match = header.match(/^from:[\t ]?(.*(?:\r?\n\s+.*)*\r?\n)/mi);
-      var from = match && match[1] ? match[1] : '';
-      if (from) {
-        header = header + 'Reply-To: ' + from;
-        data.log({
-          level: "info",
-          message: "Added Reply-To address of: " + from
-        });
-      } else {
-        data.log({
-          level: "info",
-          message: "Reply-To address not added because From address was not " +
-            "properly extracted."
-        });
-      }
+    console.log("No recipients found, skipping processing.");
+    return data;
+  }
+
+  const emailData = data.emailData;
+  const match = emailData.match(/^((?:.+\r?\n)*)(\r?\n(?:.*\s+)*)/m);
+  let header = match && match[1] ? match[1] : emailData;
+  let body = match && match[2] ? match[2] : "";
+
+  // Add Reply-To if missing
+  if (!/^reply-to:/im.test(header)) {
+    const fromMatch = header.match(/^from:[\t ]?(.*(?:\r?\n\s+.*)*\r?\n)/im);
+    const from = fromMatch && fromMatch[1] ? fromMatch[1] : "";
+    if (from) {
+      header += `Reply-To: ${from}`;
+      console.log("Added Reply-To address:", from);
     }
+  }
 
-    // Get the recipientID and build a link that lets the user easily delete his/her address
-    // First step is to find the mailmask.me address inside the recipients
-    // Currently, it is not supported to cover more than one mailmask address
-    let mailmaskAddresses = data.originalRecipients.filter(address => address.includes("mailmask.me"))
-    
-    let mailmaskID = mailmaskAddresses[0].toString().slice(0,8).toLowerCase()
-    
-    let cancelLink = "https://www.mailmask.me/?cancelMail=" + mailmaskID + "%40mailmask.me#cancel"
-    
-    let cancelText = "Don't want to use MailMask anymore?\n" + cancelLink + "\n"
+  // Extract mailmask ID for cancel link
+  const mailmaskAddresses = data.originalRecipients.filter((addr) =>
+    addr.includes("mailmask.me")
+  );
+  const mailmaskID = mailmaskAddresses[0].slice(0, 8).toLowerCase();
+  const cancelLink = `https://www.mailmask.me/?cancelMail=${mailmaskID}%40mailmask.me#cancel`;
 
-    let cancelHTML = "<p style='text-align: center;font-family: 'Avenir Next', sans-serif; margin: 50px; font-size: 1rem;'>Don't want to use MailMask anymore? <br><a href=" + cancelLink + " style='color: #0095FF;'><strong>Cancel this MailMask</strong></a></p>"
-    
-    let cancelHeaderImage = "<img style='border-radius: 15px; margin-top: 10px; max-width: 300px; align-items: center; display: block; margin-left: auto; margin-right: auto;' src='https://mailmask-images.s3-eu-west-1.amazonaws.com/mailheader.svg'>"
+  // Update From header to use verified fromEmail
+  header = header.replace(
+    /^from:\s?(.*)$/im,
+    `From: ${RegExp.$1.replace(/<(.*)>/, "").trim()} <${data.config.fromEmail}>`
+  );
 
-    // This function cleans up the string to make this pattern searchable in regex
-    RegExp.cleanUp = function(str) {
-      return str.toString().replace(/([.?*+^$[\]\\(){}|-])/g, "\\$1");
-    };
-
-    // Test if the mail is a multipart MIME mail or not
-    // If the email is a multipart MIME mail, search for the boundary
-    if (header.match(/Content-Type: multipart\/alternative;/g)) {
-      console.log("Found a multipart MIME mail")
-      // boundarys could also have no "" <- need to fix this
-      var boundary = body.match(/(?<=boundary=").*(?="\n)|(?<=boundary=).*(?=\n)/)
-      console.log("Boundary found: " + boundary)
-
-      if (boundary = null) {
-        var regBoundary = RegExp.cleanUp(boundary)
-
-        console.log(regBoundary)
-
-        var plainRegex = RegExp("(?<=" + regBoundary + "\nContent-Type: text\/plain;\n[\\s\\S]*?)(?=--" + regBoundary + ")")
-
-        console.log("Regex to search for: " + plainRegex)
-
-        var body = body.replace(plainRegex, cancelText)
-      }    
-
-      var htmlRegex = RegExp("<\/body>")
-      console.log("\nRegex to search for: " + htmlRegex)
-
-      cancelHTML = cancelHeaderImage + cancelHTML + "<\/body>"
-
-      body = body.replace(htmlRegex, cancelHTML)
-    } else if (header.match(/Content-Type: text\/html;/g)) {
-      console.log("This seems like a text/html MIME mail")
-
-      body = body + cancelHTML
-
-    } else {
-      console.log("This does not seems like a MIME mail")
-
-      cancelText = "\n\nDon't want to use MailMask anymore? Click the following link to cancel.\n\n" + cancelLink
-
-      body = body + cancelText
-    }
-
-    // SES does not allow sending messages from an unverified address,
-    // so replace the message's "From:" header with the original
-    // recipient (which is a verified domain)
+  // Add subject prefix if configured
+  if (data.config.subjectPrefix) {
     header = header.replace(
-      /^from:[\t ]?(.*(?:\r?\n\s+.*)*)/mgi,
-      function(match, from) {
-        var fromText;
-        if (data.config.fromEmail) {
-          fromText = 'From: ' + from.replace(/<(.*)>/, '').trim() +
-          ' <' + data.config.fromEmail + '>';
-        } else {
-          fromText = 'From: ' + from.replace('<', 'at ').replace('>', '') +
-          ' <' + data.originalRecipient + '>';
-        }
-        return fromText;
-      });
+      /^subject:\s?(.*)/gim,
+      `Subject: ${data.config.subjectPrefix}$1`
+    );
+  }
 
-    // Add a prefix to the Subject
-    if (data.config.subjectPrefix) {
-      header = header.replace(
-        /^subject:[\t ]?(.*)/mgi,
-        function(match, subject) {
-          return 'Subject: ' + data.config.subjectPrefix + subject;
-        });
+  // Replace original 'To' header if configured
+  if (data.config.toEmail) {
+    header = header.replace(/^to:[\t ]?(.*)/gim, `To: ${data.config.toEmail}`);
+  }
+
+  // Remove unwanted headers
+  header = header.replace(/^return-path:.*\r?\n/gim, "");
+  header = header.replace(/^sender:.*\r?\n/gim, "");
+  header = header.replace(/^message-id:.*\r?\n/gim, "");
+  header = header.replace(/^dkim-signature:[\t ]?.*\r?\n(\s+.*\r?\n)*/gim, "");
+
+  body = insertSupportAndCancel(body, header, data, cancelLink);
+
+  data.emailData = header + body;
+  console.log("Final email data:\n", data.emailData);
+  return data;
+};
+
+// Send the modified email via SES, checking blocked domains first
+exports.sendMessage = async function (data) {
+  if (!data.recipients.length) {
+    console.log("No recipients found, skipping sendMessage.");
+    return data;
+  }
+
+  const blockedDomains = getBlockedDomains();
+
+  // Check each recipient against blocked domains
+  for (const recipient of data.recipients) {
+    if (!isValidEmail(recipient)) {
+      console.error("Invalid email address:", recipient);
+      // You can choose to skip or throw an error
+      // For now, let's skip sending entirely
+      return data;
     }
 
-    // Replace original 'To' header with a manually defined one
-    if (data.config.toEmail) {
-      header = header.replace(/^to:[\t ]?(.*)/mgi, () => 'To: ' + data.config.toEmail);
+    if (isBlockedDomain(recipient, blockedDomains)) {
+      console.error("Blocked domain detected for recipient:", recipient);
+      // Skip sending
+      return data;
     }
 
-    // Remove the Return-Path header.
-    header = header.replace(/^return-path:[\t ]?(.*)\r?\n/mgi, '');
+    // Check MX records if desired
+    const domain = extractDomain(recipient);
+    const validMx = await hasValidMxRecords(domain);
+    if (!validMx) {
+      console.error("No valid MX records for domain:", domain);
+      return data;
+    }
+  }
 
-    // Remove Sender header.
-    header = header.replace(/^sender:[\t ]?(.*)\r?\n/mgi, '');
+  const params = {
+    Destinations: data.recipients,
+    Source: data.originalRecipient || data.config.fromEmail,
+    RawMessage: { Data: data.emailData },
+  };
 
-    // Remove Message-ID header.
-    header = header.replace(/^message-id:[\t ]?(.*)\r?\n/mgi, '');
+  console.log(
+    "Sending email via SES. Original recipients:",
+    data.originalRecipients,
+    "Transformed recipients:",
+    data.recipients
+  );
 
-    // Remove all DKIM-Signature headers to prevent triggering an
-    // "InvalidParameterValue: Duplicate header 'DKIM-Signature'" error.
-    // These signatures will likely be invalid anyways, since the From
-    // header was modified.
-    header = header.replace(/^dkim-signature:[\t ]?.*\r?\n(\s+.*\r?\n)*/mgi, '');
-
-    data.emailData = header + body;
-
-    console.log(data.emailData)
-    return Promise.resolve(data);
+  try {
+    const result = await data.ses.sendRawEmail(params).promise();
+    console.log("sendRawEmail() successful:", result);
+    return data;
+  } catch (err) {
+    console.error("sendRawEmail() returned error:", err);
+    throw new Error("Error: Email sending failed.");
   }
 };
 
-/**
- * Deletes the message data from S3.
- *
- * @param {object} data - Data bundle with context, email, etc.
- *
- */
-exports.deleteMail = function(data) {
-    // Deleting the mail after it was send
-  data.log({
-    level: "info",
-    message: "Fetching email for deletion at s3://" + data.config.emailBucket + '/' +
-      data.config.emailKeyPrefix + data.email.messageId
-  });
+// Delete the original mail from S3
+exports.deleteMail = async function (data) {
+  console.log(
+    `Deleting email at s3://${data.config.emailBucket}/${data.config.emailKeyPrefix}${data.email.messageId}`
+  );
 
-  // Delete the raw email from S3
-  return new Promise(function(resolve, reject) {
-    data.s3.deleteObject({
+  try {
+    await data.s3
+      .deleteObject({
         Bucket: data.config.emailBucket,
-        Key: data.config.emailKeyPrefix + data.email.messageId
-    }, function(err, data) {
-        if (err) {
-          data.log({
-            level: "error",
-            message: "deleteObject() returned error:",
-            error: err,
-            stack: err.stack
-          });
-          return reject(new Error('Error: Email deletion failed.'));
-        }
-        console.log({
-          level: "info",
-          message: "Deletion was successful, deleted file"
-        });
-        return resolve(data);        
-    });
-  });
-};
+        Key: data.config.emailKeyPrefix + data.email.messageId,
+      })
+      .promise();
 
-/**
- * Send email using the SES sendRawEmail command.
- *
- * @param {object} data - Data bundle with context, email, etc.
- *
- * @return {object} - Promise resolved with data.
- */
-exports.sendMessage = function(data) {
-  if (data.recipients.length && data !== null) {
-    var params = {
-      Destinations: data.recipients,
-      Source: data.originalRecipient,
-      RawMessage: {
-        Data: data.emailData
-      }
-    };
-
-  data.log({
-    level: "info",
-    message: "sendMessage: Sending email via SES. Original recipients: " +
-      data.originalRecipients.join(", ") + ". Transformed recipients: " +
-      data.recipients + "."
-  });
-  return new Promise(function(resolve, reject) {
-    data.ses.sendRawEmail(params, function(err, result) {
-      if (err) {
-        data.log({
-          level: "error",
-          message: "sendRawEmail() returned error.",
-          error: err,
-          stack: err.stack
-        });
-        return reject(new Error('Error: Email sending failed.'));
-      }
-      data.log({
-        level: "info",
-        message: "sendRawEmail() successful.",
-        result: result
-      });
-      resolve(data);
-    });
-  });
-  } else {
-    console.log("Skipped sending mail. No data.recipients were found.")
-    return Promise.resolve(data);
+    console.log("Deletion was successful, deleted file");
+    return data;
+  } catch (err) {
+    console.error("deleteObject() returned error:", err);
+    throw new Error("Error: Email deletion failed.");
   }
 };
 
-/**
- * Handler function to be invoked by AWS Lambda with an inbound SES email as
- * the event.
- *
- * @param {object} event - Lambda event from inbound email received by AWS SES.
- * @param {object} context - Lambda context object.
- * @param {object} callback - Lambda callback object.
- * @param {object} overrides - Overrides for the default data, including the
- * configuration, SES object, and S3 object.
- */
-exports.handler = function(event, context, callback, overrides) {
-  console.log(event)
+// Main handler
+exports.handler = async function (event, context, callback, overrides) {
+  console.log("Event received:", JSON.stringify(event, null, 2));
 
-  var steps = overrides && overrides.steps ? overrides.steps :
-    [
-      exports.parseEvent,
-      exports.getFwdAddress,
-      exports.fetchMessage,
-      exports.processMessage,
-      exports.sendMessage,  
-      exports.deleteMail
-    ];
-  var data = {
-    event: event,
-    callback: callback,
-    context: context,
-    config: overrides && overrides.config ? overrides.config : defaultConfig,
+  const config = overrides && overrides.config ? overrides.config : defaultConfig;
+  verifyConfig(config);
+
+  const data = {
+    event,
+    callback,
+    context,
+    config,
     log: overrides && overrides.log ? overrides.log : console.log,
     ses: overrides && overrides.ses ? overrides.ses : new AWS.SES(),
-    s3: overrides && overrides.s3 ?
-      overrides.s3 : new AWS.S3({signatureVersion: 'v4'})
+    s3: overrides && overrides.s3 ? overrides.s3 : new AWS.S3({ signatureVersion: "v4" }),
   };
-  
-  steps.reduce((cur, next) => cur.then(next), Promise.resolve(data)).then(() => {
-    console.log({
-      level: "info",
-      message: "Process finished successfully."
-    });
-  });
+
+  const steps = overrides && overrides.steps
+    ? overrides.steps
+    : [
+        exports.parseEvent,
+        exports.getFwdAddress,
+        exports.fetchMessage,
+        exports.processMessage,
+        exports.sendMessage,
+        exports.deleteMail,
+      ];
+
+  try {
+    for (const step of steps) {
+      await step(data);
+    }
+    console.log("Process finished successfully.");
+    callback(null, { message: "Success" });
+  } catch (err) {
+    console.error("Error occurred:", err);
+    callback(err);
+  }
 };
-
-
-
-

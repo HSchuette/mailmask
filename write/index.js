@@ -4,7 +4,8 @@
 console.log("starting the lambda function");
 
 const AWS = require('aws-sdk');
-const docClient = new AWS.DynamoDB.DocumentClient({region: "eu-west-1"});
+const dns = require('dns').promises;
+const docClient = new AWS.DynamoDB.DocumentClient({ region: "eu-west-1" });
 const nanoid = require('nano-id');
 const CryptoJS = require("crypto-js");
 
@@ -13,60 +14,127 @@ const CryptoJS = require("crypto-js");
 //   isBoundToNewsletter is a boolean that decides whether the forwarding address should be limited
 //   to one domain only
 
-exports.handler = function(event, context, callback) {
-    
-    callback(null, {
-        "statusCode": 200,
-        "headers": { 
-            "Access-Control-Allow-Origin": "*" 
-        }
-    });
+// Parse blocked domains from environment variable
+function getBlockedDomains() {
+    const blockedDomainsEnv = process.env.BLOCKED_DOMAINS || "";
+    return blockedDomainsEnv.split(",").map(domain => domain.trim().toLowerCase());
+}
 
-    let mailmaskRegex = /.*@mailmask\.me/
-    console.log(mailmaskRegex.test(event.forwardingAddress))
-    console.log(event.label)
+// Validate email format
+function isValidEmail(email) {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+}
 
-    if (mailmaskRegex.test(event.forwardingAddress)) {
-        console.log("Did not write because of looping mail.")
-    } else {
-        let key = process.env.hashKey
+// Extract the domain from an email address
+function extractDomain(email) {
+    return email.split('@')[1].toLowerCase();
+}
 
-        var id = nanoid(8).toLowerCase()
+// Check if email's domain is blocked
+function isBlockedDomain(email, blockedDomains) {
+    const domain = extractDomain(email);
+    return blockedDomains.includes(domain);
+}
 
-        if (event.label) {
-            let allowedCharactersRegex = /[^A-Za-z0-9äÄüÜöÖ]/gm
-            var cleanedLabel = event.label.replace(allowedCharactersRegex)
-            var id = id + "+" + cleanedLabel.toLowerCase()
-        }
-
-        console.log(id)
-
-        var hashedForwardingAddress = CryptoJS.AES.encrypt(event.forwardingAddress, key).toString()
-
-        console.log(hashedForwardingAddress)
-        console.log(id)
-
-        var params = {
-            Item: {
-                mailID: id,
-                routingAddress: id + "@mailmask.me",
-                forwardingAddress: hashedForwardingAddress,
-                label: event.label,
-                isBoundToNewsletter: false,
-                boundedMail: null
-            },
-
-            TableName: "mailMaskList"
-        };        
-    
-        docClient.put(params, function(err, data) {
-            if(err) {
-                console.log(err);
-                callback(err, null);
-            } else {
-                console.log("Writing was a success!");
-                callback(null, data);
-            }
-        });
+// Check if the domain has valid MX records
+async function hasValidMxRecords(domain) {
+    try {
+        const mxRecords = await dns.resolveMx(domain);
+        return mxRecords.length > 0; // Valid if at least one MX record is found
+    } catch (err) {
+        console.error(`Error fetching MX records for ${domain}:`, err.message);
+        return false;
     }
 }
+
+exports.handler = async function (event, context, callback) {
+    console.log("Incoming request:", event);
+
+    const responseHeaders = {
+        "Access-Control-Allow-Origin": "*",
+    };
+
+    try {
+        const { forwardingAddress, label } = event;
+
+        // Validate forwarding address
+        if (!isValidEmail(forwardingAddress)) {
+            return callback(null, {
+                statusCode: 400,
+                headers: responseHeaders,
+                body: JSON.stringify({ error: "Invalid email format." }),
+            });
+        }
+
+        // Check blocked domains
+        const blockedDomains = getBlockedDomains();
+        if (isBlockedDomain(forwardingAddress, blockedDomains)) {
+            return callback(null, {
+                statusCode: 403,
+                headers: responseHeaders,
+                body: JSON.stringify({ error: "Temporary email domains are not allowed." }),
+            });
+        }
+
+        // Check if the domain has valid MX records
+        const domain = extractDomain(forwardingAddress);
+        const validMx = await hasValidMxRecords(domain);
+        if (!validMx) {
+            return callback(null, {
+                statusCode: 403,
+                headers: responseHeaders,
+                body: JSON.stringify({ error: "Invalid email domain. No valid MX records found." }),
+            });
+        }
+
+        // Generate unique ID
+        let id = nanoid(8).toLowerCase();
+
+        // Clean label
+        let cleanedLabel = "";
+        if (label) {
+            cleanedLabel = label.replace(/[^A-Za-z0-9äÄüÜöÖ]/gm, "");
+            id = `${id}+${cleanedLabel.toLowerCase()}`;
+        }
+
+        // Encrypt forwarding address
+        const key = process.env.hashKey;
+        if (!key) {
+            throw new Error("Encryption key not set in environment variables.");
+        }
+        const hashedForwardingAddress = CryptoJS.AES.encrypt(forwardingAddress, key).toString();
+
+        // Prepare DynamoDB entry
+        const params = {
+            TableName: "mailMaskList",
+            Item: {
+                mailID: id,
+                routingAddress: `${id}@mailmask.me`,
+                forwardingAddress: hashedForwardingAddress,
+                label: label || null,
+                isBoundToNewsletter: false,
+                boundedMail: null,
+            },
+        };
+
+        // Write to DynamoDB
+        await docClient.put(params).promise();
+        console.log("Record successfully written:", params.Item);
+
+        // Respond without mailID
+        callback(null, {
+            statusCode: 200,
+            headers: responseHeaders,
+            body: JSON.stringify({ success: true, message: "Forwarding address created successfully." }),
+        });
+    } catch (error) {
+        console.error("Error handling request:", error);
+
+        callback(null, {
+            statusCode: 500,
+            headers: responseHeaders,
+            body: JSON.stringify({ error: "Internal server error." }),
+        });
+    }
+};
