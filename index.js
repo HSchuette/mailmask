@@ -257,7 +257,7 @@ exports.processMessage = async function (data) {
   body = insertSupportAndCancel(body, header, data, cancelLink);
 
   data.emailData = header + body;
-  console.log("Final email data:\n", data.emailData);
+  console.log("Email processed.");
   return data;
 };
 
@@ -300,12 +300,7 @@ exports.sendMessage = async function (data) {
     RawMessage: { Data: data.emailData },
   };
 
-  console.log(
-    "Sending email via SES. Original recipients:",
-    data.originalRecipients,
-    "Transformed recipients:",
-    data.recipients
-  );
+  console.log("Processing email with sanitized recipient count:", data.recipients.length);
 
   try {
     const result = await data.ses.sendRawEmail(params).promise();
