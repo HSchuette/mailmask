@@ -257,7 +257,7 @@ exports.processMessage = async function (data) {
   body = insertSupportAndCancel(body, header, data, cancelLink);
 
   data.emailData = header + body;
-  console.log("Final email data:\n", data.emailData);
+  console.log("Email processed.");
   return data;
 };
 
