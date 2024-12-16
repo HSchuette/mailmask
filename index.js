@@ -301,7 +301,7 @@ exports.sendMessage = async function (data) {
   };
 
   console.log("Processing email with sanitized recipient count:", data.recipients.length);
-  console.info(`Success: Email successfully forwarded to ${data.recipients}`);
+  console.info(`Success: Email successfully forwarded`);
 
 
   try {
