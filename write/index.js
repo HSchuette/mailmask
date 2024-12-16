@@ -60,6 +60,7 @@ exports.handler = async function (event, context, callback) {
 
         // Validate forwarding address
         if (!isValidEmail(forwardingAddress)) {
+            console.log("Validation Error: Invalid email format");
             return callback(null, {
                 statusCode: 400,
                 headers: responseHeaders,
@@ -70,6 +71,7 @@ exports.handler = async function (event, context, callback) {
         // Check blocked domains
         const blockedDomains = getBlockedDomains();
         if (isBlockedDomain(forwardingAddress, blockedDomains)) {
+            console.log("Validation Error: Blocked domain");
             return callback(null, {
                 statusCode: 403,
                 headers: responseHeaders,
@@ -81,6 +83,7 @@ exports.handler = async function (event, context, callback) {
         const domain = extractDomain(forwardingAddress);
         const validMx = await hasValidMxRecords(domain);
         if (!validMx) {
+            console.log("Validation Error: Invalid MX records");
             return callback(null, {
                 statusCode: 403,
                 headers: responseHeaders,
@@ -120,6 +123,7 @@ exports.handler = async function (event, context, callback) {
 
         // Write to DynamoDB
         await docClient.put(params).promise();
+        console.log("Success: Forwarding address created", { id, routingAddress: `${id}@mailmask.me` });
         console.log("Record successfully written:", params.Item);
 
         // Respond without mailID

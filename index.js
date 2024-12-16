@@ -273,14 +273,14 @@ exports.sendMessage = async function (data) {
   // Check each recipient against blocked domains
   for (const recipient of data.recipients) {
     if (!isValidEmail(recipient)) {
-      console.error("Invalid email address:", recipient);
+      console.error(`Validation Error: Invalid email format`);
       // You can choose to skip or throw an error
       // For now, let's skip sending entirely
       return data;
     }
 
     if (isBlockedDomain(recipient, blockedDomains)) {
-      console.error("Blocked domain detected for recipient:", recipient);
+      console.error(`Validation Error: Blocked domain`);
       // Skip sending
       return data;
     }
@@ -289,7 +289,7 @@ exports.sendMessage = async function (data) {
     const domain = extractDomain(recipient);
     const validMx = await hasValidMxRecords(domain);
     if (!validMx) {
-      console.error("No valid MX records for domain:", domain);
+      console.error(`Validation Error: No valid MX records for domain: ${domain}`);
       return data;
     }
   }
@@ -300,12 +300,9 @@ exports.sendMessage = async function (data) {
     RawMessage: { Data: data.emailData },
   };
 
-  console.log(
-    "Sending email via SES. Original recipients:",
-    data.originalRecipients,
-    "Transformed recipients:",
-    data.recipients
-  );
+  console.log("Processing email with sanitized recipient count:", data.recipients.length);
+  console.info(`Success: Email successfully forwarded to ${data.recipients}`);
+
 
   try {
     const result = await data.ses.sendRawEmail(params).promise();
