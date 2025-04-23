@@ -15,6 +15,7 @@ console.log("AWS Lambda SES Forwarder");
 // - emailKeyPrefix: optional prefix for S3 keys
 // - hashKey: Key used to decrypt stored forwarding addresses
 // - BLOCKED_DOMAINS: Comma-separated list of blocked domains (optional)
+// - BLOCKED_EMAILS: Comma-separated list of blocked emails (optional)
 
 const defaultConfig = {
   fromEmail: process.env.fromEmail,
@@ -45,6 +46,19 @@ function extractDomain(email) {
 function isBlockedDomain(email, blockedDomains) {
   const domain = extractDomain(email);
   return blockedDomains.includes(domain);
+}
+
+// Check if email is on blocklist
+function getBlockedEmails() {
+  return (process.env.BLOCKED_EMAILS || "")
+    .split(",")
+    .map(e => e.trim().toLowerCase())
+    .filter(Boolean);
+}
+
+// Check if a specific email address is blocked
+function isBlockedEmail(email, blockedEmails) {
+  return blockedEmails.includes(email.toLowerCase());
 }
 
 // Check if the domain has valid MX records
@@ -269,6 +283,7 @@ exports.sendMessage = async function (data) {
   }
 
   const blockedDomains = getBlockedDomains();
+  const blockedEmails  = getBlockedEmails();
 
   // Check each recipient against blocked domains
   for (const recipient of data.recipients) {
@@ -278,6 +293,13 @@ exports.sendMessage = async function (data) {
       // For now, let's skip sending entirely
       return data;
     }
+
+    // Exact-address block
+    if (isBlockedEmail(recipient, blockedEmails)) {
+      console.error(`Validation Error: Blocked email address: ${recipient}`);
+      return data;
+    }
+
 
     if (isBlockedDomain(recipient, blockedDomains)) {
       console.error(`Validation Error: Blocked domain`);
@@ -301,11 +323,11 @@ exports.sendMessage = async function (data) {
   };
 
   console.log("Processing email with sanitized recipient count:", data.recipients.length);
-  console.info(`Success: Email successfully forwarded`);
-
-
+  
+  
   try {
     const result = await data.ses.sendRawEmail(params).promise();
+    console.info(`Success: Email successfully forwarded`);
     console.log("sendRawEmail() successful:", result);
     return data;
   } catch (err) {
