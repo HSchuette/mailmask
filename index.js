@@ -137,6 +137,9 @@ exports.parseEvent = async function (data) {
     throw new Error("Error: Received invalid SES message.");
   }
 
+  data.email = data.event.Records[0].ses.mail;
+  data.recipients = data.event.Records[0].ses.receipt.recipients;
+
   const isEmptyEnvelope = !data.email.source || data.email.source === "";
   const fromHeaders    = data.email.commonHeaders.from || [];
   const isMailerDaemon = fromHeaders.some(addr => /mailer-daemon@/i.test(addr));
@@ -148,8 +151,6 @@ exports.parseEvent = async function (data) {
     return data;
   }
 
-  data.email = data.event.Records[0].ses.mail;
-  data.recipients = data.event.Records[0].ses.receipt.recipients;
   return data;
 };
 
