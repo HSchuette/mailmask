@@ -172,12 +172,7 @@ exports.bounceIfSenderBlocked = async function(data) {
       OriginalMessageId: data.email.messageId,
       BouncedRecipientInfoList: data.recipients.map(addr => ({
         Recipient: addr,
-        BounceType: "ContentRejected",
-        RecipientDsnFields: {
-          Action: "failed",
-          Status: "5.7.1",
-          DiagnosticCode: "smtp; 550 Sender domain is blocked"
-        }
+        BounceType: "ContentRejected"
       })),
       Explanation: `Mail from ${senderDomain} is not accepted.`
     }).promise();
@@ -235,12 +230,7 @@ exports.bounceIfNoMapping = async function(data) {
       OriginalMessageId: data.email.messageId,
       BouncedRecipientInfoList: data.originalRecipients.map(r => ({
         Recipient: r,
-        BounceType: "DoesNotExist",
-        RecipientDsnFields: {
-          Action:         "failed",
-          Status:         "5.1.1",
-          DiagnosticCode: "smtp; 550 Address not found"
-        }
+        BounceType: "DoesNotExist"
       })),
       Explanation: "That address does not exist in our system."
     }).promise();
@@ -264,12 +254,7 @@ exports.bounceIfForwardBlocked = async function(data) {
         OriginalMessageId: data.email.messageId,
         BouncedRecipientInfoList: [{
           Recipient: origEmailKey,
-          BounceType: "ContentRejected",
-          RecipientDsnFields: {
-            Action:         "failed",
-            Status:         "5.7.1",
-            DiagnosticCode: "smtp; 550 Forwarding address blocked"
-          }
+          BounceType: "ContentRejected"
         }],
         Explanation: "That destination address is blocked by policy."
       }).promise();
