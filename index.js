@@ -31,6 +31,14 @@ function getBlockedDomains() {
   return blockedDomainsEnv.split(",").map(domain => domain.trim().toLowerCase()).filter(d => d);
 }
 
+// Parse the blocked inbound sender domains
+function getBlockedSenderDomains() {
+  return (process.env.BLOCKED_SENDER_DOMAINS || "")
+    .split(",")
+    .map(d => d.trim().toLowerCase())
+    .filter(Boolean);
+}
+
 // Validate email format
 function isValidEmail(email) {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -154,9 +162,31 @@ exports.parseEvent = async function (data) {
   return data;
 };
 
+// Bounce emails when sender domain is blocked
+exports.bounceIfSenderBlocked = async function(data) {
+  const senderDomain = extractDomain(data.email.source);
+  const blocked = getBlockedSenderDomains();
+  if (blocked.includes(senderDomain)) {
+    await data.ses.sendBounce({
+      BounceSender: data.config.fromEmail,
+      OriginalMessageId: data.email.messageId,
+      BouncedRecipientInfoList: data.recipients.map(addr => ({
+        Recipient:     addr,
+        BounceType:    "Permanent",
+        DiagnosticCode:"smtp; 550 Sender domain is blocked"
+      })),
+      Explanation: `Mail from ${senderDomain} is not accepted.`
+    }).promise();
+
+    throw new Error("BounceSentinel: Bounced blocked sender domain");
+  }
+  return data;
+};
+
 // Get forwarding addresses from DynamoDB
 exports.getFwdAddress = async function (data) {
   data.originalRecipients = data.recipients;
+  data.forwardMap = []
   console.log("Original Recipients:", data.originalRecipients);
 
   let newRecipients = [];
@@ -179,7 +209,8 @@ exports.getFwdAddress = async function (data) {
           response.Item.forwardingAddress,
           data.config.hashKey
         ).toString(CryptoJS.enc.Utf8);
-        newRecipients.push(unhashedForwardingAddress);
+        data.forwardMap.push({origEmailKey, unhashedForwardingAddress});
+
       } else {
         console.warn("No forwarding address found for:", recipientID);
       }
@@ -188,7 +219,51 @@ exports.getFwdAddress = async function (data) {
     }
   }
 
-  data.recipients = newRecipients;
+  data.recipients = data.forwardMap.map(m => m.origEmailKey);
+  return data;
+};
+
+// Bounce if no forwarding entry was found
+exports.bounceIfNoMapping = async function(data) {
+  if (data.originalRecipients.length > 0 && data.forwardMap.length === 0) {
+    await data.ses.sendBounce({
+      BounceSender: data.config.fromEmail,
+      OriginalMessageId: data.email.messageId,
+      BouncedRecipientInfoList: data.originalRecipients.map(r => ({
+        Recipient:     r,
+        BounceType:    "Permanent",
+        DiagnosticCode:"smtp; 550 Address not found"
+      })),
+      Explanation: "That address does not exist in our system."
+    }).promise();
+
+    throw new Error("BounceSentinel: Bounced missing mapping");
+  }
+  return data;
+};
+
+// Bounce if the unhashed address or it's domain is on the blocklist
+exports.bounceIfForwardBlocked = async function(data) {
+  const blockedEmails  = getBlockedEmails();
+  const blockedDomains = getBlockedDomains();
+
+  for (let { origEmailKey, unhashedForwardingAddress } of data.forwardMap) {
+    const domain = extractDomain(unhashedForwardingAddress);
+    if (blockedEmails.includes(unhashedForwardingAddress.toLowerCase()) || blockedDomains.includes(domain)) {
+      await data.ses.sendBounce({
+        BounceSender: data.config.fromEmail,
+        OriginalMessageId: data.email.messageId,
+        BouncedRecipientInfoList: [{
+          Recipient:     origEmailKey, 
+          BounceType:    "Permanent",
+          DiagnosticCode:"smtp; 550 Forwarding address blocked"
+        }],
+        Explanation: "That destination address is blocked by policy."
+      }).promise();
+
+      throw new Error("BounceSentinel: Bounced blocked recipient");
+    }
+  }
   return data;
 };
 
@@ -391,7 +466,10 @@ exports.handler = async function (event, context, callback, overrides) {
     ? overrides.steps
     : [
         exports.parseEvent,
-        exports.getFwdAddress,
+        exports.bounceIfSenderBlocked,  
+        exports.getFwdAddress,          
+        exports.bounceIfNoMapping,
+        exports.bounceIfForwardBlocked,
         exports.fetchMessage,
         exports.processMessage,
         exports.sendMessage,
@@ -403,9 +481,12 @@ exports.handler = async function (event, context, callback, overrides) {
       await step(data);
     }
     console.log("Process finished successfully.");
-    callback(null, { message: "Success" });
+    return callback(null, { message: "Success" });
   } catch (err) {
     console.error("Error occurred:", err);
-    callback(err);
+    if (err.message.startsWith("BounceSentinel:")) {
+      return callback(null, { message: err.message });
+    }
+    return callback(err);
   }
 };
