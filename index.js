@@ -172,7 +172,7 @@ exports.bounceIfSenderBlocked = async function(data) {
       OriginalMessageId: data.email.messageId,
       BouncedRecipientInfoList: data.recipients.map(addr => ({
         Recipient: addr,
-        BounceType: "Permanent",
+        BounceType: "ContentRejected",
         RecipientDsnFields: {
           Action: "failed",
           Status: "5.7.1",
@@ -235,7 +235,7 @@ exports.bounceIfNoMapping = async function(data) {
       OriginalMessageId: data.email.messageId,
       BouncedRecipientInfoList: data.originalRecipients.map(r => ({
         Recipient: r,
-        BounceType: "Permanent",
+        BounceType: "DoesNotExist",
         RecipientDsnFields: {
           Action:         "failed",
           Status:         "5.1.1",
@@ -264,7 +264,7 @@ exports.bounceIfForwardBlocked = async function(data) {
         OriginalMessageId: data.email.messageId,
         BouncedRecipientInfoList: [{
           Recipient: origEmailKey,
-          BounceType: "Permanent",
+          BounceType: "ContentRejected",
           RecipientDsnFields: {
             Action:         "failed",
             Status:         "5.7.1",
