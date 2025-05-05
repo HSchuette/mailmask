@@ -171,9 +171,13 @@ exports.bounceIfSenderBlocked = async function(data) {
       BounceSender: data.config.fromEmail,
       OriginalMessageId: data.email.messageId,
       BouncedRecipientInfoList: data.recipients.map(addr => ({
-        Recipient:     addr,
-        BounceType:    "Permanent",
-        DiagnosticCode:"smtp; 550 Sender domain is blocked"
+        Recipient: addr,
+        BounceType: "Permanent",
+        RecipientDsnFields: {
+          Action: "failed",
+          Status: "5.7.1",
+          DiagnosticCode: "smtp; 550 Sender domain is blocked"
+        }
       })),
       Explanation: `Mail from ${senderDomain} is not accepted.`
     }).promise();
@@ -230,12 +234,17 @@ exports.bounceIfNoMapping = async function(data) {
       BounceSender: data.config.fromEmail,
       OriginalMessageId: data.email.messageId,
       BouncedRecipientInfoList: data.originalRecipients.map(r => ({
-        Recipient:     r,
-        BounceType:    "Permanent",
-        DiagnosticCode:"smtp; 550 Address not found"
+        Recipient: r,
+        BounceType: "Permanent",
+        RecipientDsnFields: {
+          Action:         "failed",
+          Status:         "5.1.1",
+          DiagnosticCode: "smtp; 550 Address not found"
+        }
       })),
       Explanation: "That address does not exist in our system."
     }).promise();
+    
 
     throw new Error("BounceSentinel: Bounced missing mapping");
   }
@@ -254,12 +263,17 @@ exports.bounceIfForwardBlocked = async function(data) {
         BounceSender: data.config.fromEmail,
         OriginalMessageId: data.email.messageId,
         BouncedRecipientInfoList: [{
-          Recipient:     origEmailKey, 
-          BounceType:    "Permanent",
-          DiagnosticCode:"smtp; 550 Forwarding address blocked"
+          Recipient: origEmailKey,
+          BounceType: "Permanent",
+          RecipientDsnFields: {
+            Action:         "failed",
+            Status:         "5.7.1",
+            DiagnosticCode: "smtp; 550 Forwarding address blocked"
+          }
         }],
         Explanation: "That destination address is blocked by policy."
       }).promise();
+      
 
       throw new Error("BounceSentinel: Bounced blocked recipient");
     }
