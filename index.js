@@ -218,7 +218,7 @@ exports.getFwdAddress = async function (data) {
     }
   }
 
-  data.recipients = data.forwardMap.map(m => m.origEmailKey);
+  data.recipients = data.forwardMap.map(m => m.unhashedForwardingAddress);
   return data;
 };
 
