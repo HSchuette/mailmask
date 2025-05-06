@@ -177,6 +177,10 @@ exports.bounceIfSenderBlocked = async function(data) {
       Explanation: `Mail from ${senderDomain} is not accepted.`
     }).promise();
 
+    await exports.deleteMail(data).catch(err =>
+      console.error("deleteMail in bounceIfSenderBlocked failed:", err)
+    );
+
     throw new Error("BounceSentinel: Bounced blocked sender domain");
   }
   return data;
@@ -235,6 +239,9 @@ exports.bounceIfNoMapping = async function(data) {
       Explanation: "That address does not exist in our system."
     }).promise();
     
+    await exports.deleteMail(data).catch(err =>
+      console.error("deleteMail in bounceIfNoMapping failed:", err)
+    );
 
     throw new Error("BounceSentinel: Bounced missing mapping");
   }
@@ -259,6 +266,9 @@ exports.bounceIfForwardBlocked = async function(data) {
         Explanation: "That destination address is blocked by policy."
       }).promise();
       
+      await exports.deleteMail(data).catch(err =>
+        console.error("deleteMail in bounceIfForwardBlocked failed:", err)
+      );
 
       throw new Error("BounceSentinel: Bounced blocked recipient");
     }
@@ -296,6 +306,11 @@ exports.fetchMessage = async function (data) {
     return data;
   } catch (err) {
     console.error("Error fetching message from S3:", err);
+
+    await exports.deleteMail(data).catch(err =>
+      console.error("deleteMail in fetchMessage failed:", err)
+    );
+
     throw new Error("Error: Failed to load message body from S3.");
   }
 };
@@ -404,7 +419,7 @@ exports.sendMessage = async function (data) {
 
   const params = {
     Destinations: data.recipients,
-    Source: data.originalRecipient || data.config.fromEmail,
+    Source: data.config.fromEmail,
     RawMessage: { Data: data.emailData },
   };
 
@@ -418,6 +433,11 @@ exports.sendMessage = async function (data) {
     return data;
   } catch (err) {
     console.error("sendRawEmail() returned error:", err);
+
+    await exports.deleteMail(data).catch(err =>
+      console.error("deleteMail in sendRawEmail failed:", err)
+    );
+
     throw new Error("Error: Email sending failed.");
   }
 };
