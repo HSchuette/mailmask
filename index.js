@@ -464,6 +464,16 @@ exports.deleteMail = async function (data) {
   }
 };
 
+// Delete the original mail and silently ignore “NoSuchKey” if the object was already deleted
+exports.deleteMailSilent = async d => {
+  try {
+    await exports.deleteMail(d);
+  } catch (e) {
+    if (e.code !== 'NoSuchKey') throw e;
+    console.log('deleteMailSilent: key already gone.');
+  }
+};
+
 // Main handler
 exports.handler = async function (event, context, callback, overrides) {
   console.log("Event received:", JSON.stringify(event, null, 2));
@@ -492,7 +502,7 @@ exports.handler = async function (event, context, callback, overrides) {
         exports.fetchMessage,
         exports.processMessage,
         exports.sendMessage,
-        exports.deleteMail,
+        exports.deleteMailSilent,
       ];
 
   try {
