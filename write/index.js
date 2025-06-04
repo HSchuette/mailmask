@@ -14,6 +14,16 @@ const CryptoJS = require("crypto-js");
 //   isBoundToNewsletter is a boolean that decides whether the forwarding address should be limited
 //   to one domain only
 
+const BLOCKED_HOSTS = (process.env.BLOCKED_MX_HOSTS || "")
+  .split(",")
+  .map(s => s.trim().toLowerCase())
+  .filter(Boolean); 
+
+const BLOCKED_IPS = (process.env.BLOCKED_MX_IPS || "")
+  .split(",")
+  .map(s => s.trim()) 
+  .filter(Boolean);   
+
 // Parse blocked domains from environment variable
 function getBlockedDomains() {
     const blockedDomainsEnv = process.env.BLOCKED_DOMAINS || "";
@@ -46,6 +56,39 @@ async function hasValidMxRecords(domain) {
         console.error(`Error fetching MX records for ${domain}:`, err.message);
         return false;
     }
+}
+
+// Returns TRUE when the domain’s MX chain matches a blocked host or IP
+async function hasBlockedMx(domain) {
+  try {
+    const mxRecords = await dns.resolveMx(domain);   // [{exchange, priority}, …]
+
+    // Host match
+    for (const { exchange } of mxRecords) {
+      const host = exchange.toLowerCase();
+
+      if (BLOCKED_HOSTS.some(sub => host.includes(sub))) {
+        console.log("MX host blocked:", host);
+        return true;
+      }
+
+      // IP match
+      try {
+        const addrs = await dns.resolve4(host);    // ["1.2.3.4", …]
+        if (addrs.some(ip => BLOCKED_IPS.includes(ip))) {
+          console.log("MX IP blocked:", host, addrs);
+          return true;
+        }
+
+      } catch (ipErr) {
+        // ignore NXDOMAIN / SERVFAIL for the per-host lookup
+        console.warn(`resolveMx failed for ${host}:`, ipErr.code || ipErr.message);
+      }
+    }
+  } catch (err) {
+    console.error(`resolveMx failed for ${domain}:`, err.code || err.message);
+  }
+  return false;   // no match found
 }
 
 exports.handler = async function (event, context, callback) {
@@ -82,12 +125,13 @@ exports.handler = async function (event, context, callback) {
         // Check if the domain has valid MX records
         const domain = extractDomain(forwardingAddress);
         const validMx = await hasValidMxRecords(domain);
-        if (!validMx) {
-            console.log("Validation Error: Invalid MX records");
+        const blockedMx = await hasBlockedMx(domain);
+        if (!validMx || blockedMx) {
+            console.log("Validation Error: MX host/IP is blocked or invalid");
             return callback(null, {
                 statusCode: 403,
                 headers: responseHeaders,
-                body: JSON.stringify({ error: "Invalid email domain. No valid MX records found." }),
+                body: JSON.stringify({ error: "Invalid or temporary email domain." }),
             });
         }
 
