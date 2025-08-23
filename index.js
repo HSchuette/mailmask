@@ -90,18 +90,14 @@ function verifyConfig(config) {
 
 function insertSupportAndCancel(body, header, data, cancelLink) {
   // Combined support + cancel at the end
-  const combinedText = `\n\nThank you for using MailMask.me!\n\n` +
-    `MailMask.me is a free service designed to protect your email privacy. ` +
-    `We rely on your support to keep the service running and growing. If MailMask has been useful, ` +
-    `please consider supporting us at: https://www.mailmask.me/#support\n\n` +
-    `Thank you for helping keep email privacy accessible!\n\n` +
-    `Don't want to use MailMask anymore?\n${cancelLink}\n`;
+  const combinedText = `\n\n⚠️ Important Notice!\n\n` +
+    `MailMask.me will be discontinued on 01 September 2026.\n` +
+    `After this date, all forwarding will stop and all data will be deleted from our servers.\n\n` +
+    `If you no longer wish to use this address, you can cancel it here:\n${cancelLink}\n`;
 
   const combinedHTML = `
 <p style="font-family: 'Avenir Next', sans-serif; margin: 20px; font-size: 1rem;">
-  Thank you for using <strong>MailMask.me</strong>!<br> MailMask.me is a free service protecting your email privacy.
-  We rely on your support to keep it running and growing. <br><br>If MailMask helped you, please consider supporting us at 
-  <a href="https://www.mailmask.me/#support" style="color: #0095FF; font-weight: bold;">https://www.mailmask.me/#support</a>.
+  ⚠️ Important Notice: MailMask.me will be discontinued on 01 September 2026. After this date, all forwarding will stop and all data will be deleted from our servers.
 </p>
 <img style='border-radius: 15px; margin-top: 10px; max-width: 300px; align-items: center; display: block; margin-left: auto; margin-right: auto;' src='https://mailmask-images.s3-eu-west-1.amazonaws.com/mailheader.svg'>
 <p style="text-align: center; font-family: 'Avenir Next', sans-serif; margin: 50px; font-size: 1rem;">
