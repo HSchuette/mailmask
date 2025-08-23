@@ -41,32 +41,21 @@
                     <div class="content">
                         <div class="innerBox">                        
                             <div class="innerBox-text">                    
-                                <h1 class="decrypt-title">Your email deserves <u id="decrypt"></u></h1>                                                         
+                                <h1 class="decrypt-title">MailMask is shutting <u id="decrypt"></u></h1>                                                         
                                 <div class="catchphrase">
-                                    <p>Generate a unique and random forwarding address so you can still receive every email, newsletter etc. without sharing your personal address.</p>
+                                    <p>After much consideration, we have decided to shut down Mailmask.</p>
                                 </div>    
                             </div>
-                            <form action="?" id="emailInputForm">   
-                                <div class="emailInput">
-                                    <input id="mail" placeholder="Enter your email here..." type="email" name="email" pattern="[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{1,63}$" required/>                                                                    
-                                    <label class="add-label-button" title="Add a label to your mailmask mail" for="label-toggle">🔖</label>                                                                        
-                                    <input type='checkbox' id="label-toggle">                                
-                                    <div class="add-label-box">
-                                        <input id="label-text" placeholder="Add a label..." type="text" name="label" maxlength="15" autocomplete="off" pattern="[A-Za-z0-9]">                                                                    
-                                    </div>
-                                </div>                                                                                                                                                                                                                 
-                                <div class="privacy-and-terms-checkbox">
-                                    <input type="checkbox" id="checkbox" name="checkbox" required />
-                                    <label>I agree with the <a href="#tandc">Terms & Conditions</a> and the <a href="#privacy">Privacy Policy</a>. </label>
-                                </div>
-                                <input type="submit" name="submitButton" id="submitButton" class="button-cta" value="Generate Mail">
-                            </form>
-                            <div class="alert alert-success" id="success" style="display:none; padding-bottom: 50px;"> 
-                                <hr>
-                                <h2>Thank you!</h2>
-                                <p>We just sent you an email with your personal MailMask address. All incoming emails are automatically forwarded to your personal address.</p>
-                                <p>If you like MailMask, feel free to spread the word and head to our <a href="#support">support page</a>.</p>
-                            </div>  
+                            <p>
+                                Sadly, the service has been increasingly abused by automated scripts, and the costs of keeping it running have become too high to sustain.  
+                            </p>
+                            <p>
+                                MailMask will be discontinued on <strong>01 September 2026</strong>.  
+                                Until then, existing addresses will continue to forward emails as usual. After this date, all forwarding will stop and all remaining data will be deleted from our servers.  
+                            </p>
+                            <p style="padding-bottom: 50px">
+                                Thank you to everyone who has used and supported MailMask over the years.  
+                            </p> 
                         </div>                                            
                     </div>                    
                 </div> 
@@ -268,37 +257,6 @@
         <script type="text/javascript">
             var API_URL = "https://423ghva5nf.execute-api.eu-west-1.amazonaws.com/prod/mails";
             let mailmaskRegex = /.*@mailmask\.me/
-            
-            $("#submitButton").on('click', function() {
-                if (!$("#mail").val()) {
-                    console.log("Error - invalid request. No email input.") 
-                } else {
-                    if ($("#checkbox").prop('checked') == false) {
-                        console.log("Error - invalid request. Checkbox not checked.")
-                    } else {
-                        if(mailmaskRegex.test($("#mail").val())) {
-                            console.log("Error - invalid request. Looping mails are not allowed.")
-                        } else {
-                            $.ajax({
-                            type: "POST",
-                            url: API_URL,
-                            data: JSON.stringify({"forwardingAddress": $("#mail").val(), "label": $("#label-text").val()}),
-                            contentType: "application/JSON",
-
-                            success: function(data) {
-                                $("#success").show(),
-                                $("#emailInputForm").hide(),
-                                $(".catchphrase").hide(),
-                                $("#mail").val(""),
-                                $("#label-text").val("")
-                            }
-                            })                     
-                            window.metrical.trackEvent("click_create_new")
-                        }; 
-                    return false;
-                    }
-                }                    
-            });
 
             function getRandomString() {
                 word = "privacy."
@@ -306,7 +264,7 @@
                     setTimeout(function timer() {                        
                         word = Math.random().toString(36).substring(2, 4) + Math.random().toString(36).substring(2, 5);                        
                         if (i == 9) {
-                            word = "privacy."
+                            word = "down."
                         }
                         document.getElementById("decrypt").innerHTML = word
 
